@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jurnal Hafalan - Profesional Edition</title>
+    
+    <!-- Font Premium -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Panggil File CSS Eksternal -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <button class="header-btn menu-btn" onclick="toggleSidebarMenu()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+
+        <span class="admin-badge" id="adminBadge">✓ MODE ADMIN</span>
+        
+        <button class="header-btn admin-lock" onclick="document.getElementById('loginModal').classList.add('open')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </button>
+        
+        <h1>Memuat Kelas...</h1>
+        <p>Jurnal Mutaba'ah Hafalan</p>
+    </header>
+
+    <div class="container">
+        
+        <!-- TAB 1: Daftar Ananda -->
+        <div id="tab-ananda" class="tab-content active">
+            <div class="search-wrapper">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                <input type="text" id="searchInput" class="search-box" onkeyup="cariMurid()" placeholder="Cari nama ananda...">
+            </div>
+            <div style="display:flex; justify-content:center; gap:12px; margin-bottom: 20px; font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">
+                <span style="display:flex; align-items:center; gap:4px;"><span class="dot mumtaz"></span>Melampaui</span>
+                <span style="display:flex; align-items:center; gap:4px;"><span class="dot tuntas"></span>Tuntas</span>
+                <span style="display:flex; align-items:center; gap:4px;"><span class="dot proses"></span>Proses</span>
+                <span style="display:flex; align-items:center; gap:4px;"><span class="dot belum"></span>Belum</span>
+            </div>
+            <div id="muridList">
+                <div style="text-align: center; color: var(--gold-muted); margin-top: 40px; font-weight: 500;">
+                    <svg style="animation: spin 1s linear infinite; width:24px; height:24px; margin-bottom:10px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:0.25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity:0.75"></path></svg><br>
+                    Memuat data mutaba'ah...
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Papan Pengumuman -->
+        <div id="tab-pengumuman" class="tab-content">
+            <div class="mading-grid">
+                <div class="glass-panel mading-card" onclick="openMading('jadwal-imam')">
+                    <div class="mading-icon">🕌</div>
+                    <div class="mading-title">Jadwal Imam<br>Sholat Dhuha</div>
+                </div>
+                <div class="glass-panel mading-card" onclick="openMading('target-quran')">
+                    <div class="mading-icon">📖</div>
+                    <div class="mading-title">Target Hafalan<br>Al-Qur'an</div>
+                </div>
+                <div class="glass-panel mading-card" onclick="openMading('target-hadits')">
+                    <div class="mading-icon">📜</div>
+                    <div class="mading-title">Target Mingguan<br>Hadits & Doa</div>
+                </div>
+                <div class="glass-panel mading-card" onclick="openMading('jadwal-murajaah')">
+                    <div class="mading-icon">🔄</div>
+                    <div class="mading-title">Jadwal Muraja'ah<br>Harian</div>
+                </div>
+               <div class="glass-panel mading-card" style="grid-column: 1 / -1; flex-direction: row; text-align: left; padding: 25px;" onclick="openMading('jadwal-tilawah')">
+                    <div class="mading-icon" style="font-size: 32px;">🎙️</div>
+                    <div class="mading-title" style="flex: 1; font-size: 16px;">Jadwal Tilawah Live</div>
+                    <svg width="20" height="20" fill="none" stroke="var(--gold)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Dokumentasi Hari Ini -->
+        <div id="tab-dokumentasi" class="tab-content">
+            <div style="text-align: center; margin-bottom: 25px; font-size: 15px; font-weight: 500; color: var(--gold-muted); opacity: 0.9;">
+                Dokumentasi Kegiatan<br>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 5px;">
+                    <span id="teksTanggalDokumentasi" style="font-weight:700; color:var(--gold);">Memuat tanggal...</span>
+                    <button id="btnEditTanggal" class="btn-primary" style="display:none; padding: 4px 10px; font-size: 11px; width: auto; margin-top: 0; border-radius: 8px;" onclick="openMading('info-dokumentasi')">✏️ Edit</button>
+                </div>
+            </div>
+            
+            <div class="gallery-grid" id="galleryGrid">
+                <div style="text-align:center; color:var(--gold-muted); margin-top:30px;">
+                    <svg style="animation: spin 1s linear infinite; width:24px; height:24px; margin-bottom:10px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:0.25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity:0.75"></path></svg>
+                    <br>Memuat dokumentasi...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Navigation -->
+    <nav class="floating-nav">
+        <button class="active" onclick="switchTab('tab-ananda', this)">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87"></path><path d="M16 3.13a4 4 0 010 7.75"></path></svg>
+            Ananda
+        </button>
+        <button onclick="switchTab('tab-pengumuman', this)">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Mading
+        </button>
+        <button onclick="switchTab('tab-dokumentasi', this)">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Galeri
+        </button>
+    </nav>
+
+    <!-- MODAL 1: Profil Ananda -->
+    <div id="progressModal" class="modal" onclick="closeModalOnBackdrop(event, 'progressModal')">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('progressModal')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+            <div class="modal-header">
+                <div class="modal-avatar" id="modalInitials">AF</div>
+                <h2 id="modalNama">Nama Ananda</h2>
+                <div id="badgeSetoranHarian" class="badge-harian">⏳ Belum Setor</div>
+                <div id="adminSetoranHarianContainer" class="admin-setoran-container">
+                    <button type="button" class="setoran-btn" data-val="sudah" onclick="pilihSetoranHarian('sudah')">✅ Sudah Setor</button>
+                    <button type="button" class="setoran-btn" data-val="berhalangan" onclick="pilihSetoranHarian('berhalangan')">🛑 Berhalangan</button>
+                    <button type="button" class="setoran-btn" data-val="izin" onclick="pilihSetoranHarian('izin')">🏥 Izin/Sakit</button>
+                    <button type="button" class="setoran-btn" data-val="belum" onclick="pilihSetoranHarian('belum')">❌ Belum Setor</button>
+                </div>
+                <input type="hidden" id="valSetoranHarian" value="belum">
+            </div>
+
+            <input type="hidden" id="editId">
+            
+            <!-- Dashboard Card: Al-Qur'an -->
+            <div class="detail-card">
+                <div class="card-header-flex">
+                    <div class="detail-header">
+                        <div class="detail-icon">📖</div>
+                        <span class="detail-label">Al-Qur'an (Harian)</span>
+                        <div id="badgeQuran" class="status-badge"></div>
+                    </div>
+                    <select id="editStatusQuran" class="admin-select admin-select-status" style="display:none;">
+                        <option value="mumtaz">✨ Melampaui Target</option>
+                        <option value="tuntas">✅ Tuntas</option>
+                        <option value="proses">⏳ Sedang Proses</option>
+                        <option value="belum">❌ Belum Setor</option>
+                    </select>
+                </div>
+                <div class="target-realisasi-grid">
+                    <div class="tr-box">
+                        <div class="tr-label">Target Hafalan</div>
+                        <textarea id="editQuranTarget" class="admin-input" rows="2" disabled></textarea>
+                    </div>
+                    <div class="tr-box">
+                        <div class="tr-label">Yang Disetorkan</div>
+                        <textarea id="editQuranRealisasi" class="admin-input" rows="2" disabled></textarea>
+                        <div class="action-chips" id="quranChips">
+                            <button type="button" class="chip-btn" onclick="tambahAyatPintar(1)">+1 Ayat</button>
+                            <button type="button" class="chip-btn" onclick="tambahAyatPintar(3)">+3 Ayat</button>
+                            <button type="button" class="chip-btn" onclick="tambahAyatPintar(5)">+5 Ayat</button>
+                            <button type="button" class="chip-btn" onclick="tambahAyatPintar('ulangi')">🔄 Muraja'ah</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Card: Hadits -->
+            <div class="detail-card">
+                <div class="card-header-flex">
+                    <div class="detail-header">
+                        <div class="detail-icon">📜</div>
+                        <span class="detail-label">Hadits (Mingguan)</span>
+                        <div id="badgeHadits" class="status-badge"></div>
+                    </div>
+                    <select id="editStatusHadits" class="admin-select admin-select-status" style="display:none;">
+                        <option value="mumtaz">✨ Melampaui Target</option>
+                        <option value="tuntas">✅ Tuntas</option>
+                        <option value="proses">⏳ Sedang Proses</option>
+                        <option value="belum">❌ Belum Setor</option>
+                    </select>
+                </div>
+                <div class="target-realisasi-grid">
+                    <div class="tr-box">
+                        <div class="tr-label">Target Hadits</div>
+                        <textarea id="editHaditsTarget" class="admin-input" rows="2" disabled></textarea>
+                    </div>
+                    <div class="tr-box">
+                        <div class="tr-label">Yang Disetorkan</div>
+                        <textarea id="editHaditsRealisasi" class="admin-input" rows="2" disabled></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Card: Doa -->
+            <div class="detail-card">
+                <div class="card-header-flex">
+                    <div class="detail-header">
+                        <div class="detail-icon">🤲</div>
+                        <span class="detail-label">Doa (Mingguan)</span>
+                        <div id="badgeDoa" class="status-badge"></div>
+                    </div>
+                    <select id="editStatusDoa" class="admin-select admin-select-status" style="display:none;">
+                        <option value="mumtaz">✨ Melampaui Target</option>
+                        <option value="tuntas">✅ Tuntas</option>
+                        <option value="proses">⏳ Sedang Proses</option>
+                        <option value="belum">❌ Belum Setor</option>
+                    </select>
+                </div>
+                <div class="target-realisasi-grid">
+                    <div class="tr-box">
+                        <div class="tr-label">Target Doa</div>
+                        <textarea id="editDoaTarget" class="admin-input" rows="2" disabled></textarea>
+                    </div>
+                    <div class="tr-box">
+                        <div class="tr-label">Yang Disetorkan</div>
+                        <textarea id="editDoaRealisasi" class="admin-input" rows="2" disabled></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="btnSaveMurid" class="btn-primary" style="display:none;" onclick="simpanDataMurid()">Simpan Perubahan Dasbor</button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Mading -->
+    <div id="madingModal" class="modal center-modal" onclick="closeModalOnBackdrop(event, 'madingModal')">
+        <div class="modal-content">
+            <div class="close-btn" onclick="closeModal('madingModal')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+            
+            <h2 id="madingTitleText" style="font-size: 20px; font-weight: 700; color: var(--gold); text-align: center; margin-bottom: 24px; padding: 0 10px;">Judul Mading</h2>
+            <input type="text" id="editMadingTitle" class="admin-input" style="display:none; font-weight:700; margin-bottom:20px; text-align: center; font-size: 18px;" placeholder="Judul Mading">
+            
+            <div id="madingContent"></div>
+
+            <!-- Area Form Admin Mading -->
+            <div id="madingAdminFormArea" style="display:none;">
+                
+                <!-- Form Info Dokumentasi -->
+                <div id="form-info-dokumentasi" class="admin-form-mading" style="display:none;">
+                    <div class="detail-label" style="margin-bottom:8px;">Tanggal Dokumentasi</div>
+                    <input type="text" id="fdok-tanggal" class="admin-input" placeholder="Misal: Kamis, 27 Agustus 2026" style="margin-bottom:16px;">
+                    
+                    <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 16px; margin-top: 8px;">
+                        <div class="detail-label" style="margin-bottom:12px;">📸 URL Foto Dokumentasi</div>
+                        
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px; line-height: 1.5;">
+                            Upload foto ke PostImg, lalu pastikan Anda menyalin <b>"Direct links" (Tautan langsung)</b>.<br>
+                            <a href="https://postimages.org/" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--mumtaz); text-decoration:none; margin-top:10px; background:rgba(59,130,246,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(59,130,246,0.3); transition:all 0.2s;">
+                                🖼️ Buka Web PostImg
+                            </a>
+                        </div>
+                        
+                        <div style="margin-bottom:12px;">
+                            <span class="audio-url-label">Foto 1 — Pembacaan Zikir Pagi</span>
+                            <input type="text" id="fdok-foto1" class="admin-input" placeholder="Tempel URL Tautan Langsung...">
+                        </div>
+                        <div style="margin-bottom:12px;">
+                            <span class="audio-url-label">Foto 2 — Sholat Dhuha</span>
+                            <input type="text" id="fdok-foto2" class="admin-input" placeholder="Tempel URL Tautan Langsung...">
+                        </div>
+                        <div>
+                            <span class="audio-url-label">Foto 3 — Muraja'ah Hafalan</span>
+                            <input type="text" id="fdok-foto3" class="admin-input" placeholder="Tempel URL Tautan Langsung...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Jadwal Murajaah -->
+                <div id="form-jadwal-murajaah" class="admin-form-mading" style="display:none;">
+                    <div id="murajaah-fields-container"></div>
+                </div>
+
+                <!-- Form Target Quran -->
+                <div id="form-target-quran" class="admin-form-mading" style="display:none;">
+                    <div class="detail-label" style="margin-bottom:8px;">Nama Surah</div>
+                    <input type="text" id="fq-surah" class="admin-input" style="margin-bottom:16px;">
+                    <div class="detail-label" style="margin-bottom:8px;">Ayat</div>
+                    <input type="text" id="fq-ayat" class="admin-input" style="margin-bottom:20px;">
+                    
+                    <div class="audio-url-section">
+                        <span class="audio-url-label">🎙️ URL Audio Rekaman Al-Qur'an (Opsional)</span>
+                        <input type="text" id="fq-audio" class="admin-input" placeholder="https://voca.ro/... (tempel URL audio)">
+                        <a href="https://vocaroo.com" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                            🎙️ Rekam Suara di Vocaroo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Form Hadits & Doa -->
+                <div id="form-target-hadits" class="admin-form-mading" style="display:none;">
+                    <div class="detail-label" style="margin-bottom:8px;">Judul Hadits</div>
+                    <input type="text" id="fh-judul" class="admin-input" style="margin-bottom:10px;">
+                    <div class="detail-label" style="margin-bottom:8px;">Teks Arab Hadits</div>
+                    <textarea id="fh-arab" class="admin-input" rows="2" style="font-family:'Amiri'; font-size:18px; direction:rtl; margin-bottom:10px;"></textarea>
+                    <div class="detail-label" style="margin-bottom:8px;">Arti Hadits</div>
+                    <textarea id="fh-arti" class="admin-input" rows="2" style="margin-bottom:16px;"></textarea>
+                    
+                    <div class="audio-url-section" style="margin-bottom:24px;">
+                        <span class="audio-url-label">🎙️ URL Audio Rekaman Hadits (Opsional)</span>
+                        <input type="text" id="fh-audio" class="admin-input" style="margin-top:8px;" placeholder="https://voca.ro/... (tempel URL audio hadits)">
+                        <a href="https://vocaroo.com" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                            🎙️ Rekam Suara di Vocaroo
+                        </a>
+                    </div>
+                    
+                    <div class="detail-label" style="margin-bottom:8px;">Judul Doa</div>
+                    <input type="text" id="fd-judul" class="admin-input" style="margin-bottom:10px;">
+                    <div class="detail-label" style="margin-bottom:8px;">Teks Arab Doa</div>
+                    <textarea id="fd-arab" class="admin-input" rows="2" style="font-family:'Amiri'; font-size:18px; direction:rtl; margin-bottom:10px;"></textarea>
+                    <div class="detail-label" style="margin-bottom:8px;">Latin Doa</div>
+                    <textarea id="fd-latin" class="admin-input" rows="2" style="margin-bottom:10px;"></textarea>
+                    <div class="detail-label" style="margin-bottom:8px;">Arti Doa</div>
+                    <textarea id="fd-arti" class="admin-input" rows="2" style="margin-bottom:16px;"></textarea>
+                    
+                    <div class="audio-url-section">
+                        <span class="audio-url-label">🎙️ URL Audio Rekaman Doa (Opsional)</span>
+                        <input type="text" id="fd-audio" class="admin-input" style="margin-top:8px;" placeholder="https://voca.ro/... (tempel URL audio doa)">
+                        <a href="https://vocaroo.com" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                            🎙️ Rekam Suara di Vocaroo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Form Tilawah -->
+                <div id="form-jadwal-tilawah" class="admin-form-mading" style="display:none;"></div>
+
+                <!-- Form Imam -->
+                <div id="form-jadwal-imam" class="admin-form-mading" style="display:none;">
+                    <div id="imam-fields-container"></div>
+                </div>
+            </div>
+            
+            <button id="btnSaveMading" class="btn-primary" style="display:none;" onclick="simpanDataMading()">Simpan Pengumuman</button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Login Admin -->
+    <div id="loginModal" class="modal center-modal" onclick="closeModalOnBackdrop(event, 'loginModal')">
+        <div class="modal-content" style="max-width: 360px; padding: 40px 30px;">
+            <div class="close-btn" onclick="closeModal('loginModal')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+            <h2 style="text-align: center; color: var(--gold); margin-bottom: 8px; font-weight: 700;">Akses Admin</h2>
+            <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:24px;" id="loginKelasInfo">Masuk sebagai guru kelas ini</p>
+            <div id="loginForm">
+                <input type="email" id="adminEmail" class="admin-input" placeholder="Email Admin">
+                <input type="password" id="adminPassword" class="admin-input" placeholder="Password" style="margin-top: 16px;">
+                <button class="btn-primary" onclick="loginAdmin()">Masuk Dashboard</button>
+            </div>
+            <div id="logoutForm" style="display: none; text-align: center;">
+                <div style="width:60px; height:60px; border-radius:50%; background:rgba(16, 185, 129, 0.2); color:var(--success); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:24px;">✓</div>
+                <p id="loggedInAs" style="margin-bottom: 8px; font-size: 13px; color: #fff; font-weight:600;"></p>
+                <p style="margin-bottom: 24px; font-size: 12px; color: var(--text-muted);">Sesi admin sedang aktif. Anda dapat mengedit data mutaba'ah dan mading.</p>
+                <button class="btn-primary btn-danger" onclick="logoutAdmin()">Akhiri Sesi (Logout)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR MENU UTAMA -->
+    <div class="sidebar-overlay" id="mainSidebar" onclick="if(event.target===this) toggleSidebarMenu()">
+        <div class="sidebar-menu">
+            <div class="sidebar-header">
+                <div class="sidebar-header-text">
+                    <h2>Memuat...</h2>
+                    <p>Executive Menu</p>
+                </div>
+                <div class="sidebar-close-btn" onclick="toggleSidebarMenu()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </div>
+            </div>
+            <div class="sidebar-content">
+                <a href="index.html" class="sidebar-item">
+                    <div class="sidebar-icon-wrap">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    </div>
+                    <div class="sidebar-text">
+                        <div class="sidebar-text-title">Portal Utama</div>
+                        <div class="sidebar-text-desc">Kembali ke halaman pemilihan kelas.</div>
+                    </div>
+                </a>
+                <a href="javascript:void(0)" onclick="window.location.href='rapor-mutabaah.html?kelas=' + window.kelasTarget" class="sidebar-item">
+                    <div class="sidebar-icon-wrap">
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    </div>
+                    <div class="sidebar-text">
+                        <div class="sidebar-text-title">Rapor Semester</div>
+                        <div class="sidebar-text-desc">Lihat dasbor evaluasi ketuntasan hafalan ananda.</div>
+                    </div>
+                </a>
+            </div>
+            <div class="sidebar-footer">Sistem Jurnal Terintegrasi v2.0</div>
+        </div>
+    </div>
+
+    <!-- Panggil File JS Eksternal (Menggunakan type="module") -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
