@@ -293,27 +293,15 @@
                 </div>
 
                 <!-- Form Hadits & Doa -->
-                                <div id="form-target-hadits" class="admin-form-mading" style="display:none;">
-                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-                                        <div class="detail-label" style="margin:0;">📜 Section Hadits (Mingguan)</div>
-                                        <button type="button" class="chip-btn" onclick="ambahHadits()" style="font-size:11px; padding:4px 12px;">➕ Tambah Hadits</button>
-                                    </div>
-                                    <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px; line-height:1.5;">
-                                        Isi judul, teks arab, dan arti. Jika target mingguan hadits lebih dari 1, klik <b>"➕ Tambah Hadits"</b> untuk menambahkan kolom baru. Kolom tidak dibutuhkan tinggal hapus dengan <b>"✖ Hapus"</b>.
-                                    </div>
-                                    <div id="haditsBlocks"></div>
+                <div id="form-target-hadits" class="admin-form-mading" style="display:none;">
+                    <div style="font-weight:700; color:var(--gold); margin-bottom:15px; font-size:14px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:5px;">📋 TARGET HADITS</div>
+                    <div id="container-hadits"></div>
+                    <button type="button" onclick="window.tambahItemMading('hadits')" class="btn-primary" style="margin-bottom:30px; font-size:12px; padding:8px 15px; width:auto; border-radius:8px; background:rgba(212,175,55,0.1); color:var(--gold); border:1px solid var(--gold);">+ Tambah Hadits Lainnya</button>
 
-                                    <div style="border-top:1px dashed rgba(255,255,255,0.1); margin:8px 0 18px;"></div>
-
-                                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-                                        <div class="detail-label" style="margin:0;">🤲 Section Doa (Mingguan)</div>
-                                        <button type="button" class="chip-btn" onclick="ambahDoa()" style="font-size:11px; padding:4px 12px;">➕ Tambah Doa</button>
-                                    </div>
-                                    <div style="font-size:11px; color:var(--text-muted); margin-bottom:12px; line-height:1.5;">
-                                        Isi judul, teks arab, latin, dan arti. Jika target mingguan doa lebih dari 1, klik <b>"➕ Tambah Doa"</b> untuk menambahkan kolom baru. Kolom tidak dibutuhkan tinggal hapus dengan <b>"✖ Hapus"</b>.
-                                    </div>
-                                    <div id="doaBlocks"></div>
-                                </div>
+                    <div style="font-weight:700; color:var(--gold); margin-bottom:15px; font-size:14px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:5px;">📋 TARGET DOA</div>
+                    <div id="container-doa"></div>
+                    <button type="button" onclick="window.tambahItemMading('doa')" class="btn-primary" style="margin-bottom:10px; font-size:12px; padding:8px 15px; width:auto; border-radius:8px; background:rgba(212,175,55,0.1); color:var(--gold); border:1px solid var(--gold);">+ Tambah Doa Lainnya</button>
+                </div>
 
                 <!-- Form Tilawah -->
                 <div id="form-jadwal-tilawah" class="admin-form-mading" style="display:none;"></div>
