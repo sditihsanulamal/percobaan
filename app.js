@@ -790,8 +790,8 @@ window.pilihGradeQuran = (grade) => {
         }
     });
     
-    const select = document.getElementById('editQuranNilaiAngka');
-    select.style.display = 'block';
+    const container = document.getElementById('customDropdownContainer');
+    container.style.display = 'block';
     
     let html = '';
     let arr = [];
@@ -806,18 +806,43 @@ window.pilihGradeQuran = (grade) => {
     }
     
     arr.forEach(num => {
-        html += `<option value="${num}">${num}</option>`;
+        html += `<div class="custom-dropdown-item" onclick="window.selectCustomNilai(${num})" style="padding:6px; text-align:center; cursor:pointer; border-radius:4px; font-size:13px; font-weight:bold; color:rgba(255,255,255,0.8); transition:all 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='rgba(255,255,255,0.8)';">${num}</div>`;
     });
-    select.innerHTML = html;
+    
+    document.getElementById('customDropdownList').innerHTML = html;
     
     const midIndex = Math.floor(arr.length / 2);
     window.updateNilaiManual(arr[midIndex]);
 };
 
 window.updateNilaiManual = (val) => {
-    const select = document.getElementById('editQuranNilaiAngka');
-    if (select) select.value = val;
+    document.getElementById('editQuranNilaiAngka').value = val;
+    const textSpan = document.getElementById('customDropdownText');
+    if (textSpan) textSpan.innerText = val;
 };
+
+window.toggleCustomDropdown = () => {
+    const list = document.getElementById('customDropdownList');
+    if (list.style.display === 'none' || list.style.display === '') {
+        list.style.display = 'flex';
+    } else {
+        list.style.display = 'none';
+    }
+};
+
+window.selectCustomNilai = (val) => {
+    window.updateNilaiManual(val);
+    document.getElementById('customDropdownList').style.display = 'none';
+};
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const container = document.getElementById('customDropdownContainer');
+    if (container && !container.contains(event.target)) {
+        const list = document.getElementById('customDropdownList');
+        if (list) list.style.display = 'none';
+    }
+});
 
 window.simpanDataMurid = async () => {
     if (!isAdmin) return;
