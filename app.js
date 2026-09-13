@@ -336,17 +336,16 @@ window.openModal = (index) => {
     document.getElementById('editQuranTarget').value = murid.quranTarget || "";
     document.getElementById('editQuranRealisasi').value = murid.quranRealisasi || "-";
     document.getElementById('editStatusQuran').value = qStatus;
-    document.getElementById('editQuranNilaiAngka').value = qNilaiAngka;
-    document.getElementById('displayQuranNilaiAngka').value = qNilaiAngka;
     
     if (isAdmin && ['A','B','C','D'].includes(qStatus)) {
         window.pilihGradeQuran(qStatus);
         if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
     } else if (isAdmin) {
         document.querySelectorAll('.grade-btn').forEach(btn => {
-            btn.style.background = 'rgba(0,0,0,0.3)'; btn.style.color = 'white';
+            btn.style.background = 'transparent'; btn.style.color = 'rgba(255,255,255,0.6)';
+            btn.style.boxShadow = 'none';
         });
-        document.getElementById('angkaSuggestionsContainer').style.display = 'none';
+        document.getElementById('editQuranNilaiAngka').style.display = 'none';
     }
 
     setBadge('badgeQuran', qStatus, qNilaiAngka);
@@ -780,30 +779,44 @@ window.pilihSetoranHarian = (status) => {
 window.pilihGradeQuran = (grade) => {
     document.getElementById('editStatusQuran').value = grade;
     document.querySelectorAll('.grade-btn').forEach(btn => {
-        btn.style.background = (btn.getAttribute('data-grade') === grade) ? 'var(--gold)' : 'rgba(0,0,0,0.3)';
-        btn.style.color = (btn.getAttribute('data-grade') === grade) ? '#000' : 'white';
+        if (btn.getAttribute('data-grade') === grade) {
+            btn.style.background = 'var(--gold)';
+            btn.style.color = '#000';
+            btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+        } else {
+            btn.style.background = 'transparent';
+            btn.style.color = 'rgba(255,255,255,0.6)';
+            btn.style.boxShadow = 'none';
+        }
     });
     
-    const container = document.getElementById('angkaSuggestionsContainer');
-    container.style.display = 'flex';
+    const select = document.getElementById('editQuranNilaiAngka');
+    select.style.display = 'block';
+    
     let html = '';
     let arr = [];
-    if (grade === 'A') arr = [93, 95, 98, 100];
-    else if (grade === 'B') arr = [84, 86, 88, 90, 92];
-    else if (grade === 'C') arr = [75, 78, 80, 82];
-    else if (grade === 'D') arr = [65, 70, 74];
+    if (grade === 'A') {
+        for(let i=100; i>=93; i--) arr.push(i);
+    } else if (grade === 'B') {
+        for(let i=92; i>=84; i--) arr.push(i);
+    } else if (grade === 'C') {
+        for(let i=83; i>=75; i--) arr.push(i);
+    } else if (grade === 'D') {
+        for(let i=74; i>=60; i--) arr.push(i);
+    }
     
     arr.forEach(num => {
-        html += `<button type="button" onclick="window.updateNilaiManual(${num})" style="padding:4px 8px; font-size:12px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:white; cursor:pointer;">${num}</button>`;
+        html += `<option value="${num}">${num}</option>`;
     });
-    container.innerHTML = html;
+    select.innerHTML = html;
     
-    window.updateNilaiManual(arr[Math.floor(arr.length/2)]);
+    const midIndex = Math.floor(arr.length / 2);
+    window.updateNilaiManual(arr[midIndex]);
 };
 
 window.updateNilaiManual = (val) => {
-    document.getElementById('editQuranNilaiAngka').value = val;
-    document.getElementById('displayQuranNilaiAngka').value = val;
+    const select = document.getElementById('editQuranNilaiAngka');
+    if (select) select.value = val;
 };
 
 window.simpanDataMurid = async () => {
