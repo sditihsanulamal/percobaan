@@ -143,12 +143,24 @@
                         <span class="detail-label">Al-Qur'an (Harian)</span>
                         <div id="badgeQuran" class="status-badge"></div>
                     </div>
-                    <select id="editStatusQuran" class="admin-select admin-select-status" style="display:none;">
-                        <option value="mumtaz">✨ Melampaui Target</option>
-                        <option value="tuntas">✅ Tuntas</option>
-                        <option value="proses">⏳ Sedang Proses</option>
-                        <option value="belum">❌ Belum Setor</option>
-                    </select>
+                    <div id="quranGradeContainer" class="admin-select-status" style="display:none; width: 150px; flex-direction:column; align-items:flex-end;">
+                        <input type="hidden" id="editStatusQuran" value="belum">
+                        <input type="hidden" id="editQuranNilaiAngka" value="">
+                        
+                        <div class="grade-buttons" style="display:flex; gap:6px; margin-bottom:8px; width:100%;">
+                            <button type="button" class="grade-btn" data-grade="A" onclick="window.pilihGradeQuran('A')" style="flex:1; padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.3); color:white; font-weight:bold; cursor:pointer;">A</button>
+                            <button type="button" class="grade-btn" data-grade="B" onclick="window.pilihGradeQuran('B')" style="flex:1; padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.3); color:white; font-weight:bold; cursor:pointer;">B</button>
+                            <button type="button" class="grade-btn" data-grade="C" onclick="window.pilihGradeQuran('C')" style="flex:1; padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.3); color:white; font-weight:bold; cursor:pointer;">C</button>
+                            <button type="button" class="grade-btn" data-grade="D" onclick="window.pilihGradeQuran('D')" style="flex:1; padding:6px; border-radius:6px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.3); color:white; font-weight:bold; cursor:pointer;">D</button>
+                        </div>
+                        
+                        <div id="angkaSuggestionsContainer" style="display:none; flex-wrap:wrap; justify-content:flex-end; gap:4px; margin-bottom:8px; width:100%;"></div>
+                        
+                        <div style="display:flex; align-items:center; justify-content:flex-end; gap:8px; width:100%;">
+                            <span style="font-size:11px; color:rgba(255,255,255,0.5);">Angka:</span>
+                            <input type="number" id="displayQuranNilaiAngka" class="admin-input" style="padding:4px 8px; font-size:14px; width:65px; margin-bottom:0; text-align:center;" placeholder="---" onchange="window.updateNilaiManual(this.value)">
+                        </div>
+                    </div>
                 </div>
                 <div class="target-realisasi-grid">
                     <div class="tr-box">

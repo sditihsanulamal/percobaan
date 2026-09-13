@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Executive Report - Hafalan Semester</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-deep: #01120a; --bg-surface: #032418;
+            --gold-light: #fef08a; --gold-main: #d4af37; --gold-dark: #997a15;
+            --blue-mumtaz: #3b82f6; --blue-glow: rgba(59, 130, 246, 0.5);
+            --text-primary: #ffffff; --text-secondary: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.02); --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-blur: blur(16px);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--bg-deep); background-image: radial-gradient(circle at 15% 0%, rgba(3, 54, 36, 0.6) 0%, transparent 40%), radial-gradient(circle at 85% 100%, rgba(212, 175, 55, 0.08) 0%, transparent 40%); color: var(--text-primary); min-height: 100vh; padding: 24px 20px 80px; background-attachment: fixed; line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+        .container { max-width: 640px; margin: 0 auto; position: relative; }
+        
+        /* Header & Admin */
+        .header { text-align: center; margin-top: 30px; margin-bottom: 40px; position: relative; animation: fadeInDown 0.8s ease; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; margin-bottom: 6px; background: linear-gradient(135deg, #fff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: var(--gold-main); font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+        .admin-lock { position: absolute; top: -10px; right: 0; padding: 10px; border-radius: 50%; background: rgba(255,255,255,0.05); color: var(--text-secondary); cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; z-index: 100; border: 1px solid var(--glass-border); }
+        .admin-lock:hover { color: var(--gold-main); border-color: var(--gold-main); background: rgba(212, 175, 55, 0.1); box-shadow: 0 0 15px rgba(212,175,55,0.3); }
+        .admin-badge { display: none; background: linear-gradient(135deg, var(--gold-main), var(--gold-dark)); color: #000; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; position: absolute; top: -10px; left: 0; box-shadow: 0 0 10px rgba(212,175,55,0.3); letter-spacing: 0.5px; z-index: 100; }
+        
+        .admin-action-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+        .btn-action-small { font-size: 11px; background: rgba(212, 175, 55, 0.15); border: 1px solid var(--gold-main); padding: 5px 12px; border-radius: 12px; cursor: pointer; color: var(--gold-main); font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s; display: none; align-items: center; justify-content: center; font-weight: 700; }
+        .btn-action-small:hover { background: var(--gold-main); color: #000; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4); }
+        .btn-action-personal { border-color: var(--blue-mumtaz); color: var(--blue-mumtaz); background: rgba(59, 130, 246, 0.15); }
+        .btn-action-personal:hover { background: var(--blue-mumtaz); color: #fff; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); }
+
+        /* Custom Dropdown */
+        .custom-select-wrapper { position: relative; margin-bottom: 28px; z-index: 50; }
+        .custom-select-display { width: 100%; padding: 18px 24px; border-radius: 16px; background: rgba(3, 36, 24, 0.6); border: 1px solid rgba(212, 175, 55, 0.2); color: white; font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.3s ease; }
+        .custom-select-display.active { border-color: var(--gold-main); box-shadow: 0 0 20px rgba(212,175,55,0.3); background: rgba(3, 36, 24, 0.9); border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; }
+        .custom-select-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: rgba(2, 25, 17, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.3); border-top: none; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: all 0.3s ease; box-shadow: 0 15px 40px rgba(0,0,0,0.5); z-index: 50; }
+        .custom-select-dropdown.show { max-height: 350px; opacity: 1; visibility: visible; overflow-y: auto; }
+        .custom-option { padding: 16px 24px; font-size: 15px; font-weight: 500; color: var(--text-primary); cursor: pointer; transition: all 0.2s; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .custom-option:hover { background: rgba(212, 175, 55, 0.1); color: var(--gold-main); padding-left: 28px; }
+        .custom-select-dropdown::-webkit-scrollbar { width: 6px; }
+        .custom-select-dropdown::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.3); border-radius: 10px; }
+
+        #hasilArea { display: none; animation: fadeIn 0.5s ease; }
+        #loadingState { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; color: var(--gold-main); }
+        .spinner { animation: spin 1s linear infinite; width: 32px; height: 32px; margin-bottom: 16px; }
+
+        /* Tabs System */
+        .tabs-container { display: flex; background: rgba(0,0,0,0.3); border-radius: 20px; padding: 6px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .tab-btn { flex: 1; text-align: center; padding: 14px 10px; border-radius: 16px; font-size: 14px; font-weight: 700; color: var(--text-secondary); cursor: pointer; transition: all 0.3s; }
+        .tab-btn:hover { color: #fff; }
+        .tab-btn.active { background: rgba(212, 175, 55, 0.15); color: var(--gold-main); border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px 15px; text-align: center; backdrop-filter: var(--glass-blur); position: relative; overflow: hidden; }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, var(--gold-main), transparent); opacity: 0.5; }
+        .stat-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--gold-main); margin-bottom: 4px; line-height: 1; }
+        .stat-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .legend-card { display: flex; justify-content: center; align-items: center; gap: 20px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--glass-border); border-radius: 16px; padding: 12px 20px; margin-bottom: 32px; backdrop-filter: var(--glass-blur); }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+        .legend-item.sudah { color: #f8fafc; }
+        .legend-icon-badge { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .legend-icon-badge.sudah { background: rgba(212, 175, 55, 0.2); border: 1px solid var(--gold-main); color: var(--gold-main); }
+        .legend-icon-badge.belum { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.4); }
+
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 10px;}
+        .section-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: #fff; display: flex; align-items: center; }
+
+        /* Banner Target Personal */
+        .personal-banner { background: rgba(59, 130, 246, 0.1); border: 1px dashed rgba(59, 130, 246, 0.4); color: #93c5fd; padding: 10px 15px; border-radius: 12px; font-size: 12px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-reset-personal { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); padding: 4px 10px; border-radius: 8px; font-size: 10px; cursor: pointer; transition: 0.2s; display: none; }
+        .btn-reset-personal:hover { background: #ef4444; color: #fff; }
+
+        /* UI SURAH AL-QUR'AN (CHECKPOINT) */
+        .surah-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px 24px; margin-bottom: 16px; backdrop-filter: var(--glass-blur); position: relative; overflow: hidden; transition: all 0.3s ease; animation: popIn 0.5s ease forwards; }
+        .mode-admin .surah-card { cursor: pointer; }
+        .mode-admin .surah-card:hover { border-color: rgba(212, 175, 55, 0.5); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .surah-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; }
+        .surah-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2; display: flex; align-items: center; gap: 8px; }
+        .surah-ayat { font-size: 13px; font-weight: 700; color: var(--gold-main); background: rgba(212, 175, 55, 0.1); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .surah-bar-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.4); border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+        .surah-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-main), var(--gold-light)); width: 0%; border-radius: 4px; transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1); }
+        .surah-footer { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .surah-card.ekstra { border-style: dashed; border-color: rgba(255,255,255,0.2); }
+        .badge-ekstra { font-size: 9px; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; vertical-align: middle; color: var(--text-secondary); font-family: 'Plus Jakarta Sans', sans-serif;}
+
+        .surah-card.mumtaz { border-color: rgba(59, 130, 246, 0.4); box-shadow: 0 0 20px rgba(59, 130, 246, 0.15); border-style: solid; }
+        .surah-card.mumtaz .surah-bar-fill { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+        .surah-card.mumtaz .surah-ayat { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
+        .badge-mumtaz { display: inline-block; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 6px 12px; border-radius: 12px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3); }
+
+        .btn-delete-ekstra { color: #ef4444; font-size: 10px; display: none; z-index: 10; padding: 4px; }
+        .mode-admin .btn-delete-ekstra { display: block; }
+        .btn-delete-ekstra:hover { text-decoration: underline; }
+
+        .btn-add-ekstra { width: 100%; border: 1px dashed rgba(212, 175, 55, 0.4); background: rgba(212, 175, 55, 0.05); color: var(--gold-main); font-weight: 600; padding: 14px; border-radius: 16px; cursor: pointer; transition: 0.3s; display: none; text-align: center; font-size: 13px; margin-bottom: 20px;}
+        .btn-add-ekstra:hover { background: rgba(212, 175, 55, 0.15); border-style: solid; }
+
+        /* UI HADITS & DOA (MICRO GRID) */
+        .badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 12px; margin-bottom: 40px; }
+        .badge-item { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 8px; border-radius: 16px; text-align: center; transition: all 0.3s ease; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); opacity: 0; transform: translateY(20px); }
+        .mode-admin .badge-item { cursor: pointer; }
+        .mode-admin .badge-item:hover { transform: scale(1.05); border-color: rgba(212, 175, 55, 0.5); }
+        .mode-admin .badge-item:active { transform: scale(0.95); }
+        .badge-item.belum { color: rgba(255,255,255,0.3); }
+        .badge-item.belum .icon-status { color: rgba(255,255,255,0.2); margin-bottom: 6px; }
+        .badge-item.sudah { background: linear-gradient(145deg, rgba(212, 175, 55, 0.15) 0%, rgba(3, 36, 24, 0.8) 100%); border: 1px solid rgba(212, 175, 55, 0.5); box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 0 15px rgba(212, 175, 55, 0.05); color: #fff; }
+        .badge-item.sudah:hover { box-shadow: 0 15px 25px rgba(0,0,0,0.4), inset 0 0 20px rgba(212, 175, 55, 0.1); }
+        .badge-item.sudah .icon-status { color: var(--gold-main); margin-bottom: 6px; filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.4)); }
+        .badge-item.sudah .badge-number { color: var(--gold-light); }
+        .badge-number { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; line-height: 1; pointer-events: none; }
+
+        /* Action Chips (Smart Increment) */
+        .action-chips { display: flex; gap: 8px; margin-bottom: 24px; }
+        .chip-btn { flex: 1; background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; color: var(--gold-main); padding: 10px 0; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .chip-btn:hover { background: var(--gold-main); color: #000; }
+        .chip-btn:active { transform: scale(0.95); }
+
+        /* Modals Umum */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(10px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal.open { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: linear-gradient(160deg, #064e3b 0%, #022c22 100%); width: 100%; max-width: 380px; padding: 40px 30px; border-radius: 32px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); position: relative; }
+        .close-btn { position: absolute; top: 20px; right: 25px; color: rgba(255,255,255,0.5); font-size: 28px; cursor: pointer; transition: 0.2s; }
+        .close-btn:hover { color: #fff; transform: rotate(90deg); }
+        .admin-input { width: 100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.4); color: white; font-size: 14px; padding: 14px 16px; margin-bottom: 16px; outline: none; transition: all 0.3s; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .admin-input:focus { border-color: var(--gold-main); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+        .btn-primary { width: 100%; background: linear-gradient(135deg, var(--gold-main), var(--gold-dark)); color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); margin-top: 8px; transition: all 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4); }
+        .btn-primary:active { transform: scale(0.98); }
+        .form-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; display: block; font-weight: 600; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { 0% { opacity: 0; transform: scale(0.9) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .animate-pop { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    </style>
+</head>
+<body>
+
+    <svg style="display:none;">
+        <symbol id="icon-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></symbol>
+        <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></symbol>
+    </svg>
+
+    <div class="container" id="mainContainer">
+        
+        <div class="header">
+            <span class="admin-badge" id="adminBadge">✓ MODE ADMIN</span>
+            <div class="admin-lock" onclick="document.getElementById('loginModal').classList.add('open')">
+                <svg width="18" height="18"><use href="#icon-lock"></use></svg>
+            </div>
+            <h1>Rapor Mutaba'ah</h1>
+            <p>Pencapaian Semester Ganjil</p>
+        </div>
+
+        <div class="custom-select-wrapper">
+            <div class="custom-select-display" id="dropdownDisplay">
+                <span id="dropdownSelectedText">Cari dan pilih nama ananda...</span>
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+            <div class="custom-select-dropdown" id="dropdownOptions"></div>
+        </div>
+
+        <div id="loadingState">
+            <svg class="spinner" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <div style="font-size: 13px; font-weight: 500;">Menghubungkan ke database...</div>
+        </div>
+
+        <div id="emptyState" style="display:none; text-align: center; padding: 40px 20px; opacity: 0.5;">
+            <svg style="width:64px; height:64px; margin-bottom:16px;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"></path></svg>
+            <p style="font-size: 14px;">Silakan pilih nama ananda di atas.</p>
+        </div>
+
+        <div id="hasilArea">
+            
+            <div class="tabs-container">
+                <div class="tab-btn active" onclick="switchTab('tabQuran', this)">📖 Al-Qur'an</div>
+                <div class="tab-btn" onclick="switchTab('tabHaditsDoa', this)">📜 Hadits & Doa</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="valTotal">0%</div>
+                    <div class="stat-label">Ketuntasan</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="valHadits">0<span style="font-size:14px; color:var(--text-secondary)" id="valTotalHadits">/0</span></div>
+                    <div class="stat-label">Hadits</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="valDoa">0<span style="font-size:14px; color:var(--text-secondary)" id="valTotalDoa">/0</span></div>
+                    <div class="stat-label">Doa</div>
+                </div>
+            </div>
+
+            <div id="adminEditHint" style="display:none; margin-bottom: 24px; background: rgba(212, 175, 55, 0.1); border: 1px solid var(--gold-main); padding: 12px; border-radius: 12px; font-size: 12px; color: var(--gold-main); text-align: center; font-weight: 600; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);">
+                ✏️ Anda berada dalam Mode Edit. Klik kartu atau lencana untuk mengubah data.
+            </div>
+
+            <!-- KONTEN TAB QUR'AN -->
+            <div id="tabQuran" class="tab-content active">
+                
+                <div id="personalBanner" class="personal-banner" style="display:none;">
+                    <span>🎗️ Menggunakan Target Personal</span>
+                    <button class="btn-reset-personal" id="btnResetPersonal" onclick="kembalikanKeTargetKelas()">Hapus Personal</button>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-title">Progres Hafalan Qur'an</div>
+                    <div class="admin-action-group">
+                        <span class="btn-action-small" id="btnEditQuranGlobal" onclick="bukaPengaturanQuran('global')">⚙️ Target Kelas</span>
+                        <span class="btn-action-small btn-action-personal" id="btnEditQuranPersonal" onclick="bukaPengaturanQuran('personal')">👤 Target Personal</span>
+                    </div>
+                </div>
+                
+                <div id="quranContainer"></div>
+                
+                <div class="btn-add-ekstra" id="btnTambahEkstra" onclick="document.getElementById('surahEkstraModal').classList.add('open')">
+                    ➕ Input Hafalan Ekstra (Di Luar Target)
+                </div>
+            </div>
+
+            <!-- KONTEN TAB HADITS & DOA -->
+            <div id="tabHaditsDoa" class="tab-content">
+                
+                <div id="personalBannerHD" class="personal-banner" style="display:none;">
+                    <span>🎗️ Menggunakan Target Personal</span>
+                    <button class="btn-reset-personal" id="btnResetPersonalHD" onclick="kembalikanKeTargetKelasHD()">Hapus Personal</button>
+                </div>
+
+                <div class="legend-card">
+                    <div class="legend-item sudah">
+                        <div class="legend-icon-badge sudah"><svg width="12" height="12"><use href="#icon-check"></use></svg></div>
+                        <span>Sudah Disetor</span>
+                    </div>
+                    <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.1);"></div>
+                    <div class="legend-item">
+                        <div class="legend-icon-badge belum"><svg width="12" height="12"><use href="#icon-x"></use></svg></div>
+                        <span>Belum Disetor</span>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-title">Target Hadits & Doa</div>
+                    <div class="admin-action-group">
+                        <span class="btn-action-small" id="btnEditHDGlobal" onclick="bukaPengaturanHD('global')">⚙️ Target Kelas</span>
+                        <span class="btn-action-small btn-action-personal" id="btnEditHDPersonal" onclick="bukaPengaturanHD('personal')">👤 Target Personal</span>
+                    </div>
+                </div>
+                
+                <div class="form-label" style="font-size:14px; color:white; margin-bottom:12px;">Daftar Hadits</div>
+                <div class="badge-grid" id="gridHadits"></div>
+
+                <div class="form-label" style="font-size:14px; color:white; margin-bottom:12px; margin-top:20px;">Daftar Doa</div>
+                <div class="badge-grid" id="gridDoa"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    
+    <!-- Modal Login -->
+    <div id="loginModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('loginModal').classList.remove('open')">&times;</div>
+            <h2 style="text-align: center; color: var(--gold-main); margin-bottom: 24px; font-family: 'Playfair Display'; font-weight:700;">Akses Admin</h2>
+            <div id="loginForm">
+                <input type="email" id="adminEmail" class="admin-input" placeholder="Email Admin">
+                <input type="password" id="adminPassword" class="admin-input" placeholder="Password">
+                <button class="btn-primary" onclick="loginAdmin()" id="btnLogin">Masuk Mode Edit</button>
+            </div>
+            <div id="logoutForm" style="display: none; text-align: center;">
+                <p style="margin-bottom: 24px; font-size: 13px; color: #fff; line-height: 1.6;">Sesi Admin sedang aktif. Anda berwenang merubah status hafalan seluruh ananda.</p>
+                <button class="btn-primary" style="background: linear-gradient(135deg, #ef4444, #991b1b); color: white;" onclick="logoutAdmin()">Akhiri Sesi (Logout)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Update Pencapaian Qur'an -->
+    <div id="ayatModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('ayatModal').classList.remove('open')">&times;</div>
+            <h2 style="text-align: center; color: var(--gold-main); margin-bottom: 8px; font-family: 'Playfair Display'; font-weight:700;">Update Hafalan</h2>
+            <p id="ayatSubtitle" style="text-align:center; font-size:13px; color:var(--text-secondary); margin-bottom:24px;">Surah (Target: 0 Ayat)</p>
+            
+            <label class="form-label">Ayat Terakhir Yang Disetor:</label>
+            <input type="number" id="inputAyatTerakhir" class="admin-input" placeholder="Masukkan angka..." min="0" style="margin-bottom: 12px;">
+            
+            <!-- Action Chips + Smart Increment -->
+            <div class="action-chips">
+                <button class="chip-btn" onclick="tambahAyatPintar(1)">+1</button>
+                <button class="chip-btn" onclick="tambahAyatPintar(3)">+3</button>
+                <button class="chip-btn" onclick="tambahAyatPintar(5)">+5</button>
+            </div>
+
+            <input type="hidden" id="hiddenNamaSurah">
+            <button class="btn-primary" onclick="simpanProgressAyat()" id="btnSimpanAyat">Simpan Pencapaian</button>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Surah Ekstra -->
+    <div id="surahEkstraModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('surahEkstraModal').classList.remove('open')">&times;</div>
+            <h2 style="text-align: center; color: var(--gold-main); margin-bottom: 8px; font-family: 'Playfair Display'; font-weight:700;">Hafalan Ekstra</h2>
+            <p style="text-align:center; font-size:12px; color:var(--text-secondary); margin-bottom:24px;">Tambahkan riwayat hafalan di luar target utama.</p>
+            
+            <label class="form-label">Nama Surah</label>
+            <input type="text" id="eksNama" class="admin-input" placeholder="Misal: Al-Fatihah">
+            
+            <label class="form-label">Batas Target Ayat</label>
+            <input type="number" id="eksBatas" class="admin-input" placeholder="Misal: 7" min="1" style="margin-bottom: 24px;">
+            
+            <button class="btn-primary" onclick="simpanSurahEkstra()" id="btnSimpanEkstra">Tambahkan Ke Laporan</button>
+        </div>
+    </div>
+
+    <!-- Modal Pengaturan Target Qur'an -->
+    <div id="targetQuranModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('targetQuranModal').classList.remove('open')">&times;</div>
+            <h2 id="modalQuranTitle" style="text-align: center; color: var(--gold-main); margin-bottom: 12px; font-family: 'Playfair Display'; font-weight:700;">Target Al-Qur'an</h2>
+            <p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px; line-height:1.5;">Gunakan format baku:<br><span style="color:#fff;"><b>Nama Surah:Batas Target Ayat</b></span><br>Pisahkan antar surah menggunakan koma (,).</p>
+            
+            <textarea id="inputTargetQuran" class="admin-input" rows="4" placeholder="Contoh: Al-Baqarah:76, Al-Mulk:30"></textarea>
+            <button class="btn-primary" onclick="simpanTargetQuranForm()" id="btnSimpanQuranForm">Simpan Target Qur'an</button>
+        </div>
+    </div>
+
+    <!-- Modal Target Hadits & Doa -->
+    <div id="targetHDModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
+        <div class="modal-content">
+            <div class="close-btn" onclick="document.getElementById('targetHDModal').classList.remove('open')">&times;</div>
+            <h2 id="modalHDTitle" style="text-align: center; color: var(--gold-main); margin-bottom: 24px; font-family: 'Playfair Display'; font-weight:700;">Pengaturan Kolom</h2>
+            <label class="form-label">Kolom Hadits (Pisahkan dengan koma)</label>
+            <textarea id="inputTargetHadits" class="admin-input" rows="3" placeholder="Contoh: 21, 22, 23"></textarea>
+            <label class="form-label">Kolom Doa (Pisahkan dengan koma)</label>
+            <textarea id="inputTargetDoa" class="admin-input" rows="3" placeholder="Contoh: 41, 42, 43"></textarea>
+            <button class="btn-primary" onclick="simpanTargetHD()" id="btnSimpanHD">Simpan Kolom Baru</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT & FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDKfmReRO4M8DMUN8VB2Rmzh7AgkzYA4g",
+            authDomain: "b-toraja.firebaseapp.com",
+            projectId: "b-toraja",
+            storageBucket: "b-toraja.firebasestorage.app",
+            messagingSenderId: "738438625873",
+            appId: "1:738438625873:web:5ced29512ce68c34d55670"
+        };
+        
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ==========================================
+// 1. TAMBAHKAN LOGIKA MULTI-KELAS DINAMIS
+// ==========================================
+const kamusKelas = {
+    "1A": "1A Melayu", "1B": "1B Batak", "1C": "1C Nias", "1D": "1D Minang",
+    "2A": "2A Jawa", "2B": "2B Sunda", "2C": "2C Mentawai", "2D": "2D Aceh",
+    "3A": "3A Alas", "3B": "3B Pakpak", "3C": "3C Gorontalo", "3D": "3D Flores",
+    "4A": "4A Dayak", "4B": "4B Betawi", "4C": "4C Badui", "4D": "4D Madura",
+    "5A": "5A Tengger", "5B": "5B Toraja", "5C": "5C Ternate", "5D": "5D Bugis",
+    "6A": "6A Kutai", "6B": "6B Paser", "6C": "6C Banjar", "6D": "6D Manggarai"
+};
+
+const urlParams = new URLSearchParams(window.location.search);
+window.kelasTarget = (urlParams.get('kelas') || '5B').toUpperCase();
+const namaLengkapKelas = kamusKelas[window.kelasTarget] || (window.kelasTarget + " (Belum Tersedia)");
+
+// Ubah Judul UI agar Sesuai Kelas
+document.querySelector('.header p').innerText = "Pencapaian Semester Ganjil - Kelas " + namaLengkapKelas;
+document.title = "Executive Report - " + namaLengkapKelas;
+
+// Definisikan Koleksi Spesifik Kelas
+const koleksiMurid = "murid_" + window.kelasTarget;
+const docTargetGlobal = "rapor_targets_" + window.kelasTarget; // Agar tiap kelas punya target berbeda
+// ==========================================
+
+        // MINI DATABASE 114 SURAH (Untuk Smart Validation)
+        const dbQuran = "Al-Fatihah:7,Al-Baqarah:286,Ali 'Imran:200,An-Nisa:176,Al-Ma'idah:120,Al-An'am:165,Al-A'raf:206,Al-Anfal:75,At-Taubah:129,Yunus:109,Hud:123,Yusuf:111,Ar-Ra'd:43,Ibrahim:52,Al-Hijr:99,An-Nahl:128,Al-Isra':111,Al-Kahf:110,Maryam:98,Taha:135,Al-Anbiya':112,Al-Hajj:78,Al-Mu'minun:118,An-Nur:64,Al-Furqan:77,Asy-Syu'ara':227,An-Naml:93,Al-Qasas:88,Al-'Ankabut:69,Ar-Rum:60,Luqman:34,As-Sajdah:30,Al-Ahzab:73,Saba':54,Fatir:45,Yasin:83,As-Saffat:182,Sad:88,Az-Zumar:75,Ghafir:85,Fussilat:54,Asy-Syura:53,Az-Zukhruf:89,Ad-Dukhan:59,Al-Jasiyah:37,Al-Ahqaf:35,Muhammad:38,Al-Fath:29,Al-Hujurat:18,Qaf:45,Az-Zariyat:60,At-Tur:49,An-Najm:62,Al-Qamar:55,Ar-Rahman:78,Al-Waqi'ah:96,Al-Hadid:29,Al-Mujadilah:22,Al-Hasyr:24,Al-Mumtahanah:13,As-Saff:14,Al-Jumu'ah:11,Al-Munafiqun:11,At-Tagabun:18,At-Talaq:12,At-Tahrim:12,Al-Mulk:30,Al-Qalam:52,Al-Haqqah:52,Al-Ma'arij:44,Nuh:28,Al-Jinn:28,Al-Muzzammil:20,Al-Muddassir:56,Al-Qiyamah:40,Al-Insan:31,Al-Mursalat:50,An-Naba':40,An-Nazi'at:46,'Abasa:42,At-Takwir:29,Al-Infitar:19,Al-Mutaffifin:36,Al-Insyiqaq:25,Al-Buruj:22,At-Tariq:17,Al-A'la:19,Al-Gasyiyah:26,Al-Fajr:30,Al-Balad:20,Asy-Syams:15,Al-Lail:21,Ad-Duha:11,Asy-Syarh:8,At-Tin:8,Al-'Alaq:19,Al-Qadr:5,Al-Bayyinah:8,Az-Zalzalah:8,Al-'Adiyat:11,Al-Qari'ah:11,At-Takasur:8,Al-'Asr:3,Al-Humazah:9,Al-Fil:5,Quraisy:4,Al-Ma'un:7,Al-Kausar:3,Al-Kafirun:6,An-Nasr:3,Al-Lahab:5,Al-Ikhlas:4,Al-Falaq:5,An-Nas:6"
+        .split(',').map(s => { let [n, a] = s.split(':'); return { nama: n, batas: parseInt(a) }; });
+
+        // State Global
+        let dataMuridDinamis = [];
+        let isAdmin = false;
+        let selectedMuridId = null;
+        let modeEditFormQuran = 'global';
+        let modeEditFormHD = 'global';
+
+        // Default Target Global
+        let targetQuranGlobal = [{ nama: "Al-Baqarah", batas: 76 }];
+        let targetHaditsGlobal = ["21", "22", "23", "24", "25", "26", "27", "28", "29", "30"];
+        let targetDoaGlobal = ["41", "42", "43", "44", "45"];
+
+        const animateValue = (id, start, end, duration, totalItem = 0, suffix = "") => {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentVal = Math.floor(easeProgress * (end - start) + start);
+                
+                if(id === 'valHadits') obj.innerHTML = `${currentVal}<span style="font-size:14px; color:var(--text-secondary)">/${totalItem}</span>`;
+                else if(id === 'valDoa') obj.innerHTML = `${currentVal}<span style="font-size:14px; color:var(--text-secondary)">/${totalItem}</span>`;
+                else obj.innerHTML = `${currentVal}${suffix}`;
+                
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        window.switchTab = (tabId, element) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        };
+
+        // Auth Listener
+        onAuthStateChanged(auth, (user) => {
+            isAdmin = !!user;
+            document.getElementById('adminBadge').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('loginForm').style.display = isAdmin ? 'none' : 'block';
+            document.getElementById('logoutForm').style.display = isAdmin ? 'block' : 'none';
+            
+            document.querySelectorAll('.btn-action-small').forEach(b => b.style.display = isAdmin ? 'inline-flex' : 'none');
+            document.getElementById('btnTambahEkstra').style.display = isAdmin ? 'block' : 'none';
+            document.getElementById('adminEditHint').style.display = isAdmin && selectedMuridId ? 'block' : 'none';
+            
+            updatePersonalBanner();
+
+            if(isAdmin) document.getElementById('mainContainer').classList.add('mode-admin');
+            else document.getElementById('mainContainer').classList.remove('mode-admin');
+        });
+
+        // Fetch Global Config
+        onSnapshot(doc(db, "config", docTargetGlobal), (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if(data.quran) targetQuranGlobal = data.quran;
+                if(data.hadits) targetHaditsGlobal = data.hadits;
+                if(data.doa) targetDoaGlobal = data.doa;
+                if (selectedMuridId) renderProgress();
+            }
+        });
+
+        // Fetch Murid
+        onSnapshot(collection(db, koleksiMurid), (snapshot) => {
+    document.getElementById('loadingState').style.display = 'none'; // Pindahkan ini ke luar 'if'
+    
+    if(!snapshot.empty) {
+        if(!selectedMuridId) document.getElementById('emptyState').style.display = 'block';
+
+        dataMuridDinamis = [];
+        snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    dataMuridDinamis.push({ 
+                        id: doc.id, 
+                        nama: data.nama,
+                        haditsSelesai: data.haditsSelesai || [],
+                        doaSelesai: data.doaSelesai || [],
+                        quranProgress: data.quranProgress || {},
+                        isTargetKhusus: data.isTargetKhusus || false,
+                        targetQuranKhusus: data.targetQuranKhusus || [],
+                        surahEkstra: data.surahEkstra || [],
+                        isTargetHDKhusus: data.isTargetHDKhusus || false,
+                        targetHaditsKhusus: data.targetHaditsKhusus || [],
+                        targetDoaKhusus: data.targetDoaKhusus || []
+                    }); 
+                });
+                dataMuridDinamis.sort((a,b) => a.nama.localeCompare(b.nama));
+        renderCustomDropdown();
+        if(selectedMuridId) renderProgress();
+    } else {
+        // Tampilkan pesan khusus jika kelas masih kosong di database
+        document.getElementById('emptyState').innerHTML = `
+            <svg style="width:64px; height:64px; margin-bottom:16px;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <p style="font-size: 14px;">Belum ada data murid untuk kelas ${window.kelasTarget}.<br>Silakan tambahkan data murid terlebih dahulu.</p>
+        `;
+        document.getElementById('emptyState').style.display = 'block';
+        document.getElementById('dropdownDisplay').style.display = 'none'; // Sembunyikan dropdown
+    }
+});
+
+        const dropdownDisplay = document.getElementById('dropdownDisplay');
+        const dropdownOptions = document.getElementById('dropdownOptions');
+        const dropdownSelectedText = document.getElementById('dropdownSelectedText');
+
+        dropdownDisplay.addEventListener('click', (e) => { e.stopPropagation(); dropdownOptions.classList.toggle('show'); dropdownDisplay.classList.toggle('active'); });
+        document.addEventListener('click', () => { dropdownOptions.classList.remove('show'); dropdownDisplay.classList.remove('active'); });
+
+        function renderCustomDropdown() {
+            dropdownOptions.innerHTML = '';
+            dataMuridDinamis.forEach(murid => {
+                const div = document.createElement('div');
+                div.className = 'custom-option';
+                div.innerText = murid.nama;
+                div.onclick = () => {
+                    selectedMuridId = murid.id;
+                    dropdownSelectedText.innerText = murid.nama;
+                    document.getElementById('emptyState').style.display = 'none';
+                    document.getElementById('hasilArea').style.display = 'block';
+                    document.getElementById('adminEditHint').style.display = isAdmin ? 'block' : 'none';
+                    document.getElementById('valTotal').innerHTML = `0%`;
+                    document.getElementById('valHadits').innerHTML = `0`;
+                    document.getElementById('valDoa').innerHTML = `0`;
+                    
+                    updatePersonalBanner();
+                    renderProgress();
+                };
+                dropdownOptions.appendChild(div);
+            });
+        }
+
+        function updatePersonalBanner() {
+            if(!selectedMuridId) return;
+            const murid = dataMuridDinamis.find(m => m.id === selectedMuridId);
+            
+            const bannerQuran = document.getElementById('personalBanner');
+            const btnResetQuran = document.getElementById('btnResetPersonal');
+            if (murid && murid.isTargetKhusus) {
+                bannerQuran.style.display = 'flex';
+                btnResetQuran.style.display = isAdmin ? 'block' : 'none';
+            } else { bannerQuran.style.display = 'none'; }
+
+            const bannerHD = document.getElementById('personalBannerHD');
+            const btnResetHD = document.getElementById('btnResetPersonalHD');
+            if (murid && murid.isTargetHDKhusus) {
+                bannerHD.style.display = 'flex';
+                btnResetHD.style.display = isAdmin ? 'block' : 'none';
+            } else { bannerHD.style.display = 'none'; }
+        }
+
+        window.kembalikanKeTargetKelas = async () => {
+            if(!confirm("Yakin ingin menghapus target personal Al-Qur'an dan kembali menggunakan target kelas?")) return;
+            try { await updateDoc(doc(db, koleksiMurid, selectedMuridId), { isTargetKhusus: false }); } 
+            catch (error) { alert("Gagal: " + error.message); }
+        };
+
+        window.kembalikanKeTargetKelasHD = async () => {
+            if(!confirm("Yakin ingin menghapus target personal Hadits & Doa?")) return;
+            try { await updateDoc(doc(db, koleksiMurid, selectedMuridId), { isTargetHDKhusus: false }); } 
+            catch (error) { alert("Gagal: " + error.message); }
+        };
+
+        window.renderProgress = () => {
+            const murid = dataMuridDinamis.find(m => m.id === selectedMuridId);
+            if(!murid) return;
+
+            const activeTargetHadits = murid.isTargetHDKhusus && murid.targetHaditsKhusus ? murid.targetHaditsKhusus : targetHaditsGlobal;
+            const activeTargetDoa = murid.isTargetHDKhusus && murid.targetDoaKhusus ? murid.targetDoaKhusus : targetDoaGlobal;
+
+            const jmlHadits = activeTargetHadits.filter(t => murid.haditsSelesai.includes(t)).length;
+            const jmlDoa = activeTargetDoa.filter(t => murid.doaSelesai.includes(t)).length;
+            const totalSelesai = jmlHadits + jmlDoa;
+            const totalActiveTargetHD = activeTargetHadits.length + activeTargetDoa.length;
+            const persentase = totalActiveTargetHD === 0 ? 0 : Math.round((totalSelesai / totalActiveTargetHD) * 100);
+
+            animateValue("valTotal", 0, persentase, 1200, 0, "%");
+            animateValue("valHadits", 0, jmlHadits, 1200, activeTargetHadits.length);
+            animateValue("valDoa", 0, jmlDoa, 1200, activeTargetDoa.length);
+
+            // LOGIKA GABUNGAN TARGET QUR'AN
+            const baseTargetQuran = murid.isTargetKhusus ? murid.targetQuranKhusus : targetQuranGlobal;
+            let arrayGabungan = baseTargetQuran.map(t => ({...t, isEkstra: false}));
+            if (murid.surahEkstra && murid.surahEkstra.length > 0) {
+                const ekstraMapped = murid.surahEkstra.map(t => ({...t, isEkstra: true}));
+                arrayGabungan = [...arrayGabungan, ...ekstraMapped];
+            }
+
+            const quranContainer = document.getElementById('quranContainer');
+            quranContainer.innerHTML = '';
+            
+            arrayGabungan.forEach((target, index) => {
+                const dicapai = murid.quranProgress[target.nama] || 0;
+                let persen = Math.round((dicapai / target.batas) * 100);
+                const isMumtaz = dicapai > target.batas;
+                
+                if(persen > 100) persen = 100;
+                
+                let extraClass = target.isEkstra ? ' ekstra' : '';
+                let extraBadge = target.isEkstra ? `<span class="badge-ekstra">Tambahan</span>` : '';
+                
+                const card = document.createElement('div');
+                card.className = (isMumtaz ? 'surah-card mumtaz' : 'surah-card') + extraClass;
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                const footerHtml = isMumtaz 
+                    ? `<span class="badge-mumtaz">🔥 MUMTAZ (${dicapai} / ${target.batas} AYAT)</span>`
+                    : `<span>Pencapaian: ${persen}%</span><span>Total: ${target.batas} Ayat</span>`;
+
+                const deleteBtnHtml = target.isEkstra 
+                    ? `<div class="btn-delete-ekstra" onclick="hapusSurahEkstra(event, '${target.nama}')">Hapus</div>` 
+                    : '';
+
+                card.innerHTML = `
+                    <div class="surah-header">
+                        <div class="surah-title">${target.nama} ${extraBadge}</div>
+                        <div class="surah-ayat">Ayat ${dicapai}</div>
+                    </div>
+                    <div class="surah-bar-bg">
+                        <div class="surah-bar-fill" style="width: 0%;" data-target-width="${persen}%"></div>
+                    </div>
+                    <div class="surah-footer">${footerHtml} ${deleteBtnHtml}</div>
+                `;
+                
+                setTimeout(() => {
+                    const barFill = card.querySelector('.surah-bar-fill');
+                    if(barFill) barFill.style.width = barFill.getAttribute('data-target-width');
+                }, 100);
+                
+                card.onclick = (e) => {
+                    if(!isAdmin || e.target.classList.contains('btn-delete-ekstra')) return;
+                    document.getElementById('hiddenNamaSurah').value = target.nama;
+                    document.getElementById('ayatSubtitle').innerText = `Surah ${target.nama} (Target: ${target.batas} Ayat)`;
+                    document.getElementById('inputAyatTerakhir').value = dicapai;
+                    document.getElementById('ayatModal').classList.add('open');
+                };
+                quranContainer.appendChild(card);
+            });
+
+            // Render Mini Grid Hadits & Doa
+            renderBadges(activeTargetHadits, murid.haditsSelesai, 'gridHadits', 'haditsSelesai');
+            renderBadges(activeTargetDoa, murid.doaSelesai, 'gridDoa', 'doaSelesai');
+        };
+
+        const renderBadges = (targetArray, selesaisArray, containerId, dbFieldKey) => {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            targetArray.forEach((nomorStr, index) => {
+                const isSudah = selesaisArray.includes(nomorStr);
+                const icon = isSudah ? `<svg class="icon-status" width="16" height="16"><use href="#icon-check"></use></svg>` : `<svg class="icon-status" width="16" height="16"><use href="#icon-x"></use></svg>`;
+                
+                const div = document.createElement('div');
+                div.className = `badge-item ${isSudah ? 'sudah' : 'belum'} animate-pop`;
+                div.style.animationDelay = `${index * 0.03}s`;
+
+                const numSize = nomorStr.length > 3 ? '14px' : '20px';
+                div.innerHTML = `${icon}<div class="badge-number" style="font-size: ${numSize}">${nomorStr}</div>`;
+                
+                div.onclick = async () => {
+                    if(!isAdmin) return;
+                    div.classList.toggle('sudah'); div.classList.toggle('belum');
+                    let newArray = [...selesaisArray];
+                    if(isSudah) newArray = newArray.filter(n => n !== nomorStr);
+                    else newArray.push(nomorStr);
+                    try { await updateDoc(doc(db, koleksiMurid, selectedMuridId), { [dbFieldKey]: newArray }); } 
+                    catch (error) { alert("Error menyimpan: " + error.message); renderProgress(); }
+                };
+                container.appendChild(div);
+            });
+        };
+
+        // ==========================================
+        // SMART INCREMENT & UPDATE AYAT
+        // ==========================================
+        window.tambahAyatPintar = (tambahan) => {
+            let input = document.getElementById('inputAyatTerakhir');
+            let currentVal = parseInt(input.value) || 0;
+            let targetVal = currentVal + tambahan;
+            
+            let namaSurah = document.getElementById('hiddenNamaSurah').value.toLowerCase().replace(/[^a-z0-9]/g, '');
+            
+            let maxAsliQuran = Infinity;
+            let panjangKecocokan = 0;
+            
+            for(let i=0; i<dbQuran.length; i++) {
+                let namaNormal = dbQuran[i].nama.toLowerCase().replace(/[^a-z]/g, '');
+                if(namaSurah.includes(namaNormal) && namaNormal.length > panjangKecocokan) {
+                    maxAsliQuran = dbQuran[i].batas;
+                    panjangKecocokan = namaNormal.length;
+                }
+            }
+            
+            if(targetVal > maxAsliQuran) {
+                targetVal = maxAsliQuran;
+                alert(`Mentok! Maksimal ayat untuk surah ini adalah ${maxAsliQuran} ayat.`);
+            }
+            
+            input.value = targetVal;
+        };
+
+        window.simpanProgressAyat = async () => {
+            const btn = document.getElementById('btnSimpanAyat'); btn.innerText = "Menyimpan...";
+            const surah = document.getElementById('hiddenNamaSurah').value;
+            let ayat = parseInt(document.getElementById('inputAyatTerakhir').value) || 0;
+            if(ayat < 0) ayat = 0;
+            
+            let namaSurah = surah.toLowerCase().replace(/[^a-z0-9]/g, '');
+            let maxAsliQuran = Infinity;
+            let panjangKecocokan = 0;
+            for(let i=0; i<dbQuran.length; i++) {
+                let namaNormal = dbQuran[i].nama.toLowerCase().replace(/[^a-z]/g, '');
+                if(namaSurah.includes(namaNormal) && namaNormal.length > panjangKecocokan) {
+                    maxAsliQuran = dbQuran[i].batas;
+                    panjangKecocokan = namaNormal.length;
+                }
+            }
+            
+            if(ayat > maxAsliQuran) {
+                ayat = maxAsliQuran;
+                alert(`Catatan Sistem: Kami mengoreksi angka Anda menjadi ${maxAsliQuran} karena itu batas maksimal surah.`);
+            }
+
+            try {
+                await updateDoc(doc(db, koleksiMurid, selectedMuridId), { [`quranProgress.${surah}`]: ayat });
+                btn.innerText = "Simpan Pencapaian";
+                document.getElementById('ayatModal').classList.remove('open');
+            } catch(error) { alert("Gagal memperbarui: " + error.message); btn.innerText = "Simpan Pencapaian"; }
+        };
+
+        window.simpanSurahEkstra = async () => {
+            if(!selectedMuridId) return;
+            const btn = document.getElementById('btnSimpanEkstra'); btn.innerText = "Menyimpan...";
+            const nama = document.getElementById('eksNama').value.trim();
+            const batas = parseInt(document.getElementById('eksBatas').value);
+
+            if(!nama || isNaN(batas)) { alert("Mohon isi nama surah dan batas targetnya!"); btn.innerText = "Tambahkan Ke Laporan"; return; }
+
+            const murid = dataMuridDinamis.find(m => m.id === selectedMuridId);
+            const newEkstra = murid.surahEkstra ? [...murid.surahEkstra] : [];
+            newEkstra.push({ nama, batas }); 
+
+            try {
+                await updateDoc(doc(db, koleksiMurid, selectedMuridId), { surahEkstra: newEkstra });
+                document.getElementById('eksNama').value = ''; document.getElementById('eksBatas').value = '';
+                btn.innerText = "Tambahkan Ke Laporan"; document.getElementById('surahEkstraModal').classList.remove('open');
+            } catch(error) { alert("Error: " + error.message); btn.innerText = "Tambahkan Ke Laporan"; }
+        };
+
+        window.hapusSurahEkstra = async (event, namaSurah) => {
+            event.stopPropagation(); 
+            if(!confirm(`Hapus ${namaSurah} dari daftar tambahan?`)) return;
+            const murid = dataMuridDinamis.find(m => m.id === selectedMuridId);
+            const newEkstra = murid.surahEkstra.filter(s => s.nama !== namaSurah);
+            try { await updateDoc(doc(db, koleksiMurid, selectedMuridId), { surahEkstra: newEkstra }); } 
+            catch(error) { alert("Error: " + error.message); }
+        };
+
+        // PENGATURAN TARGET QUR'AN
+        window.bukaPengaturanQuran = (mode) => {
+            if(!isAdmin) return;
+            modeEditFormQuran = mode; 
+            let dataAwal = [];
+            if(mode === 'global') {
+                document.getElementById('modalQuranTitle').innerText = "Target Al-Qur'an (Kelas)";
+                dataAwal = targetQuranGlobal;
+            } else {
+                if(!selectedMuridId) { alert("Pilih murid terlebih dahulu!"); return; }
+                const murid = dataMuridDinamis.find(m => m.id === selectedMuridId);
+                document.getElementById('modalQuranTitle').innerText = `Target Personal (${murid.nama.split(' ')[0]})`;
+                dataAwal = murid.isTargetKhusus && murid.targetQuranKhusus.length > 0 ? murid.targetQuranKhusus : targetQuranGlobal;
+            }
+
+            const strTarget = dataAwal.map(t => `${t.nama}:${t.batas}`).join(',\n');
+            document.getElementById('inputTargetQuran').value = strTarget;
+            document.getElementById('targetQuranModal').classList.add('open');
+        };
+
+        window.simpanTargetQuranForm = async () => {
+            const btn = document.getElementById('btnSimpanQuranForm'); btn.innerText = "Menyimpan...";
+            const rawStr = document.getElementById('inputTargetQuran').value;
+
+            const arrayBaru = rawStr.split(/[\n,]+/).map(s => {
+                const parts = s.split(':');
+                if(parts.length >= 2) return { nama: parts[0].trim(), batas: parseInt(parts[1].trim()) };
+                return null;
+            }).filter(item => item !== null && !isNaN(item.batas));
+
+            if (arrayBaru.length === 0 && rawStr.trim() !== "") {
+                alert("Format salah! Gunakan format Nama Surah:Batas Ayat. Contoh: Al-Baqarah:76");
+                btn.innerText = "Simpan Target Qur'an"; return;
+            }
+
+            try {
+                if(modeEditFormQuran === 'global') {
+                    await setDoc(doc(db, "config", docTargetGlobal), { quran: arrayBaru }, { merge: true });
+                } else {
+                    await updateDoc(doc(db, koleksiMurid, selectedMuridId), { isTargetKhusus: true, targetQuranKhusus: arrayBaru });
+                }
+                btn.innerText = "Simpan Target Qur'an"; 
+                document.getElementById('targetQuranModal').classList.remove('open');
+            } catch(error) { alert("Error: " + error.message); btn.innerText = "Simpan Target Qur'an"; }
+        };
+
+        // PENGATURAN TARGET HADITS & DOA (Global / Personal)
+        window.bukaPengaturanHD = (mode) => {
+            if(!isAdmin) return;
+            modeEditFormHD = mode;
+            let dataAwalH = [];
+            let dataAwalD = [];
+            
+            if(mode === 'global') {
+                document.getElementById('modalHDTitle').innerText = "Pengaturan Kolom (Kelas)";
+                dataAwalH = targetHaditsGlobal;
+                dataAwalD = targetDoaGlobal;
+            } else {
+                if(!selectedMuridId) { alert("Pilih murid terlebih dahulu!"); return; }
+                const murid = dataMuridDinamis.find(m => m.id === selectedMuridId);
+                document.getElementById('modalHDTitle').innerText = `Target Personal (${murid.nama.split(' ')[0]})`;
+                dataAwalH = murid.isTargetHDKhusus && murid.targetHaditsKhusus.length > 0 ? murid.targetHaditsKhusus : targetHaditsGlobal;
+                dataAwalD = murid.isTargetHDKhusus && murid.targetDoaKhusus.length > 0 ? murid.targetDoaKhusus : targetDoaGlobal;
+            }
+
+            document.getElementById('inputTargetHadits').value = dataAwalH.join(', ');
+            document.getElementById('inputTargetDoa').value = dataAwalD.join(', ');
+            document.getElementById('targetHDModal').classList.add('open');
+        };
+
+        window.simpanTargetHD = async () => {
+            const btn = document.getElementById('btnSimpanHD'); btn.innerText = "Menyimpan...";
+            const newHadits = document.getElementById('inputTargetHadits').value.split(',').map(s => s.trim()).filter(s => s !== "");
+            const newDoa = document.getElementById('inputTargetDoa').value.split(',').map(s => s.trim()).filter(s => s !== "");
+            
+            try {
+                if(modeEditFormHD === 'global') {
+                    await setDoc(doc(db, "config", docTargetGlobal), { hadits: newHadits, doa: newDoa }, { merge: true });
+                } else {
+                    await updateDoc(doc(db, koleksiMurid, selectedMuridId), { isTargetHDKhusus: true, targetHaditsKhusus: newHadits, targetDoaKhusus: newDoa });
+                }
+                btn.innerText = "Simpan Kolom Baru"; 
+                document.getElementById('targetHDModal').classList.remove('open');
+            } catch(error) { alert("Error: " + error.message); btn.innerText = "Simpan Kolom Baru"; }
+        };
+
+        // LOGIN / LOGOUT ADMIN
+        window.loginAdmin = () => {
+            const btn = document.getElementById('btnLogin'); btn.innerText = "Memproses...";
+            signInWithEmailAndPassword(auth, document.getElementById('adminEmail').value, document.getElementById('adminPassword').value)
+                .then(() => { btn.innerText = "Masuk Mode Edit"; document.getElementById('loginModal').classList.remove('open'); })
+                .catch(err => { alert("Login gagal! Cek email dan password Anda."); btn.innerText = "Masuk Mode Edit"; });
+        };
+        window.logoutAdmin = () => signOut(auth).then(() => document.getElementById('loginModal').classList.remove('open'));
+    </script>
+</body>
+</html>

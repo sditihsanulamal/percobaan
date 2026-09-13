@@ -241,6 +241,11 @@ window.renderMurid = () => {
     const cards = [];
     dataMuridDinamis.forEach((murid, index) => {
         let stQ = murid.quranStatus || "belum";
+        let cssQ = 'belum';
+        if (stQ === 'A' || stQ === 'mumtaz') cssQ = 'mumtaz';
+        else if (stQ === 'B' || stQ === 'tuntas') cssQ = 'tuntas';
+        else if (stQ === 'C' || stQ === 'proses') cssQ = 'proses';
+        
         let stH = murid.haditsStatus || "belum";
         let stD = murid.doaStatus || "belum";
         let statusHarian = (murid.tanggalSetor === hariIni) ? (murid.setoranHarian || "belum") : "belum";
@@ -250,7 +255,7 @@ window.renderMurid = () => {
             + '<div class="murid-info">'
             + '<div class="murid-nama">' + murid.nama + '</div>'
             + '<div class="status-dots">'
-            + '<span class="dot ' + stQ + '" title="Qur\'an"></span>'
+            + '<span class="dot ' + cssQ + '" title="Qur\'an"></span>'
             + '<span class="dot ' + stH + '" title="Hadits"></span>'
             + '<span class="dot ' + stD + '" title="Doa"></span>'
             + '</div></div></div>');
@@ -279,11 +284,39 @@ window.switchTab = (tabId, btn) => {
     document.querySelectorAll('audio').forEach(a => a.pause());
 };
 
-const setBadge = (elementId, status) => {
+const setBadge = (elementId, status, nilaiAngka) => {
     const el = document.getElementById(elementId);
-    el.className = 'dot ' + status;
-    el.innerText = "";
-    el.style.width = '14px'; el.style.height = '14px'; el.style.flexShrink = '0';
+    
+    let grade = status;
+    if (status === 'mumtaz') grade = 'A';
+    else if (status === 'tuntas') grade = 'B';
+    else if (status === 'proses') grade = 'C';
+    else if (status === 'belum') grade = 'D';
+    else if (!['A','B','C','D'].includes(status)) grade = 'D';
+
+    let cssClass = 'belum';
+    if (grade === 'A') cssClass = 'mumtaz';
+    else if (grade === 'B') cssClass = 'tuntas';
+    else if (grade === 'C') cssClass = 'proses';
+    
+    el.className = 'dot ' + cssClass;
+    
+    if (elementId === 'badgeQuran') {
+        el.style.width = 'auto'; el.style.height = 'auto'; el.style.padding = '4px 8px'; el.style.borderRadius = '12px'; el.style.fontSize = '11px'; el.style.fontWeight = 'bold';
+        if (grade === 'D' && (!nilaiAngka || nilaiAngka == 0)) {
+             el.innerText = 'Belum Setor';
+             el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)';
+        } else {
+             el.innerText = `Nilai: ${nilaiAngka || '-'} (${grade})`;
+             if (grade === 'A') { el.style.background = 'rgba(212,175,55,0.2)'; el.style.color = 'var(--gold)'; }
+             else if (grade === 'B') { el.style.background = 'rgba(59,130,246,0.2)'; el.style.color = '#3b82f6'; }
+             else if (grade === 'C') { el.style.background = 'rgba(245,158,11,0.2)'; el.style.color = '#f59e0b'; }
+             else { el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)'; }
+        }
+    } else {
+        el.innerText = "";
+        el.style.width = '14px'; el.style.height = '14px'; el.style.padding = '0';
+    }
 };
 
 window.openModal = (index) => {
@@ -293,6 +326,7 @@ window.openModal = (index) => {
     document.getElementById('editId').value = murid.id;
     
     const qStatus = murid.quranStatus || "belum";
+    const qNilaiAngka = murid.quranNilaiAngka || "";
     const hStatus = murid.haditsStatus || "belum";
     const dStatus = murid.doaStatus || "belum";
     const hariIni = window.getTanggalHariIni();
@@ -302,7 +336,20 @@ window.openModal = (index) => {
     document.getElementById('editQuranTarget').value = murid.quranTarget || "";
     document.getElementById('editQuranRealisasi').value = murid.quranRealisasi || "-";
     document.getElementById('editStatusQuran').value = qStatus;
-    setBadge('badgeQuran', qStatus);
+    document.getElementById('editQuranNilaiAngka').value = qNilaiAngka;
+    document.getElementById('displayQuranNilaiAngka').value = qNilaiAngka;
+    
+    if (isAdmin && ['A','B','C','D'].includes(qStatus)) {
+        window.pilihGradeQuran(qStatus);
+        if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
+    } else if (isAdmin) {
+        document.querySelectorAll('.grade-btn').forEach(btn => {
+            btn.style.background = 'rgba(0,0,0,0.3)'; btn.style.color = 'white';
+        });
+        document.getElementById('angkaSuggestionsContainer').style.display = 'none';
+    }
+
+    setBadge('badgeQuran', qStatus, qNilaiAngka);
     document.getElementById('editHaditsTarget').value = murid.haditsTarget || "";
     document.getElementById('editHaditsRealisasi').value = murid.haditsRealisasi || "-";
     document.getElementById('editStatusHadits').value = hStatus;
@@ -686,7 +733,20 @@ window.tambahAyatPintar = (aksi) => {
     let textarea = document.getElementById('editQuranRealisasi');
     let teksAsli = textarea.value.trim();
     if (aksi === 'ulangi') { if (!teksAsli.includes("(Muraja'ah)")) textarea.value = teksAsli + " (Muraja'ah)"; return; }
+    
     let teksBersih = teksAsli.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Normalisasi ejaan yang sering berbeda transliterasinya
+    teksBersih = teksBersih.replace('mujadalah', 'mujadilah');
+    teksBersih = teksBersih.replace('baqaroh', 'baqarah');
+    teksBersih = teksBersih.replace('fatehah', 'fatihah');
+    teksBersih = teksBersih.replace('imron', 'imran');
+    teksBersih = teksBersih.replace('maidoh', 'maidah');
+    teksBersih = teksBersih.replace('dhuha', 'duha');
+    teksBersih = teksBersih.replace('thariq', 'tariq');
+    teksBersih = teksBersih.replace('thaahaa', 'taha').replace('thaha', 'taha');
+    teksBersih = teksBersih.replace('sajadah', 'sajdah');
+    
     let indexSurah = -1; let panjangKecocokan = 0;
     for (let i = 0; i < dbQuran.length; i++) {
         let namaNormal = dbQuran[i].nama.toLowerCase().replace(/[^a-z]/g, '');
@@ -717,16 +777,53 @@ window.pilihSetoranHarian = (status) => {
     else { badge.innerHTML = "⏳ Belum Setor Hari Ini"; badge.style.cssText = "background:rgba(239,68,68,0.2);color:var(--danger);border:1px solid rgba(239,68,68,0.5);"; }
 };
 
+window.pilihGradeQuran = (grade) => {
+    document.getElementById('editStatusQuran').value = grade;
+    document.querySelectorAll('.grade-btn').forEach(btn => {
+        btn.style.background = (btn.getAttribute('data-grade') === grade) ? 'var(--gold)' : 'rgba(0,0,0,0.3)';
+        btn.style.color = (btn.getAttribute('data-grade') === grade) ? '#000' : 'white';
+    });
+    
+    const container = document.getElementById('angkaSuggestionsContainer');
+    container.style.display = 'flex';
+    let html = '';
+    let arr = [];
+    if (grade === 'A') arr = [93, 95, 98, 100];
+    else if (grade === 'B') arr = [84, 86, 88, 90, 92];
+    else if (grade === 'C') arr = [75, 78, 80, 82];
+    else if (grade === 'D') arr = [65, 70, 74];
+    
+    arr.forEach(num => {
+        html += `<button type="button" onclick="window.updateNilaiManual(${num})" style="padding:4px 8px; font-size:12px; border-radius:4px; border:1px solid rgba(255,255,255,0.2); background:rgba(0,0,0,0.4); color:white; cursor:pointer;">${num}</button>`;
+    });
+    container.innerHTML = html;
+    
+    window.updateNilaiManual(arr[Math.floor(arr.length/2)]);
+};
+
+window.updateNilaiManual = (val) => {
+    document.getElementById('editQuranNilaiAngka').value = val;
+    document.getElementById('displayQuranNilaiAngka').value = val;
+};
+
 window.simpanDataMurid = async () => {
     if (!isAdmin) return;
     const btn = document.getElementById('btnSaveMurid'); btn.innerText = "Menyimpan...";
     try {
-        await updateDoc(doc(db, koleksiMurid, document.getElementById('editId').value), {
+        const docId = document.getElementById('editId').value;
+        const qStatus = document.getElementById('editStatusQuran').value;
+        const qNilaiAngka = document.getElementById('editQuranNilaiAngka').value;
+        const qRealisasi = document.getElementById('editQuranRealisasi').value;
+        const namaMurid = document.getElementById('modalNama').innerText;
+        const tglHariIni = window.getTanggalHariIni();
+
+        await updateDoc(doc(db, koleksiMurid, docId), {
             setoranHarian: document.getElementById('valSetoranHarian').value,
-            tanggalSetor: window.getTanggalHariIni(),
+            tanggalSetor: tglHariIni,
             quranTarget: document.getElementById('editQuranTarget').value,
-            quranRealisasi: document.getElementById('editQuranRealisasi').value,
-            quranStatus: document.getElementById('editStatusQuran').value,
+            quranRealisasi: qRealisasi,
+            quranStatus: qStatus,
+            quranNilaiAngka: qNilaiAngka,
             haditsTarget: document.getElementById('editHaditsTarget').value,
             haditsRealisasi: document.getElementById('editHaditsRealisasi').value,
             haditsStatus: document.getElementById('editStatusHadits').value,
@@ -734,6 +831,44 @@ window.simpanDataMurid = async () => {
             doaRealisasi: document.getElementById('editDoaRealisasi').value,
             doaStatus: document.getElementById('editStatusDoa').value
         });
+        
+        // Coba parsing surah dan ayat untuk spreadsheet
+        let parsedSurah = "-";
+        let parsedAyat = "-";
+        if (qRealisasi && qRealisasi !== "-") {
+            const matchSurah = qRealisasi.match(/Surah\s+([A-Za-z\-'\s]+)\s+ayat/i);
+            const matchAyat = qRealisasi.match(/ayat\s+([0-9\-\+]+)/i);
+            if (matchSurah) parsedSurah = matchSurah[1].trim();
+            else parsedSurah = qRealisasi.split('ayat')[0].trim();
+            if (matchAyat) parsedAyat = matchAyat[1].trim();
+        }
+
+        // Webhook Push to Google Sheets (Background)
+        if (qStatus !== "belum") {
+            const webhookUrl = "https://script.google.com/macros/s/AKfycbxDDXwXjwoa-wfXEKtqRqH4cvMDeWBPUQ3epL9X9YYYmeV1kUtQk_NOSQ4zac1KGAhHug/exec";
+            const dt = new Date();
+            const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][dt.getDay()];
+            const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][dt.getMonth()];
+            const tanggalStr = ("0" + dt.getDate()).slice(-2) + " " + namaBulan; // e.g. "13 September"
+
+            const payload = {
+                kelas: window.kelasTarget,
+                nama: namaMurid,
+                surah: parsedSurah,
+                ayat: parsedAyat,
+                nilai: qNilaiAngka,
+                tanggalCari: tanggalStr,
+                hari: namaHari
+            };
+
+            fetch(webhookUrl, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(payload)
+            }).catch(e => console.log("Webhook error:", e));
+        }
+
         btn.innerText = "Simpan Perubahan Dasbor"; window.closeModal('progressModal');
     } catch (error) { alert("Error: " + error.message); btn.innerText = "Simpan Perubahan Dasbor"; }
 };
