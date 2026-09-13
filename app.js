@@ -341,11 +341,8 @@ window.openModal = (index) => {
         window.pilihGradeQuran(qStatus);
         if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
     } else if (isAdmin) {
-        document.querySelectorAll('.grade-btn').forEach(btn => {
-            btn.style.background = 'transparent'; btn.style.color = 'rgba(255,255,255,0.6)';
-            btn.style.boxShadow = 'none';
-        });
-        document.getElementById('editQuranNilaiAngka').style.display = 'none';
+        document.querySelectorAll('.grade-pill-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('customDropdownContainer').style.display = 'none';
     }
 
     setBadge('badgeQuran', qStatus, qNilaiAngka);
@@ -365,7 +362,7 @@ window.openModal = (index) => {
 
     if (isAdmin) {
         inputs.forEach(i => { i.disabled = false; i.style.height = "auto"; });
-        selects.forEach(s => s.style.display = 'block');
+        selects.forEach(s => { s.style.display = (s.id === 'quranGradeContainer') ? 'flex' : 'block'; });
         badges.forEach(b => b.style.display = 'none');
         document.getElementById('btnSaveMurid').style.display = 'block';
         document.getElementById('quranChips').style.display = 'flex';
@@ -778,15 +775,11 @@ window.pilihSetoranHarian = (status) => {
 
 window.pilihGradeQuran = (grade) => {
     document.getElementById('editStatusQuran').value = grade;
-    document.querySelectorAll('.grade-btn').forEach(btn => {
+    document.querySelectorAll('.grade-pill-btn').forEach(btn => {
         if (btn.getAttribute('data-grade') === grade) {
-            btn.style.background = 'var(--gold)';
-            btn.style.color = '#000';
-            btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.2)';
+            btn.classList.add('active');
         } else {
-            btn.style.background = 'transparent';
-            btn.style.color = 'rgba(255,255,255,0.6)';
-            btn.style.boxShadow = 'none';
+            btn.classList.remove('active');
         }
     });
     
@@ -806,7 +799,7 @@ window.pilihGradeQuran = (grade) => {
     }
     
     arr.forEach(num => {
-        html += `<div class="custom-dropdown-item" onclick="window.selectCustomNilai(${num})" style="padding:6px; text-align:center; cursor:pointer; border-radius:4px; font-size:13px; font-weight:bold; color:rgba(255,255,255,0.8); transition:all 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='rgba(255,255,255,0.8)';">${num}</div>`;
+        html += `<div class="custom-dropdown-item" onclick="window.selectCustomNilai(${num})">${num}</div>`;
     });
     
     document.getElementById('customDropdownList').innerHTML = html;
@@ -819,28 +812,38 @@ window.updateNilaiManual = (val) => {
     document.getElementById('editQuranNilaiAngka').value = val;
     const textSpan = document.getElementById('customDropdownText');
     if (textSpan) textSpan.innerText = val;
+    
+    document.querySelectorAll('.custom-dropdown-item').forEach(item => {
+        if (item.innerText == val) {
+            item.classList.add('selected');
+        } else {
+            item.classList.remove('selected');
+        }
+    });
 };
 
 window.toggleCustomDropdown = () => {
+    const container = document.getElementById('customDropdownContainer');
     const list = document.getElementById('customDropdownList');
-    if (list.style.display === 'none' || list.style.display === '') {
-        list.style.display = 'flex';
-    } else {
-        list.style.display = 'none';
-    }
+    container.classList.toggle('open');
+    list.classList.toggle('show');
 };
 
 window.selectCustomNilai = (val) => {
     window.updateNilaiManual(val);
-    document.getElementById('customDropdownList').style.display = 'none';
+    const container = document.getElementById('customDropdownContainer');
+    const list = document.getElementById('customDropdownList');
+    container.classList.remove('open');
+    list.classList.remove('show');
 };
 
 // Close dropdown when clicking outside
 document.addEventListener('click', function(event) {
     const container = document.getElementById('customDropdownContainer');
     if (container && !container.contains(event.target)) {
+        container.classList.remove('open');
         const list = document.getElementById('customDropdownList');
-        if (list) list.style.display = 'none';
+        if (list) list.classList.remove('show');
     }
 });
 

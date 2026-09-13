@@ -327,6 +327,156 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 
 .sidebar-footer { padding: 20px; text-align: center; border-top: 1px dashed rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
 
+/* Quran Grade Segmented & Custom Number Dropdown */
+.quran-grade-wrapper {
+    display: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.grade-pill-group {
+    display: flex;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+    padding: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.grade-pill-btn {
+    padding: 4px 12px;
+    border-radius: 16px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.grade-pill-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.grade-pill-btn.active {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #000;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.35);
+}
+
+.custom-dropdown-container {
+    position: relative;
+    display: none;
+}
+
+.custom-dropdown-btn {
+    width: 65px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--gold);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.custom-dropdown-btn:hover {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.custom-dropdown-btn .chevron {
+    font-size: 9px;
+    color: var(--gold-muted);
+    transition: transform 0.25s ease;
+}
+
+.custom-dropdown-container.open .custom-dropdown-btn .chevron {
+    transform: rotate(180deg);
+}
+
+.custom-dropdown-list {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 75px;
+    max-height: 180px;
+    overflow-y: auto;
+    background: rgba(18, 24, 18, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    z-index: 100;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.15);
+    flex-direction: column;
+    gap: 2px;
+    padding: 5px;
+    animation: dropdownPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-dropdown-list.show {
+    display: flex;
+}
+
+@keyframes dropdownPop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.custom-dropdown-item {
+    padding: 6px 8px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.15s ease;
+}
+
+.custom-dropdown-item:hover {
+    background: rgba(212, 175, 55, 0.2);
+    color: var(--gold);
+    transform: scale(1.05);
+}
+
+.custom-dropdown-item.selected {
+    background: var(--gold);
+    color: #000;
+}
+
+/* Custom Scrollbar for Dropdown List */
+.custom-dropdown-list::-webkit-scrollbar {
+    width: 4px;
+}
+.custom-dropdown-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-dropdown-list::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+}
+.custom-dropdown-list::-webkit-scrollbar-thumb:hover {
+    background: var(--gold);
+}
+
 @media (max-width: 500px) {
     .target-realisasi-grid { grid-template-columns: 1fr; gap: 12px; }
     .card-header-flex { flex-wrap: wrap; gap: 8px; }

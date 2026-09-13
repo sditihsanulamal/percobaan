@@ -143,24 +143,24 @@
                         <span class="detail-label">Al-Qur'an (Harian)</span>
                         <div id="badgeQuran" class="status-badge"></div>
                     </div>
-                    <div id="quranGradeContainer" class="admin-select-status" style="display:none; align-items:center; gap:8px;">
+                    <div id="quranGradeContainer" class="quran-grade-wrapper admin-select-status">
                         <input type="hidden" id="editStatusQuran" value="belum">
                         
                         <!-- Segmented Pill -->
-                        <div style="display:flex; background:rgba(0,0,0,0.3); border-radius:20px; padding:3px; border:1px solid rgba(255,255,255,0.1);">
-                            <button type="button" class="grade-btn" data-grade="A" onclick="window.pilihGradeQuran('A')" style="padding:4px 12px; border-radius:16px; border:none; background:transparent; color:rgba(255,255,255,0.6); font-weight:bold; cursor:pointer; font-size:13px; transition:all 0.3s ease;">A</button>
-                            <button type="button" class="grade-btn" data-grade="B" onclick="window.pilihGradeQuran('B')" style="padding:4px 12px; border-radius:16px; border:none; background:transparent; color:rgba(255,255,255,0.6); font-weight:bold; cursor:pointer; font-size:13px; transition:all 0.3s ease;">B</button>
-                            <button type="button" class="grade-btn" data-grade="C" onclick="window.pilihGradeQuran('C')" style="padding:4px 12px; border-radius:16px; border:none; background:transparent; color:rgba(255,255,255,0.6); font-weight:bold; cursor:pointer; font-size:13px; transition:all 0.3s ease;">C</button>
-                            <button type="button" class="grade-btn" data-grade="D" onclick="window.pilihGradeQuran('D')" style="padding:4px 12px; border-radius:16px; border:none; background:transparent; color:rgba(255,255,255,0.6); font-weight:bold; cursor:pointer; font-size:13px; transition:all 0.3s ease;">D</button>
+                        <div class="grade-pill-group">
+                            <button type="button" class="grade-pill-btn" data-grade="A" onclick="window.pilihGradeQuran('A')">A</button>
+                            <button type="button" class="grade-pill-btn" data-grade="B" onclick="window.pilihGradeQuran('B')">B</button>
+                            <button type="button" class="grade-pill-btn" data-grade="C" onclick="window.pilihGradeQuran('C')">C</button>
+                            <button type="button" class="grade-pill-btn" data-grade="D" onclick="window.pilihGradeQuran('D')">D</button>
                         </div>
                         
                         <!-- Dropdown Angka Custom -->
-                        <div id="customDropdownContainer" style="position:relative; display:none;">
-                            <button type="button" id="customDropdownBtn" onclick="window.toggleCustomDropdown()" style="width:60px; padding:4px 8px; border-radius:8px; font-size:14px; font-weight:bold; text-align:center; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); color:white; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:all 0.3s ease;">
+                        <div id="customDropdownContainer" class="custom-dropdown-container">
+                            <button type="button" id="customDropdownBtn" class="custom-dropdown-btn" onclick="window.toggleCustomDropdown()">
                                 <span id="customDropdownText">--</span>
-                                <span style="font-size:10px; color:rgba(255,255,255,0.5);">▼</span>
+                                <span class="chevron">▼</span>
                             </button>
-                            <div id="customDropdownList" style="display:none; position:absolute; top:110%; left:0; width:100%; max-height:160px; overflow-y:auto; background:rgba(20,20,20,0.95); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,0.2); border-radius:8px; z-index:100; box-shadow:0 8px 16px rgba(0,0,0,0.5); flex-direction:column; gap:2px; padding:4px;">
+                            <div id="customDropdownList" class="custom-dropdown-list">
                                 <!-- Options dynamically generated -->
                             </div>
                             <input type="hidden" id="editQuranNilaiAngka" value="">
