@@ -890,7 +890,7 @@ window.simpanDataMurid = async () => {
             const dt = new Date();
             const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][dt.getDay()];
             const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][dt.getMonth()];
-            const tanggalStr = ("0" + dt.getDate()).slice(-2) + " " + namaBulan; // e.g. "13 September"
+            const tanggalStr = namaHari + ", " + ("0" + dt.getDate()).slice(-2) + " " + namaBulan; // e.g. "Selasa, 13 September"
 
             const payload = {
                 kelas: window.kelasTarget,
@@ -898,8 +898,11 @@ window.simpanDataMurid = async () => {
                 surah: parsedSurah,
                 ayat: parsedAyat,
                 nilai: qNilaiAngka,
-                tanggalCari: tanggalStr,
-                hari: namaHari
+                tanggalCari: tanggalStr, // Masih dikirim untuk cadangan
+                hari: namaHari,
+                tanggal: dt.getDate(),
+                bulan: dt.getMonth() + 1,
+                tahun: dt.getFullYear()
             };
 
             fetch(webhookUrl, {
