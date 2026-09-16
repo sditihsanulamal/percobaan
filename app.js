@@ -345,6 +345,18 @@ window.openModal = (index) => {
         document.getElementById('customDropdownContainer').style.display = 'none';
     }
 
+    if (isAdmin && ['mumtaz','tuntas','proses'].includes(hStatus)) {
+        window.pilihGradeHadits(hStatus);
+    } else if (isAdmin) {
+        document.querySelectorAll('.hadits-pill-btn').forEach(btn => btn.classList.remove('active'));
+    }
+
+    if (isAdmin && ['mumtaz','tuntas','proses'].includes(dStatus)) {
+        window.pilihGradeDoa(dStatus);
+    } else if (isAdmin) {
+        document.querySelectorAll('.doa-pill-btn').forEach(btn => btn.classList.remove('active'));
+    }
+
     setBadge('badgeQuran', qStatus, qNilaiAngka);
     document.getElementById('editHaditsTarget').value = murid.haditsTarget || "";
     document.getElementById('editHaditsRealisasi').value = murid.haditsRealisasi || "-";
@@ -362,7 +374,7 @@ window.openModal = (index) => {
 
     if (isAdmin) {
         inputs.forEach(i => { i.disabled = false; i.style.height = "auto"; });
-        selects.forEach(s => { s.style.display = (s.id === 'quranGradeContainer') ? 'flex' : 'block'; });
+        selects.forEach(s => { s.style.display = (s.id === 'quranGradeContainer' || s.id === 'haditsChips' || s.id === 'doaChips') ? 'flex' : 'block'; });
         badges.forEach(b => b.style.display = 'none');
         document.getElementById('btnSaveMurid').style.display = 'block';
         document.getElementById('quranChips').style.display = 'flex';
@@ -771,6 +783,28 @@ window.pilihSetoranHarian = (status) => {
     else if (status === 'berhalangan') { badge.innerHTML = "🛑 Berhalangan / Udzhur"; badge.style.cssText = "background:rgba(245,158,11,0.2);color:var(--warning);border:1px solid rgba(245,158,11,0.5);"; }
     else if (status === 'izin') { badge.innerHTML = "🏥 Izin / Sakit"; badge.style.cssText = "background:rgba(59,130,246,0.2);color:var(--mumtaz);border:1px solid rgba(59,130,246,0.5);"; }
     else { badge.innerHTML = "⏳ Belum Setor Hari Ini"; badge.style.cssText = "background:rgba(239,68,68,0.2);color:var(--danger);border:1px solid rgba(239,68,68,0.5);"; }
+};
+
+window.pilihGradeHadits = (grade) => {
+    document.getElementById('editStatusHadits').value = grade;
+    document.querySelectorAll('.hadits-pill-btn').forEach(btn => {
+        if (btn.getAttribute('data-grade') === grade) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+};
+
+window.pilihGradeDoa = (grade) => {
+    document.getElementById('editStatusDoa').value = grade;
+    document.querySelectorAll('.doa-pill-btn').forEach(btn => {
+        if (btn.getAttribute('data-grade') === grade) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 };
 
 window.pilihGradeQuran = (grade) => {

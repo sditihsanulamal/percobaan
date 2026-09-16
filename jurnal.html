@@ -193,12 +193,12 @@
                         <span class="detail-label">Hadits (Mingguan)</span>
                         <div id="badgeHadits" class="status-badge"></div>
                     </div>
-                    <select id="editStatusHadits" class="admin-select admin-select-status" style="display:none;">
-                        <option value="mumtaz">✨ Melampaui Target</option>
-                        <option value="tuntas">✅ Tuntas</option>
-                        <option value="proses">⏳ Sedang Proses</option>
-                        <option value="belum">❌ Belum Setor</option>
-                    </select>
+                    <input type="hidden" id="editStatusHadits" value="belum">
+                    <div id="haditsChips" class="grade-pill-group admin-select-status" style="display:none;">
+                        <button class="grade-pill-btn hadits-pill-btn" data-grade="mumtaz" onclick="pilihGradeHadits('mumtaz')" style="font-size:11px; padding:6px 10px;">✨ Mumtaz</button>
+                        <button class="grade-pill-btn hadits-pill-btn" data-grade="tuntas" onclick="pilihGradeHadits('tuntas')" style="font-size:11px; padding:6px 10px;">✅ Tuntas</button>
+                        <button class="grade-pill-btn hadits-pill-btn" data-grade="proses" onclick="pilihGradeHadits('proses')" style="font-size:11px; padding:6px 10px;">⏳ Proses</button>
+                    </div>
                 </div>
                 <div class="target-realisasi-grid">
                     <div class="tr-box">
@@ -220,12 +220,12 @@
                         <span class="detail-label">Doa (Mingguan)</span>
                         <div id="badgeDoa" class="status-badge"></div>
                     </div>
-                    <select id="editStatusDoa" class="admin-select admin-select-status" style="display:none;">
-                        <option value="mumtaz">✨ Melampaui Target</option>
-                        <option value="tuntas">✅ Tuntas</option>
-                        <option value="proses">⏳ Sedang Proses</option>
-                        <option value="belum">❌ Belum Setor</option>
-                    </select>
+                    <input type="hidden" id="editStatusDoa" value="belum">
+                    <div id="doaChips" class="grade-pill-group admin-select-status" style="display:none;">
+                        <button class="grade-pill-btn doa-pill-btn" data-grade="mumtaz" onclick="pilihGradeDoa('mumtaz')" style="font-size:11px; padding:6px 10px;">✨ Mumtaz</button>
+                        <button class="grade-pill-btn doa-pill-btn" data-grade="tuntas" onclick="pilihGradeDoa('tuntas')" style="font-size:11px; padding:6px 10px;">✅ Tuntas</button>
+                        <button class="grade-pill-btn doa-pill-btn" data-grade="proses" onclick="pilihGradeDoa('proses')" style="font-size:11px; padding:6px 10px;">⏳ Proses</button>
+                    </div>
                 </div>
                 <div class="target-realisasi-grid">
                     <div class="tr-box">
