@@ -794,6 +794,29 @@ window.pilihGradeHadits = (grade) => {
             btn.classList.remove('active');
         }
     });
+    
+    const container = document.getElementById('haditsDropdownContainer');
+    container.style.display = 'block';
+    
+    let html = '';
+    let arr = [];
+    if (grade === 'A') {
+        for(let i=100; i>=93; i--) arr.push(i);
+    } else if (grade === 'B') {
+        for(let i=92; i>=84; i--) arr.push(i);
+    } else if (grade === 'C') {
+        for(let i=83; i>=75; i--) arr.push(i);
+    } else if (grade === 'D') {
+        for(let i=74; i>=60; i--) arr.push(i);
+    }
+    
+    arr.forEach(num => {
+        html += `<div class="custom-dropdown-item" onclick="window.selectHaditsNilai(${num})">${num}</div>`;
+    });
+    document.getElementById('haditsDropdownList').innerHTML = html;
+    
+    const midIndex = Math.floor(arr.length / 2);
+    window.updateHaditsNilai(arr[midIndex]);
 };
 
 window.pilihGradeDoa = (grade) => {
@@ -805,11 +828,34 @@ window.pilihGradeDoa = (grade) => {
             btn.classList.remove('active');
         }
     });
+    
+    const container = document.getElementById('doaDropdownContainer');
+    container.style.display = 'block';
+    
+    let html = '';
+    let arr = [];
+    if (grade === 'A') {
+        for(let i=100; i>=93; i--) arr.push(i);
+    } else if (grade === 'B') {
+        for(let i=92; i>=84; i--) arr.push(i);
+    } else if (grade === 'C') {
+        for(let i=83; i>=75; i--) arr.push(i);
+    } else if (grade === 'D') {
+        for(let i=74; i>=60; i--) arr.push(i);
+    }
+    
+    arr.forEach(num => {
+        html += `<div class="custom-dropdown-item" onclick="window.selectDoaNilai(${num})">${num}</div>`;
+    });
+    document.getElementById('doaDropdownList').innerHTML = html;
+    
+    const midIndex = Math.floor(arr.length / 2);
+    window.updateDoaNilai(arr[midIndex]);
 };
 
 window.pilihGradeQuran = (grade) => {
     document.getElementById('editStatusQuran').value = grade;
-    document.querySelectorAll('.grade-pill-btn').forEach(btn => {
+    document.querySelectorAll('.grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => {
         if (btn.getAttribute('data-grade') === grade) {
             btn.classList.add('active');
         } else {
@@ -842,12 +888,22 @@ window.pilihGradeQuran = (grade) => {
     window.updateNilaiManual(arr[midIndex]);
 };
 
+window.updateHaditsNilai = (val) => {
+    document.getElementById('editHaditsNilaiAngka').value = val;
+    document.getElementById('haditsDropdownText').innerText = val;
+};
+
+window.updateDoaNilai = (val) => {
+    document.getElementById('editDoaNilaiAngka').value = val;
+    document.getElementById('doaDropdownText').innerText = val;
+};
+
 window.updateNilaiManual = (val) => {
     document.getElementById('editQuranNilaiAngka').value = val;
     const textSpan = document.getElementById('customDropdownText');
     if (textSpan) textSpan.innerText = val;
     
-    document.querySelectorAll('.custom-dropdown-item').forEach(item => {
+    document.getElementById('customDropdownList').querySelectorAll('.custom-dropdown-item').forEach(item => {
         if (item.innerText == val) {
             item.classList.add('selected');
         } else {
@@ -871,14 +927,46 @@ window.selectCustomNilai = (val) => {
     list.classList.remove('show');
 };
 
+window.toggleHaditsDropdown = () => {
+    const container = document.getElementById('haditsDropdownContainer');
+    const list = document.getElementById('haditsDropdownList');
+    container.classList.toggle('open');
+    list.classList.toggle('show');
+};
+
+window.selectHaditsNilai = (val) => {
+    window.updateHaditsNilai(val);
+    const container = document.getElementById('haditsDropdownContainer');
+    const list = document.getElementById('haditsDropdownList');
+    container.classList.remove('open');
+    list.classList.remove('show');
+};
+
+window.toggleDoaDropdown = () => {
+    const container = document.getElementById('doaDropdownContainer');
+    const list = document.getElementById('doaDropdownList');
+    container.classList.toggle('open');
+    list.classList.toggle('show');
+};
+
+window.selectDoaNilai = (val) => {
+    window.updateDoaNilai(val);
+    const container = document.getElementById('doaDropdownContainer');
+    const list = document.getElementById('doaDropdownList');
+    container.classList.remove('open');
+    list.classList.remove('show');
+};
+
 // Close dropdown when clicking outside
 document.addEventListener('click', function(event) {
-    const container = document.getElementById('customDropdownContainer');
-    if (container && !container.contains(event.target)) {
-        container.classList.remove('open');
-        const list = document.getElementById('customDropdownList');
-        if (list) list.classList.remove('show');
-    }
+    ['custom', 'hadits', 'doa'].forEach(prefix => {
+        const container = document.getElementById(prefix + 'DropdownContainer');
+        if (container && !container.contains(event.target)) {
+            container.classList.remove('open');
+            const list = document.getElementById(prefix + 'DropdownList');
+            if (list) list.classList.remove('show');
+        }
+    });
 });
 
 window.simpanDataMurid = async () => {
@@ -902,10 +990,11 @@ window.simpanDataMurid = async () => {
             haditsTarget: document.getElementById('editHaditsTarget').value,
             haditsRealisasi: document.getElementById('editHaditsRealisasi').value,
             haditsStatus: document.getElementById('editStatusHadits').value,
+            haditsNilaiAngka: document.getElementById('editHaditsNilaiAngka').value,
             doaTarget: document.getElementById('editDoaTarget').value,
             doaRealisasi: document.getElementById('editDoaRealisasi').value,
-            doaStatus: document.getElementById('editStatusDoa').value
-        });
+            doaStatus: document.getElementById('editStatusDoa').value,
+            doaNilaiAngka: document.getElementById('editDoaNilaiAngka').value,        });
         
         // Coba parsing surah dan ayat untuk spreadsheet
         let parsedSurah = "-";
@@ -918,8 +1007,11 @@ window.simpanDataMurid = async () => {
             if (matchAyat) parsedAyat = matchAyat[1].trim();
         }
 
+        const haditsStatus = document.getElementById('editStatusHadits').value;
+        const doaStatus = document.getElementById('editStatusDoa').value;
+        
         // Webhook Push to Google Sheets (Background)
-        if (qStatus !== "belum") {
+        if (qStatus !== "belum" || haditsStatus !== "belum" || doaStatus !== "belum") {
             const webhookUrl = "https://script.google.com/macros/s/AKfycbwGTmfNGDa3-XcZFFlRbPOVjB33AHa5Sg7e2PTs9DiT7Q5I6nHvOySH9bcTx6ZhNEUJ/exec";
             const dt = new Date();
             const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][dt.getDay()];
@@ -932,6 +1024,13 @@ window.simpanDataMurid = async () => {
                 surah: parsedSurah,
                 ayat: parsedAyat,
                 nilai: qNilaiAngka,
+                qStatus: qStatus,
+                haditsRealisasi: document.getElementById('editHaditsRealisasi').value,
+                haditsNilai: document.getElementById('editHaditsNilaiAngka').value,
+                haditsStatus: document.getElementById('editStatusHadits').value,
+                doaRealisasi: document.getElementById('editDoaRealisasi').value,
+                doaNilai: document.getElementById('editDoaNilaiAngka').value,
+                doaStatus: document.getElementById('editStatusDoa').value,
                 tanggalCari: tanggalStr, // Masih dikirim untuk cadangan
                 hari: namaHari,
                 tanggal: dt.getDate(),
