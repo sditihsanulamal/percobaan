@@ -1018,7 +1018,7 @@ window.simpanDataMurid = async () => {
         
         // Webhook Push to Google Sheets (Background)
         if (qStatus !== "belum" || haditsStatus !== "belum" || doaStatus !== "belum") {
-            const webhookUrl = "https://script.google.com/macros/s/AKfycbwGTmfNGDa3-XcZFFlRbPOVjB33AHa5Sg7e2PTs9DiT7Q5I6nHvOySH9bcTx6ZhNEUJ/exec";
+            const webhookUrl = "https://script.google.com/macros/s/AKfycbwfOfypie9Xrjf5xz1-v_L5rx5CcbbPBKMn2UUlqvXPFHd8tcWMZXgZ5SE9cF-0PiYt/exec";
             const dt = new Date();
             const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][dt.getDay()];
             const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][dt.getMonth()];
