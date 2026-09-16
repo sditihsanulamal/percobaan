@@ -301,7 +301,7 @@ const setBadge = (elementId, status, nilaiAngka) => {
     
     el.className = 'dot ' + cssClass;
     
-    if (elementId === 'badgeQuran') {
+    if (['badgeQuran', 'badgeHadits', 'badgeDoa'].includes(elementId)) {
         el.style.width = 'auto'; el.style.height = 'auto'; el.style.padding = '4px 8px'; el.style.borderRadius = '12px'; el.style.fontSize = '11px'; el.style.fontWeight = 'bold';
         if (grade === 'D' && (!nilaiAngka || nilaiAngka == 0)) {
              el.innerText = 'Belum Setor';
@@ -329,6 +329,8 @@ window.openModal = (index) => {
     const qNilaiAngka = murid.quranNilaiAngka || "";
     const hStatus = murid.haditsStatus || "belum";
     const dStatus = murid.doaStatus || "belum";
+    const hNilaiAngka = murid.haditsNilaiAngka || "";
+    const dNilaiAngka = murid.doaNilaiAngka || "";
     const hariIni = window.getTanggalHariIni();
     const statusHarian = (murid.tanggalSetor === hariIni) ? (murid.setoranHarian || "belum") : "belum";
     
@@ -341,31 +343,35 @@ window.openModal = (index) => {
         window.pilihGradeQuran(qStatus);
         if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
     } else if (isAdmin) {
-        document.querySelectorAll('.grade-pill-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => btn.classList.remove('active'));
         document.getElementById('customDropdownContainer').style.display = 'none';
     }
 
-    if (isAdmin && ['mumtaz','tuntas','proses'].includes(hStatus)) {
+    if (isAdmin && ['A','B','C','D'].includes(hStatus)) {
         window.pilihGradeHadits(hStatus);
+        if (hNilaiAngka) window.updateHaditsNilai(hNilaiAngka);
     } else if (isAdmin) {
         document.querySelectorAll('.hadits-pill-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('haditsDropdownContainer').style.display = 'none';
     }
 
-    if (isAdmin && ['mumtaz','tuntas','proses'].includes(dStatus)) {
+    if (isAdmin && ['A','B','C','D'].includes(dStatus)) {
         window.pilihGradeDoa(dStatus);
+        if (dNilaiAngka) window.updateDoaNilai(dNilaiAngka);
     } else if (isAdmin) {
         document.querySelectorAll('.doa-pill-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('doaDropdownContainer').style.display = 'none';
     }
 
     setBadge('badgeQuran', qStatus, qNilaiAngka);
     document.getElementById('editHaditsTarget').value = murid.haditsTarget || "";
     document.getElementById('editHaditsRealisasi').value = murid.haditsRealisasi || "-";
     document.getElementById('editStatusHadits').value = hStatus;
-    setBadge('badgeHadits', hStatus);
+    setBadge('badgeHadits', hStatus, hNilaiAngka);
     document.getElementById('editDoaTarget').value = murid.doaTarget || "";
     document.getElementById('editDoaRealisasi').value = murid.doaRealisasi || "-";
     document.getElementById('editStatusDoa').value = dStatus;
-    setBadge('badgeDoa', dStatus);
+    setBadge('badgeDoa', dStatus, dNilaiAngka);
     document.getElementById('progressModal').classList.add('open');
 
     const inputs = document.querySelectorAll('#progressModal textarea.admin-input');
