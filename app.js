@@ -240,15 +240,19 @@ window.renderMurid = () => {
     const hariIni = window.getTanggalHariIni();
     const cards = [];
     dataMuridDinamis.forEach((murid, index) => {
-        let stQ = murid.quranStatus || "belum";
-        let cssQ = 'belum';
-        if (stQ === 'A' || stQ === 'mumtaz') cssQ = 'mumtaz';
-        else if (stQ === 'B' || stQ === 'tuntas') cssQ = 'tuntas';
-        else if (stQ === 'C' || stQ === 'proses') cssQ = 'proses';
+        const getCssClass = (status) => {
+            if (status === 'A' || status === 'mumtaz') return 'mumtaz';
+            if (status === 'B' || status === 'tuntas') return 'tuntas';
+            if (status === 'C' || status === 'proses') return 'proses';
+            return 'belum';
+        };
         
-        let stH = murid.haditsStatus || "belum";
-        let stD = murid.doaStatus || "belum";
-        let statusHarian = (murid.tanggalSetor === hariIni) ? (murid.setoranHarian || "belum") : "belum";
+        let cssQ = getCssClass(murid.quranStatus);
+        let cssH = getCssClass(murid.haditsStatus);
+        let cssD = getCssClass(murid.doaStatus);
+
+        let hariIniStr = window.getTanggalHariIni();
+        let statusHarian = (murid.tanggalSetor === hariIniStr) ? (murid.setoranHarian || "belum") : "belum";
         let glowClass = (statusHarian === 'sudah') ? 'sudah-setor' : '';
         cards.push('<div class="glass-panel murid-card ' + glowClass + '" onclick="window.openModal(' + index + ')">'
             + '<div class="avatar">' + window.getInitials(murid.nama) + '</div>'
@@ -256,8 +260,8 @@ window.renderMurid = () => {
             + '<div class="murid-nama">' + murid.nama + '</div>'
             + '<div class="status-dots">'
             + '<span class="dot ' + cssQ + '" title="Qur\'an"></span>'
-            + '<span class="dot ' + stH + '" title="Hadits"></span>'
-            + '<span class="dot ' + stD + '" title="Doa"></span>'
+            + '<span class="dot ' + cssH + '" title="Hadits"></span>'
+            + '<span class="dot ' + cssD + '" title="Doa"></span>'
             + '</div></div></div>');
     });
     list.innerHTML = cards.join('');
