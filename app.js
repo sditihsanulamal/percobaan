@@ -311,10 +311,15 @@ const setBadge = (elementId, status, nilaiAngka) => {
              el.innerText = 'Belum Setor';
              el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)';
         } else {
-             el.innerText = `Nilai: ${nilaiAngka || '-'} (${grade})`;
-             if (grade === 'A') { el.style.background = 'rgba(212,175,55,0.2)'; el.style.color = 'var(--gold)'; }
-             else if (grade === 'B') { el.style.background = 'rgba(59,130,246,0.2)'; el.style.color = '#3b82f6'; }
-             else if (grade === 'C') { el.style.background = 'rgba(245,158,11,0.2)'; el.style.color = '#f59e0b'; }
+             if (isAdmin) {
+                 el.innerText = `Nilai: ${nilaiAngka || '-'} (${grade})`;
+             } else {
+                 el.innerText = `Nilai ${grade}`;
+             }
+             
+             if (grade === 'A') { el.style.background = 'rgba(59,130,246,0.2)'; el.style.color = 'var(--mumtaz)'; }
+             else if (grade === 'B') { el.style.background = 'rgba(16,185,129,0.2)'; el.style.color = 'var(--success)'; }
+             else if (grade === 'C') { el.style.background = 'rgba(245,158,11,0.2)'; el.style.color = 'var(--warning)'; }
              else { el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)'; }
         }
     } else {
