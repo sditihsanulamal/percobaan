@@ -311,16 +311,27 @@ const setBadge = (elementId, status, nilaiAngka) => {
              el.innerText = 'Belum Setor';
              el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)';
         } else {
-             if (isAdmin) {
-                 el.innerText = `Nilai: ${nilaiAngka || '-'} (${grade})`;
-             } else {
-                 el.innerText = `Nilai ${grade}`;
+             let prefix = isAdmin ? `Nilai: ${nilaiAngka || '-'} ` : ``;
+             
+             if (grade === 'A') { 
+                 el.className = 'status-badge premium-badge grade-a'; 
+                 el.innerText = prefix + `(👑 A)`; 
+             }
+             else if (grade === 'B') { 
+                 el.className = 'status-badge premium-badge grade-b'; 
+                 el.innerText = prefix + `(🌟 B)`; 
+             }
+             else if (grade === 'C') { 
+                 el.className = 'status-badge premium-badge grade-c'; 
+                 el.innerText = prefix + `(⚡ C)`; 
+             }
+             else { 
+                 el.className = 'status-badge premium-badge grade-d'; 
+                 el.innerText = prefix ? prefix + `(⏳ D)` : `(⏳ D) Belum`; 
              }
              
-             if (grade === 'A') { el.style.background = 'rgba(59,130,246,0.2)'; el.style.color = 'var(--mumtaz)'; }
-             else if (grade === 'B') { el.style.background = 'rgba(16,185,129,0.2)'; el.style.color = 'var(--success)'; }
-             else if (grade === 'C') { el.style.background = 'rgba(245,158,11,0.2)'; el.style.color = 'var(--warning)'; }
-             else { el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)'; }
+             // Bersihkan inline style lama agar CSS Class berfungsi
+             el.style.background = ''; el.style.color = '';
         }
     } else {
         el.innerText = "";
