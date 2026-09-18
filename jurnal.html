@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -38,11 +38,14 @@
                 <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input type="text" id="searchInput" class="search-box" onkeyup="cariMurid()" placeholder="Cari nama ananda...">
             </div>
-            <div style="display:flex; justify-content:center; gap:12px; margin-bottom: 20px; font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase;">
-                <span style="display:flex; align-items:center; gap:4px;"><span class="dot mumtaz"></span>Nilai A</span>
-                <span style="display:flex; align-items:center; gap:4px;"><span class="dot tuntas"></span>Nilai B</span>
-                <span style="display:flex; align-items:center; gap:4px;"><span class="dot proses"></span>Nilai C</span>
-                <span style="display:flex; align-items:center; gap:4px;"><span class="dot belum"></span>Belum (D)</span>
+            <div style="display:flex; justify-content:center; margin-bottom: 20px;">
+                <div class="legend-btn" onclick="window.openStatsModal()">
+                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot mumtaz"></span>A</span>
+                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot tuntas"></span>B</span>
+                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot proses"></span>C</span>
+                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot belum"></span>D</span>
+                    <div class="legend-btn-label">📊 Lihat Statistik</div>
+                </div>
             </div>
             <div id="muridList">
                 <div style="text-align: center; color: var(--gold-muted); margin-top: 40px; font-weight: 500;">
@@ -413,7 +416,27 @@
         </div>
     </div>
 
+    <!-- MODAL STATISTIK -->
+    <div id="statsModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
+        <div class="modal-content" style="max-width: 500px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                <h3 style="color:var(--gold); font-family: 'Playfair Display', serif; font-size: 20px; font-weight:700;">Statistik Hari Ini</h3>
+                <button type="button" class="close-btn" onclick="document.getElementById('statsModal').classList.remove('open')">×</button>
+            </div>
+            
+            <div class="stats-tabs">
+                <button class="stats-tab-btn active" onclick="window.switchStatsTab('quran')">Al-Qur'an</button>
+                <button class="stats-tab-btn" onclick="window.switchStatsTab('hadits')">Hadits</button>
+                <button class="stats-tab-btn" onclick="window.switchStatsTab('doa')">Doa</button>
+            </div>
+            
+            <div id="statsChartContainer" style="overflow-y: auto; flex: 1; padding-right: 5px;">
+                <!-- Bar Charts will be injected here by app.js -->
+            </div>
+        </div>
+    </div>
+
     <!-- Panggil File JS Eksternal (Menggunakan type="module" dan Cache Busting) -->
-    <script type="module" src="app.js?v=2"></script>
+    <script type="module" src="app.js?v=6"></script>
 </body>
 </html>

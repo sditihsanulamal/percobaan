@@ -1077,3 +1077,117 @@ window.simpanDataMurid = async () => {
         btn.innerText = "Simpan Perubahan Dasbor"; window.closeModal('progressModal');
     } catch (error) { alert("Error: " + error.message); btn.innerText = "Simpan Perubahan Dasbor"; }
 };
+
+/* =========================================
+   STATISTICS DASHBOARD LOGIC
+========================================= */
+window.currentStatsTab = 'quran';
+
+window.openStatsModal = () => {
+    document.getElementById('statsModal').classList.add('open');
+    window.switchStatsTab('quran');
+};
+
+window.switchStatsTab = (tab) => {
+    window.currentStatsTab = tab;
+    // Update active tab button
+    document.querySelectorAll('.stats-tab-btn').forEach(btn => {
+        if (btn.innerText.toLowerCase().includes(tab) || (tab==='quran' && btn.innerText.includes("Qur'an"))) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    renderStatsChart(tab);
+};
+
+window.toggleStatList = (id) => {
+    const list = document.getElementById(id);
+    if (list) {
+        list.classList.toggle('open');
+    }
+};
+
+function renderStatsChart(tab) {
+    const container = document.getElementById('statsChartContainer');
+    const hariIni = window.getTanggalHariIni();
+    
+    let stats = {
+        'A': { title: 'Nilai A (Melampaui Target)', class: 'a', names: [] },
+        'B': { title: 'Nilai B (Tuntas)', class: 'b', names: [] },
+        'C': { title: 'Nilai C (Sedang Proses)', class: 'c', names: [] },
+        'BelumHariIni': { title: 'Belum Setor Hari Ini', class: 'd', names: [] },
+        'BelumSamaSekali': { title: 'Tidak Setor Sama Sekali', class: 'e', names: [] }
+    };
+    
+    let totalMurid = dataMuridDinamis.length;
+    if (totalMurid === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Belum ada data murid.</div>';
+        return;
+    }
+    
+    dataMuridDinamis.forEach(murid => {
+        // Tentukan kolom database berdasarkan tab
+        let statusField = '';
+        if (tab === 'quran') statusField = murid.quranStatus;
+        else if (tab === 'hadits') statusField = murid.haditsStatus;
+        else if (tab === 'doa') statusField = murid.doaStatus;
+        
+        const hasDepositedToday = (murid.tanggalSetor === hariIni) && (murid.setoranHarian !== 'belum');
+        
+        if (hasDepositedToday) {
+            if (statusField === 'A') stats['A'].names.push(murid.nama);
+            else if (statusField === 'B') stats['B'].names.push(murid.nama);
+            else if (statusField === 'C') stats['C'].names.push(murid.nama);
+            else stats['BelumHariIni'].names.push(murid.nama); // 'D' or unknown but deposited today
+        } else {
+            // Did not deposit today
+            // Check if they NEVER deposited (status is empty, undefined, or 'belum')
+            if (!statusField || statusField === 'belum') {
+                stats['BelumSamaSekali'].names.push(murid.nama);
+            } else {
+                stats['BelumHariIni'].names.push(murid.nama);
+            }
+        }
+    });
+    
+    let html = '';
+    const categories = ['A', 'B', 'C', 'BelumHariIni', 'BelumSamaSekali'];
+    
+    categories.forEach(cat => {
+        const data = stats[cat];
+        const count = data.names.length;
+        const percentage = Math.round((count / totalMurid) * 100) || 0;
+        const listId = `stat-list-${tab}-${cat}`;
+        
+        // Buat list nama
+        let namesHtml = data.names.map(n => `<div>• ${n}</div>`).join('');
+        if (count === 0) namesHtml = `<div style="opacity:0.5;">Tidak ada murid di kategori ini.</div>`;
+        
+        html += `
+            <div class="stat-bar-container">
+                <div class="stat-bar-header">
+                    <span class="stat-color-${data.class}">${data.title}</span>
+                    <span>${count} Anak (${percentage}%)</span>
+                </div>
+                <div class="stat-bar-track" onclick="window.toggleStatList('${listId}')">
+                    <div class="stat-bar-fill stat-bg-${data.class}" style="width: 0%;" data-width="${percentage}%"></div>
+                </div>
+                <div id="${listId}" class="stat-names-list stat-color-${data.class}">
+                    ${namesHtml}
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+    
+    // Trigger CSS animation for bars
+    setTimeout(() => {
+        const bars = container.querySelectorAll('.stat-bar-fill');
+        bars.forEach(bar => {
+            bar.style.width = bar.getAttribute('data-width');
+        });
+    }, 50);
+}

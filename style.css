@@ -537,6 +537,107 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     color: #fca5a5;
 }
 
+/* --- STATS DASHBOARD --- */
+.legend-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255,255,255,0.03);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+.legend-btn:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: var(--gold);
+    box-shadow: 0 4px 12px rgba(212,175,55,0.1);
+}
+.legend-btn-label {
+    margin-left: 8px;
+    padding-left: 12px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    color: var(--gold);
+}
+
+.stats-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    padding: 4px;
+    border-radius: 12px;
+}
+.stats-tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 8px 0;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.stats-tab-btn.active {
+    background: var(--primary-light);
+    color: var(--gold);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.stat-bar-container {
+    margin-bottom: 16px;
+}
+.stat-bar-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.stat-bar-track {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+.stat-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+}
+.stat-names-list {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 6px;
+    line-height: 1.4;
+    display: none;
+    padding: 8px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    border-left: 2px solid;
+}
+.stat-names-list.open {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Colors for stats */
+.stat-color-a { color: #60a5fa; } .stat-bg-a { background: #3b82f6; box-shadow: 0 0 10px rgba(59,130,246,0.5); }
+.stat-color-b { color: #34d399; } .stat-bg-b { background: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.5); }
+.stat-color-c { color: #fbbf24; } .stat-bg-c { background: #f59e0b; box-shadow: 0 0 10px rgba(245,158,11,0.5); }
+.stat-color-d { color: #94a3b8; } .stat-bg-d { background: #64748b; }
+.stat-color-e { color: #f87171; } .stat-bg-e { background: #ef4444; }
+
 /* ========================================================= */
 /* OPTIMASI PERFORMA TINGKAT TINGGI UNTUK HP                 */
 /* ========================================================= */
