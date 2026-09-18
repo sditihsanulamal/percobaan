@@ -224,11 +224,11 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 .detail-card { background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 18px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 12px; }
 
 .card-header-flex { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 4px; }
-.detail-header { display: flex; align-items: center; gap: 10px; }
+.detail-header { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
 .detail-icon { font-size: 20px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
-.detail-label { font-size: 13px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.detail-label { font-size: 13px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; white-space: nowrap; }
 
-.status-badge { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
+.status-badge { margin-left: auto; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; }
 
 .target-realisasi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .tr-box { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 12px 10px; border: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; }
