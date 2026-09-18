@@ -507,16 +507,17 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 .premium-badge.grade-a::after {
     content: '';
     position: absolute;
-    top: 0; left: -100%;
+    top: 0; left: 0;
     width: 50%; height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transform: skewX(-20deg);
+    transform: skewX(-20deg) translateX(-300%);
     animation: shimmerSweep 3s infinite;
+    will-change: transform; /* Beritahu GPU untuk bersiap animasi */
 }
 @keyframes shimmerSweep {
-    0% { left: -100%; }
-    20% { left: 200%; }
-    100% { left: 200%; }
+    0% { transform: skewX(-20deg) translateX(-300%); }
+    20% { transform: skewX(-20deg) translateX(500%); }
+    100% { transform: skewX(-20deg) translateX(500%); }
 }
 .premium-badge.grade-b {
     background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(16,185,129,0.05));
@@ -534,4 +535,39 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05));
     border-color: rgba(239,68,68,0.4);
     color: #fca5a5;
+}
+
+/* ========================================================= */
+/* OPTIMASI PERFORMA TINGKAT TINGGI UNTUK HP (MENCEGAH LAG)  */
+/* ========================================================= */
+@media (max-width: 768px) {
+    /* Matikan efek Kaca Buram (Blur) yang sangat menguras GPU HP */
+    .glass-panel, 
+    .floating-nav, 
+    .premium-badge {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    
+    /* Ganti efek transparan dengan warna solid pekat yang sangat ringan */
+    .glass-panel {
+        background-color: #032418 !important; /* Warna hijau gelap solid (var(--primary)) */
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3) !important; /* Kurangi efek bayangan */
+    }
+    .floating-nav {
+        background-color: #01120a !important; /* Warna hitam hijau solid */
+    }
+    .premium-badge {
+        background-color: rgba(0, 0, 0, 0.5) !important; /* Gelap tipis, tanpa blur */
+    }
+    .modal {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background-color: rgba(0, 0, 0, 0.9) !important; /* Background hitam pekat */
+    }
+    
+    /* Matikan animasi rotasi bunga di background jika terlalu berat */
+    body::before {
+        display: none !important;
+    }
 }
