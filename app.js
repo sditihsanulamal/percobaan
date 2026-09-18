@@ -1116,9 +1116,9 @@ function renderStatsChart(tab) {
     const hariIni = window.getTanggalHariIni();
 
     const categoryDef = [
-        { key: 'A',              title: 'Nilai A — Melampaui Target', icon: '👑', cls: 'a' },
-        { key: 'B',              title: 'Nilai B — Tuntas',           icon: '🌟', cls: 'b' },
-        { key: 'C',              title: 'Nilai C — Sedang Proses',    icon: '🔆', cls: 'c' },
+        { key: 'A',              title: 'Nilai A', icon: '👑', cls: 'a' },
+        { key: 'B',              title: 'Nilai B', icon: '🌟', cls: 'b' },
+        { key: 'C',              title: 'Nilai C', icon: '🔆', cls: 'c' },
         { key: 'BelumHariIni',   title: 'Belum Setor Hari Ini',      icon: '⏳', cls: 'd' },
         { key: 'BelumSamaSekali',title: 'Tidak Setor Sama Sekali',   icon: '🚫', cls: 'e' },
     ];
