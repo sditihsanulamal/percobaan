@@ -483,3 +483,55 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     .admin-select-status { width: 100%; margin-top: 4px; }
     .detail-label { font-size: 12px; }
 }
+
+/* --- PREMIUM BADGES --- */
+.premium-badge {
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+.premium-badge.grade-a {
+    background: linear-gradient(135deg, rgba(59,130,246,0.25), rgba(59,130,246,0.05));
+    border-color: rgba(59,130,246,0.5);
+    color: #93c5fd;
+    text-shadow: 0 0 10px rgba(59,130,246,0.8);
+    box-shadow: 0 0 20px rgba(59,130,246,0.2);
+}
+.premium-badge.grade-a::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transform: skewX(-20deg);
+    animation: shimmerSweep 3s infinite;
+}
+@keyframes shimmerSweep {
+    0% { left: -100%; }
+    20% { left: 200%; }
+    100% { left: 200%; }
+}
+.premium-badge.grade-b {
+    background: linear-gradient(135deg, rgba(16,185,129,0.25), rgba(16,185,129,0.05));
+    border-color: rgba(16,185,129,0.4);
+    color: #6ee7b7;
+    text-shadow: 0 0 8px rgba(16,185,129,0.6);
+}
+.premium-badge.grade-c {
+    background: linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05));
+    border-color: rgba(245,158,11,0.4);
+    color: #fcd34d;
+    text-shadow: 0 0 8px rgba(245,158,11,0.6);
+}
+.premium-badge.grade-d {
+    background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.05));
+    border-color: rgba(239,68,68,0.4);
+    color: #fca5a5;
+}
