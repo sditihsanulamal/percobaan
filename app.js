@@ -312,22 +312,24 @@ const setBadge = (elementId, status, nilaiAngka) => {
              el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)';
         } else {
              let prefix = isAdmin ? `Nilai: ${nilaiAngka || '-'} ` : ``;
+             let kurungBuka = isAdmin ? `(` : ``;
+             let kurungTutup = isAdmin ? `)` : ``;
              
              if (grade === 'A') { 
                  el.className = 'status-badge premium-badge grade-a'; 
-                 el.innerText = prefix + `(👑 A)`; 
+                 el.innerText = prefix + `${kurungBuka}👑 A${kurungTutup}`; 
              }
              else if (grade === 'B') { 
                  el.className = 'status-badge premium-badge grade-b'; 
-                 el.innerText = prefix + `(🌟 B)`; 
+                 el.innerText = prefix + `${kurungBuka}🌟 B${kurungTutup}`; 
              }
              else if (grade === 'C') { 
                  el.className = 'status-badge premium-badge grade-c'; 
-                 el.innerText = prefix + `(⚡ C)`; 
+                 el.innerText = prefix + `${kurungBuka}⚡ C${kurungTutup}`; 
              }
              else { 
                  el.className = 'status-badge premium-badge grade-d'; 
-                 el.innerText = prefix ? prefix + `(⏳ D)` : `(⏳ D) Belum`; 
+                 el.innerText = prefix ? prefix + `(⏳ D)` : `⏳ D (Belum)`; 
              }
              
              // Bersihkan inline style lama agar CSS Class berfungsi
