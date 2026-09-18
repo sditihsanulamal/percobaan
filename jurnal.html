@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=8">
+    <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 
@@ -38,14 +38,23 @@
                 <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input type="text" id="searchInput" class="search-box" onkeyup="cariMurid()" placeholder="Cari nama ananda...">
             </div>
-            <div style="display:flex; justify-content:center; margin-bottom: 20px;">
-                <div class="legend-btn" onclick="window.openStatsModal()">
-                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot mumtaz"></span>A</span>
-                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot tuntas"></span>B</span>
-                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot proses"></span>C</span>
-                    <span style="display:flex; align-items:center; gap:4px;"><span class="dot belum"></span>D</span>
-                    <div class="legend-btn-label">📊 Lihat Statistik</div>
-                </div>
+            <!-- Baris 1: Legenda warna mini -->
+            <div class="legend-row">
+                <span class="legend-item"><span class="dot mumtaz"></span>A</span>
+                <span class="legend-sep">·</span>
+                <span class="legend-item"><span class="dot tuntas"></span>B</span>
+                <span class="legend-sep">·</span>
+                <span class="legend-item"><span class="dot proses"></span>C</span>
+                <span class="legend-sep">·</span>
+                <span class="legend-item"><span class="dot belum"></span>D</span>
+            </div>
+            <!-- Baris 2: Tautan statistik elegan -->
+            <div class="stats-link-row">
+                <button class="stats-text-link" onclick="window.openStatsModal()">
+                    <span class="stats-link-icon">📊</span>
+                    Lihat Statistik Hari Ini
+                    <svg class="stats-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
             </div>
             <div id="muridList">
                 <div style="text-align: center; color: var(--gold-muted); margin-top: 40px; font-weight: 500;">
@@ -437,6 +446,6 @@
     </div>
 
     <!-- Panggil File JS Eksternal (Menggunakan type="module" dan Cache Busting) -->
-    <script type="module" src="app.js?v=8"></script>
+    <script type="module" src="app.js?v=9"></script>
 </body>
 </html>

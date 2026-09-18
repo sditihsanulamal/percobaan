@@ -540,73 +540,81 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     color: #fca5a5;
 }
 
-/* --- STATS DASHBOARD: PREMIUM REDESIGN --- */
 
-/* Keyframes */
-@keyframes legendPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
-    50% { box-shadow: 0 0 16px 4px rgba(212,175,55,0.25); }
-}
-@keyframes barEntrance {
-    from { transform: scaleX(0); transform-origin: left; }
-    to { transform: scaleX(1); transform-origin: left; }
-}
+/* Keyframes for stats cards */
 @keyframes cardSlideIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
 }
-@keyframes shimmerBar {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
-}
-@keyframes glowPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-}
 
-.legend-btn {
+/* Legend row — minimal dots only */
+.legend-row {
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 10px;
-    background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(255,255,255,0.03));
-    padding: 10px 18px;
-    border-radius: 24px;
-    border: 1px solid rgba(212,175,55,0.25);
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 10px;
     font-size: 11px;
     color: var(--text-muted);
     font-weight: 700;
-    letter-spacing: 0.5px;
-    animation: legendPulse 3s ease-in-out infinite;
-    position: relative;
-    overflow: hidden;
+    letter-spacing: 0.4px;
 }
-.legend-btn::before {
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.legend-sep {
+    color: rgba(255,255,255,0.15);
+    font-size: 14px;
+}
+
+/* Stats text link — clean gold hyperlink */
+.stats-link-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.stats-text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(212, 175, 55, 0.65);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: 0.3px;
+    padding: 4px 2px;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    position: relative;
+}
+.stats-text-link::after {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.6s ease;
+    bottom: 0; left: 0;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width 0.3s ease;
 }
-.legend-btn:hover::before { transform: translateX(100%); }
-.legend-btn:hover {
-    background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(255,255,255,0.07));
-    border-color: var(--gold);
-    box-shadow: 0 6px 24px rgba(212,175,55,0.2), 0 0 0 1px rgba(212,175,55,0.1);
-    transform: translateY(-2px);
-}
-.legend-btn:active { transform: translateY(0); }
-
-.legend-btn-label {
-    margin-left: 6px;
-    padding-left: 12px;
-    border-left: 1px solid rgba(212,175,55,0.3);
+.stats-text-link:hover {
     color: var(--gold);
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    font-size: 10px;
+}
+.stats-text-link:hover::after {
+    width: 100%;
+}
+.stats-text-link:hover .stats-link-arrow {
+    transform: translateX(3px);
+}
+.stats-link-icon {
+    font-size: 13px;
+}
+.stats-link-arrow {
+    transition: transform 0.25s ease;
+    opacity: 0.8;
 }
 
 /* STATS MODAL TABS */
@@ -875,12 +883,8 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     #statsChartContainer > div:first-child > div:nth-child(2) {
         font-size: 26px !important;
     }
-    /* Legend button more compact */
-    .legend-btn {
-        padding: 8px 14px !important;
-        gap: 8px !important;
-        font-size: 10px !important;
-        /* Disable pulse animation — save battery */
-        animation: none !important;
+    /* Stats text link — compact on mobile */
+    .stats-text-link {
+        font-size: 11px !important;
     }
 }
