@@ -538,35 +538,43 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 }
 
 /* ========================================================= */
-/* OPTIMASI PERFORMA TINGKAT TINGGI UNTUK HP (MENCEGAH LAG)  */
+/* OPTIMASI PERFORMA TINGKAT TINGGI UNTUK HP (FAUX-GLASS)    */
 /* ========================================================= */
 @media (max-width: 768px) {
-    /* Matikan efek Kaca Buram (Blur) yang sangat menguras GPU HP */
+    /* Matikan efek Kaca Buram (Blur) yang menguras GPU HP */
     .glass-panel, 
     .floating-nav, 
-    .premium-badge {
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-    }
-    
-    /* Ganti efek transparan dengan warna solid pekat yang sangat ringan */
-    .glass-panel {
-        background-color: #032418 !important; /* Warna hijau gelap solid (var(--primary)) */
-        box-shadow: 0 4px 6px rgba(0,0,0,0.3) !important; /* Kurangi efek bayangan */
-    }
-    .floating-nav {
-        background-color: #01120a !important; /* Warna hitam hijau solid */
-    }
-    .premium-badge {
-        background-color: rgba(0, 0, 0, 0.5) !important; /* Gelap tipis, tanpa blur */
-    }
+    .premium-badge,
     .modal {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
-        background-color: rgba(0, 0, 0, 0.9) !important; /* Background hitam pekat */
     }
     
-    /* Matikan animasi rotasi bunga di background jika terlalu berat */
+    /* Ganti efek transparan dengan gradien halus (Faux Glass) yang 99% lebih ringan */
+    .glass-panel {
+        background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%) !important;
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3) !important;
+    }
+    
+    .floating-nav {
+        background: linear-gradient(to top, #01120a 50%, rgba(1, 18, 10, 0.95) 100%) !important; 
+        border-top: 1px solid rgba(212, 175, 55, 0.2) !important;
+    }
+    
+    .modal {
+        background: radial-gradient(circle at top right, rgba(3, 36, 24, 0.98), #01120a) !important; 
+        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    }
+    
+    /* Ganti bunga raksasa dengan cahaya latar (Glowing Orb) statis yang elegan */
+    body {
+        background-color: #01120a;
+        background-image: 
+            radial-gradient(circle at 100% 0%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 0% 100%, rgba(3, 54, 36, 0.4) 0%, transparent 50%) !important;
+    }
+    
     body::before {
         display: none !important;
     }
