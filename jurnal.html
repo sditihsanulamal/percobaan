@@ -1,54 +1,81 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jurnal Hafalan - Profesional Edition</title>
-    
+
     <!-- Font Premium -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
     <link rel="stylesheet" href="style.css?v=11">
 </head>
+
 <body>
 
     <header>
         <button class="header-btn menu-btn" onclick="toggleSidebarMenu()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
         </button>
 
         <span class="admin-badge" id="adminBadge">✓ MODE ADMIN</span>
-        
+
         <button class="header-btn admin-lock" onclick="document.getElementById('loginModal').classList.add('open')">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
         </button>
-        
+
         <h1>Memuat Kelas...</h1>
         <p>Jurnal Mutaba'ah Hafalan</p>
     </header>
 
     <div class="container">
-        
+
         <!-- TAB 1: Daftar Ananda -->
         <div id="tab-ananda" class="tab-content active">
             <div class="search-wrapper">
-                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <input type="text" id="searchInput" class="search-box" onkeyup="cariMurid()" placeholder="Cari nama ananda...">
+                <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="text" id="searchInput" class="search-box" onkeyup="cariMurid()"
+                    placeholder="Cari nama ananda...">
             </div>
             <!-- Tautan statistik elegan -->
             <div class="stats-link-row">
                 <button class="stats-text-link" onclick="window.openStatsModal()">
                     <span class="stats-link-icon">📊</span>
                     Lihat Statistik Hari Ini
-                    <svg class="stats-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <svg class="stats-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
                 </button>
             </div>
             <div id="muridList">
                 <div style="text-align: center; color: var(--gold-muted); margin-top: 40px; font-weight: 500;">
-                    <svg style="animation: spin 1s linear infinite; width:24px; height:24px; margin-bottom:10px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:0.25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity:0.75"></path></svg><br>
+                    <svg style="animation: spin 1s linear infinite; width:24px; height:24px; margin-bottom:10px;"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:0.25">
+                        </circle>
+                        <path fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            style="opacity:0.75"></path>
+                    </svg><br>
                     Memuat data mutaba'ah...
                 </div>
             </div>
@@ -73,27 +100,42 @@
                     <div class="mading-icon">🔄</div>
                     <div class="mading-title">Jadwal Muraja'ah<br>Harian</div>
                 </div>
-               <div class="glass-panel mading-card" style="grid-column: 1 / -1; flex-direction: row; text-align: left; padding: 25px;" onclick="openMading('jadwal-tilawah')">
+                <div class="glass-panel mading-card"
+                    style="grid-column: 1 / -1; flex-direction: row; text-align: left; padding: 25px;"
+                    onclick="openMading('jadwal-tilawah')">
                     <div class="mading-icon" style="font-size: 32px;">🎙️</div>
                     <div class="mading-title" style="flex: 1; font-size: 16px;">Jadwal Tilawah Live</div>
-                    <svg width="20" height="20" fill="none" stroke="var(--gold)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    <svg width="20" height="20" fill="none" stroke="var(--gold)" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
                 </div>
             </div>
         </div>
 
         <!-- TAB 3: Dokumentasi Hari Ini -->
         <div id="tab-dokumentasi" class="tab-content">
-            <div style="text-align: center; margin-bottom: 25px; font-size: 15px; font-weight: 500; color: var(--gold-muted); opacity: 0.9;">
+            <div
+                style="text-align: center; margin-bottom: 25px; font-size: 15px; font-weight: 500; color: var(--gold-muted); opacity: 0.9;">
                 Dokumentasi Kegiatan<br>
                 <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 5px;">
-                    <span id="teksTanggalDokumentasi" style="font-weight:700; color:var(--gold);">Memuat tanggal...</span>
-                    <button id="btnEditTanggal" class="btn-primary" style="display:none; padding: 4px 10px; font-size: 11px; width: auto; margin-top: 0; border-radius: 8px;" onclick="openMading('info-dokumentasi')">✏️ Edit</button>
+                    <span id="teksTanggalDokumentasi" style="font-weight:700; color:var(--gold);">Memuat
+                        tanggal...</span>
+                    <button id="btnEditTanggal" class="btn-primary"
+                        style="display:none; padding: 4px 10px; font-size: 11px; width: auto; margin-top: 0; border-radius: 8px;"
+                        onclick="openMading('info-dokumentasi')">✏️ Edit</button>
                 </div>
             </div>
-            
+
             <div class="gallery-grid" id="galleryGrid">
                 <div style="text-align:center; color:var(--gold-muted); margin-top:30px;">
-                    <svg style="animation: spin 1s linear infinite; width:24px; height:24px; margin-bottom:10px;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:0.25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity:0.75"></path></svg>
+                    <svg style="animation: spin 1s linear infinite; width:24px; height:24px; margin-bottom:10px;"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity:0.25">
+                        </circle>
+                        <path fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            style="opacity:0.75"></path>
+                    </svg>
                     <br>Memuat dokumentasi...
                 </div>
             </div>
@@ -103,15 +145,33 @@
     <!-- Floating Navigation -->
     <nav class="floating-nav">
         <button class="active" onclick="switchTab('tab-ananda', this)">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87"></path><path d="M16 3.13a4 4 0 010 7.75"></path></svg>
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 00-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 010 7.75"></path>
+            </svg>
             Ananda
         </button>
         <button onclick="switchTab('tab-pengumuman', this)">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
             Mading
         </button>
         <button onclick="switchTab('tab-dokumentasi', this)">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
             Galeri
         </button>
     </nav>
@@ -120,23 +180,30 @@
     <div id="progressModal" class="modal" onclick="closeModalOnBackdrop(event, 'progressModal')">
         <div class="modal-content">
             <div class="close-btn" onclick="closeModal('progressModal')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
             </div>
             <div class="modal-header">
                 <div class="modal-avatar" id="modalInitials">AF</div>
                 <h2 id="modalNama">Nama Ananda</h2>
                 <div id="badgeSetoranHarian" class="badge-harian">⏳ Belum Setor</div>
                 <div id="adminSetoranHarianContainer" class="admin-setoran-container">
-                    <button type="button" class="setoran-btn" data-val="sudah" onclick="pilihSetoranHarian('sudah')">✅ Sudah Setor</button>
-                    <button type="button" class="setoran-btn" data-val="berhalangan" onclick="pilihSetoranHarian('berhalangan')">🛑 Berhalangan</button>
-                    <button type="button" class="setoran-btn" data-val="izin" onclick="pilihSetoranHarian('izin')">🏥 Izin/Sakit</button>
-                    <button type="button" class="setoran-btn" data-val="belum" onclick="pilihSetoranHarian('belum')">❌ Belum Setor</button>
+                    <button type="button" class="setoran-btn" data-val="sudah" onclick="pilihSetoranHarian('sudah')">✅
+                        Sudah Setor</button>
+                    <button type="button" class="setoran-btn" data-val="berhalangan"
+                        onclick="pilihSetoranHarian('berhalangan')">🛑 Berhalangan</button>
+                    <button type="button" class="setoran-btn" data-val="izin" onclick="pilihSetoranHarian('izin')">🏥
+                        Izin/Sakit</button>
+                    <button type="button" class="setoran-btn" data-val="belum" onclick="pilihSetoranHarian('belum')">❌
+                        Belum Setor</button>
                 </div>
                 <input type="hidden" id="valSetoranHarian" value="belum">
             </div>
 
             <input type="hidden" id="editId">
-            
+
             <!-- Dashboard Card: Al-Qur'an -->
             <div class="detail-card">
                 <div class="card-header-flex">
@@ -147,18 +214,23 @@
                     </div>
                     <div id="quranGradeContainer" class="quran-grade-wrapper admin-select-status">
                         <input type="hidden" id="editStatusQuran" value="belum">
-                        
+
                         <!-- Segmented Pill -->
                         <div class="grade-pill-group">
-                            <button type="button" class="grade-pill-btn" data-grade="A" onclick="window.pilihGradeQuran('A')">A</button>
-                            <button type="button" class="grade-pill-btn" data-grade="B" onclick="window.pilihGradeQuran('B')">B</button>
-                            <button type="button" class="grade-pill-btn" data-grade="C" onclick="window.pilihGradeQuran('C')">C</button>
-                            <button type="button" class="grade-pill-btn" data-grade="D" onclick="window.pilihGradeQuran('D')">D</button>
+                            <button type="button" class="grade-pill-btn" data-grade="A"
+                                onclick="window.pilihGradeQuran('A')">A</button>
+                            <button type="button" class="grade-pill-btn" data-grade="B"
+                                onclick="window.pilihGradeQuran('B')">B</button>
+                            <button type="button" class="grade-pill-btn" data-grade="C"
+                                onclick="window.pilihGradeQuran('C')">C</button>
+                            <button type="button" class="grade-pill-btn" data-grade="D"
+                                onclick="window.pilihGradeQuran('D')">D</button>
                         </div>
-                        
+
                         <!-- Dropdown Angka Custom -->
                         <div id="customDropdownContainer" class="custom-dropdown-container">
-                            <button type="button" id="customDropdownBtn" class="custom-dropdown-btn" onclick="window.toggleCustomDropdown()">
+                            <button type="button" id="customDropdownBtn" class="custom-dropdown-btn"
+                                onclick="window.toggleCustomDropdown()">
                                 <span id="customDropdownText">--</span>
                                 <span class="chevron">▼</span>
                             </button>
@@ -181,30 +253,36 @@
                             <button type="button" class="chip-btn" onclick="tambahAyatPintar(1)">+1 Ayat</button>
                             <button type="button" class="chip-btn" onclick="tambahAyatPintar(3)">+3 Ayat</button>
                             <button type="button" class="chip-btn" onclick="tambahAyatPintar(5)">+5 Ayat</button>
-                            <button type="button" class="chip-btn" onclick="tambahAyatPintar('ulangi')">🔄 Muraja'ah</button>
+                            <button type="button" class="chip-btn" onclick="tambahAyatPintar('ulangi')">🔄
+                                Muraja'ah</button>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Dashboard Card: Hadits -->
             <div class="detail-card">
                 <div class="card-header-flex">
                     <div class="detail-header">
                         <div class="detail-icon">📜</div>
-                        <span class="detail-label">Hadits (Mingguan)</span>
+                        <span class="detail-label">Hadits</span>
                         <div id="badgeHadits" class="status-badge"></div>
                     </div>
                     <input type="hidden" id="editStatusHadits" value="belum">
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div id="haditsChips" class="grade-pill-group admin-select-status" style="display:none;">
-                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="A" onclick="window.pilihGradeHadits('A')">A</button>
-                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="B" onclick="window.pilihGradeHadits('B')">B</button>
-                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="C" onclick="window.pilihGradeHadits('C')">C</button>
-                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="D" onclick="window.pilihGradeHadits('D')">D</button>
+                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="A"
+                                onclick="window.pilihGradeHadits('A')">A</button>
+                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="B"
+                                onclick="window.pilihGradeHadits('B')">B</button>
+                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="C"
+                                onclick="window.pilihGradeHadits('C')">C</button>
+                            <button type="button" class="grade-pill-btn hadits-pill-btn" data-grade="D"
+                                onclick="window.pilihGradeHadits('D')">D</button>
                         </div>
                         <div id="haditsDropdownContainer" class="custom-dropdown-container" style="display:none;">
-                            <button type="button" id="haditsDropdownBtn" class="custom-dropdown-btn" onclick="window.toggleHaditsDropdown()">
+                            <button type="button" id="haditsDropdownBtn" class="custom-dropdown-btn"
+                                onclick="window.toggleHaditsDropdown()">
                                 <span id="haditsDropdownText">--</span>
                                 <span class="chevron">▼</span>
                             </button>
@@ -224,25 +302,30 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Dashboard Card: Doa -->
             <div class="detail-card">
                 <div class="card-header-flex">
                     <div class="detail-header">
                         <div class="detail-icon">🤲</div>
-                        <span class="detail-label">Doa (Mingguan)</span>
+                        <span class="detail-label">Doa</span>
                         <div id="badgeDoa" class="status-badge"></div>
                     </div>
                     <input type="hidden" id="editStatusDoa" value="belum">
                     <div style="display:flex; align-items:center; gap:10px;">
                         <div id="doaChips" class="grade-pill-group admin-select-status" style="display:none;">
-                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="A" onclick="window.pilihGradeDoa('A')">A</button>
-                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="B" onclick="window.pilihGradeDoa('B')">B</button>
-                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="C" onclick="window.pilihGradeDoa('C')">C</button>
-                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="D" onclick="window.pilihGradeDoa('D')">D</button>
+                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="A"
+                                onclick="window.pilihGradeDoa('A')">A</button>
+                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="B"
+                                onclick="window.pilihGradeDoa('B')">B</button>
+                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="C"
+                                onclick="window.pilihGradeDoa('C')">C</button>
+                            <button type="button" class="grade-pill-btn doa-pill-btn" data-grade="D"
+                                onclick="window.pilihGradeDoa('D')">D</button>
                         </div>
                         <div id="doaDropdownContainer" class="custom-dropdown-container" style="display:none;">
-                            <button type="button" id="doaDropdownBtn" class="custom-dropdown-btn" onclick="window.toggleDoaDropdown()">
+                            <button type="button" id="doaDropdownBtn" class="custom-dropdown-btn"
+                                onclick="window.toggleDoaDropdown()">
                                 <span id="doaDropdownText">--</span>
                                 <span class="chevron">▼</span>
                             </button>
@@ -262,8 +345,9 @@
                     </div>
                 </div>
             </div>
-            
-            <button id="btnSaveMurid" class="btn-primary" style="display:none;" onclick="simpanDataMurid()">Simpan Perubahan Dasbor</button>
+
+            <button id="btnSaveMurid" class="btn-primary" style="display:none;" onclick="simpanDataMurid()">Simpan
+                Perubahan Dasbor</button>
         </div>
     </div>
 
@@ -271,43 +355,56 @@
     <div id="madingModal" class="modal center-modal" onclick="closeModalOnBackdrop(event, 'madingModal')">
         <div class="modal-content">
             <div class="close-btn" onclick="closeModal('madingModal')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
             </div>
-            
-            <h2 id="madingTitleText" style="font-size: 20px; font-weight: 700; color: var(--gold); text-align: center; margin-bottom: 24px; padding: 0 10px;">Judul Mading</h2>
-            <input type="text" id="editMadingTitle" class="admin-input" style="display:none; font-weight:700; margin-bottom:20px; text-align: center; font-size: 18px;" placeholder="Judul Mading">
-            
+
+            <h2 id="madingTitleText"
+                style="font-size: 20px; font-weight: 700; color: var(--gold); text-align: center; margin-bottom: 24px; padding: 0 10px;">
+                Judul Mading</h2>
+            <input type="text" id="editMadingTitle" class="admin-input"
+                style="display:none; font-weight:700; margin-bottom:20px; text-align: center; font-size: 18px;"
+                placeholder="Judul Mading">
+
             <div id="madingContent"></div>
 
             <!-- Area Form Admin Mading -->
             <div id="madingAdminFormArea" style="display:none;">
-                
+
                 <!-- Form Info Dokumentasi -->
                 <div id="form-info-dokumentasi" class="admin-form-mading" style="display:none;">
                     <div class="detail-label" style="margin-bottom:8px;">Tanggal Dokumentasi</div>
-                    <input type="text" id="fdok-tanggal" class="admin-input" placeholder="Misal: Kamis, 27 Agustus 2026" style="margin-bottom:16px;">
-                    
+                    <input type="text" id="fdok-tanggal" class="admin-input" placeholder="Misal: Kamis, 27 Agustus 2026"
+                        style="margin-bottom:16px;">
+
                     <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 16px; margin-top: 8px;">
                         <div class="detail-label" style="margin-bottom:12px;">📸 URL Foto Dokumentasi</div>
-                        
+
                         <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px; line-height: 1.5;">
-                            Upload foto ke PostImg, lalu pastikan Anda menyalin <b>"Direct links" (Tautan langsung)</b>.<br>
-                            <a href="https://postimages.org/" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--mumtaz); text-decoration:none; margin-top:10px; background:rgba(59,130,246,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(59,130,246,0.3); transition:all 0.2s;">
+                            Upload foto ke PostImg, lalu pastikan Anda menyalin <b>"Direct links" (Tautan
+                                langsung)</b>.<br>
+                            <a href="https://postimages.org/" target="_blank"
+                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--mumtaz); text-decoration:none; margin-top:10px; background:rgba(59,130,246,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(59,130,246,0.3); transition:all 0.2s;">
                                 🖼️ Buka Web PostImg
                             </a>
                         </div>
-                        
+
                         <div style="margin-bottom:12px;">
                             <span class="audio-url-label">Foto 1 — Pembacaan Zikir Pagi</span>
-                            <input type="text" id="fdok-foto1" class="admin-input" placeholder="Tempel URL Tautan Langsung...">
+                            <input type="text" id="fdok-foto1" class="admin-input"
+                                placeholder="Tempel URL Tautan Langsung...">
                         </div>
                         <div style="margin-bottom:12px;">
                             <span class="audio-url-label">Foto 2 — Sholat Dhuha</span>
-                            <input type="text" id="fdok-foto2" class="admin-input" placeholder="Tempel URL Tautan Langsung...">
+                            <input type="text" id="fdok-foto2" class="admin-input"
+                                placeholder="Tempel URL Tautan Langsung...">
                         </div>
                         <div>
                             <span class="audio-url-label">Foto 3 — Muraja'ah Hafalan</span>
-                            <input type="text" id="fdok-foto3" class="admin-input" placeholder="Tempel URL Tautan Langsung...">
+                            <input type="text" id="fdok-foto3" class="admin-input"
+                                placeholder="Tempel URL Tautan Langsung...">
                         </div>
                     </div>
                 </div>
@@ -323,11 +420,13 @@
                     <input type="text" id="fq-surah" class="admin-input" style="margin-bottom:16px;">
                     <div class="detail-label" style="margin-bottom:8px;">Ayat</div>
                     <input type="text" id="fq-ayat" class="admin-input" style="margin-bottom:20px;">
-                    
+
                     <div class="audio-url-section">
                         <span class="audio-url-label">🎙️ URL Audio Rekaman Al-Qur'an (Opsional)</span>
-                        <input type="text" id="fq-audio" class="admin-input" placeholder="https://voca.ro/... (tempel URL audio)">
-                        <a href="https://vocaroo.com" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                        <input type="text" id="fq-audio" class="admin-input"
+                            placeholder="https://voca.ro/... (tempel URL audio)">
+                        <a href="https://vocaroo.com" target="_blank"
+                            style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
                             🎙️ Rekam Suara di Vocaroo
                         </a>
                     </div>
@@ -335,13 +434,21 @@
 
                 <!-- Form Hadits & Doa -->
                 <div id="form-target-hadits" class="admin-form-mading" style="display:none;">
-                    <div style="font-weight:700; color:var(--gold); margin-bottom:15px; font-size:14px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:5px;">📋 TARGET HADITS</div>
+                    <div
+                        style="font-weight:700; color:var(--gold); margin-bottom:15px; font-size:14px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:5px;">
+                        📋 TARGET HADITS</div>
                     <div id="container-hadits"></div>
-                    <button type="button" onclick="window.tambahItemMading('hadits')" class="btn-primary" style="margin-bottom:30px; font-size:12px; padding:8px 15px; width:auto; border-radius:8px; background:rgba(212,175,55,0.1); color:var(--gold); border:1px solid var(--gold);">+ Tambah Hadits Lainnya</button>
+                    <button type="button" onclick="window.tambahItemMading('hadits')" class="btn-primary"
+                        style="margin-bottom:30px; font-size:12px; padding:8px 15px; width:auto; border-radius:8px; background:rgba(212,175,55,0.1); color:var(--gold); border:1px solid var(--gold);">+
+                        Tambah Hadits Lainnya</button>
 
-                    <div style="font-weight:700; color:var(--gold); margin-bottom:15px; font-size:14px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:5px;">📋 TARGET DOA</div>
+                    <div
+                        style="font-weight:700; color:var(--gold); margin-bottom:15px; font-size:14px; border-bottom:1px solid rgba(212,175,55,0.3); padding-bottom:5px;">
+                        📋 TARGET DOA</div>
                     <div id="container-doa"></div>
-                    <button type="button" onclick="window.tambahItemMading('doa')" class="btn-primary" style="margin-bottom:10px; font-size:12px; padding:8px 15px; width:auto; border-radius:8px; background:rgba(212,175,55,0.1); color:var(--gold); border:1px solid var(--gold);">+ Tambah Doa Lainnya</button>
+                    <button type="button" onclick="window.tambahItemMading('doa')" class="btn-primary"
+                        style="margin-bottom:10px; font-size:12px; padding:8px 15px; width:auto; border-radius:8px; background:rgba(212,175,55,0.1); color:var(--gold); border:1px solid var(--gold);">+
+                        Tambah Doa Lainnya</button>
                 </div>
 
                 <!-- Form Tilawah -->
@@ -352,8 +459,9 @@
                     <div id="imam-fields-container"></div>
                 </div>
             </div>
-            
-            <button id="btnSaveMading" class="btn-primary" style="display:none;" onclick="simpanDataMading()">Simpan Pengumuman</button>
+
+            <button id="btnSaveMading" class="btn-primary" style="display:none;" onclick="simpanDataMading()">Simpan
+                Pengumuman</button>
         </div>
     </div>
 
@@ -361,19 +469,27 @@
     <div id="loginModal" class="modal center-modal" onclick="closeModalOnBackdrop(event, 'loginModal')">
         <div class="modal-content" style="max-width: 360px; padding: 40px 30px;">
             <div class="close-btn" onclick="closeModal('loginModal')">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
             </div>
             <h2 style="text-align: center; color: var(--gold); margin-bottom: 8px; font-weight: 700;">Akses Admin</h2>
-            <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:24px;" id="loginKelasInfo">Masuk sebagai guru kelas ini</p>
+            <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:24px;"
+                id="loginKelasInfo">Masuk sebagai guru kelas ini</p>
             <div id="loginForm">
                 <input type="email" id="adminEmail" class="admin-input" placeholder="Email Admin">
-                <input type="password" id="adminPassword" class="admin-input" placeholder="Password" style="margin-top: 16px;">
+                <input type="password" id="adminPassword" class="admin-input" placeholder="Password"
+                    style="margin-top: 16px;">
                 <button class="btn-primary" onclick="loginAdmin()">Masuk Dashboard</button>
             </div>
             <div id="logoutForm" style="display: none; text-align: center;">
-                <div style="width:60px; height:60px; border-radius:50%; background:rgba(16, 185, 129, 0.2); color:var(--success); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:24px;">✓</div>
+                <div
+                    style="width:60px; height:60px; border-radius:50%; background:rgba(16, 185, 129, 0.2); color:var(--success); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:24px;">
+                    ✓</div>
                 <p id="loggedInAs" style="margin-bottom: 8px; font-size: 13px; color: #fff; font-weight:600;"></p>
-                <p style="margin-bottom: 24px; font-size: 12px; color: var(--text-muted);">Sesi admin sedang aktif. Anda dapat mengedit data mutaba'ah dan mading.</p>
+                <p style="margin-bottom: 24px; font-size: 12px; color: var(--text-muted);">Sesi admin sedang aktif. Anda
+                    dapat mengedit data mutaba'ah dan mading.</p>
                 <button class="btn-primary btn-danger" onclick="logoutAdmin()">Akhiri Sesi (Logout)</button>
             </div>
         </div>
@@ -388,22 +504,38 @@
                     <p>Executive Menu</p>
                 </div>
                 <div class="sidebar-close-btn" onclick="toggleSidebarMenu()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                 </div>
             </div>
             <div class="sidebar-content">
                 <a href="index.html" class="sidebar-item">
                     <div class="sidebar-icon-wrap">
-                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
                     </div>
                     <div class="sidebar-text">
                         <div class="sidebar-text-title">Portal Utama</div>
                         <div class="sidebar-text-desc">Kembali ke halaman pemilihan kelas.</div>
                     </div>
                 </a>
-                <a href="javascript:void(0)" onclick="window.location.href='rapor-mutabaah.html?kelas=' + window.kelasTarget" class="sidebar-item">
+                <a href="javascript:void(0)"
+                    onclick="window.location.href='rapor-mutabaah.html?kelas=' + window.kelasTarget"
+                    class="sidebar-item">
                     <div class="sidebar-icon-wrap">
-                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
                     </div>
                     <div class="sidebar-text">
                         <div class="sidebar-text-title">Rapor Semester</div>
@@ -419,16 +551,19 @@
     <div id="statsModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
         <div class="modal-content" style="max-width: 500px; max-height: 90vh; display: flex; flex-direction: column;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h3 style="color:var(--gold); font-family: 'Playfair Display', serif; font-size: 20px; font-weight:700;">Statistik Hari Ini</h3>
-                <button type="button" class="stats-close-btn" onclick="document.getElementById('statsModal').classList.remove('open')">×</button>
+                <h3
+                    style="color:var(--gold); font-family: 'Playfair Display', serif; font-size: 20px; font-weight:700;">
+                    Statistik Hari Ini</h3>
+                <button type="button" class="stats-close-btn"
+                    onclick="document.getElementById('statsModal').classList.remove('open')">×</button>
             </div>
-            
+
             <div class="stats-tabs">
                 <button class="stats-tab-btn active" onclick="window.switchStatsTab('quran')">Al-Qur'an</button>
                 <button class="stats-tab-btn" onclick="window.switchStatsTab('hadits')">Hadits</button>
                 <button class="stats-tab-btn" onclick="window.switchStatsTab('doa')">Doa</button>
             </div>
-            
+
             <div id="statsChartContainer" style="overflow-y: auto; flex: 1; padding-right: 5px;">
                 <!-- Bar Charts will be injected here by app.js -->
             </div>
@@ -438,4 +573,5 @@
     <!-- Panggil File JS Eksternal (Menggunakan type="module" dan Cache Busting) -->
     <script type="module" src="app.js?v=10"></script>
 </body>
+
 </html>
