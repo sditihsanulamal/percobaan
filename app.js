@@ -1090,60 +1090,62 @@ window.openStatsModal = () => {
 
 window.switchStatsTab = (tab) => {
     window.currentStatsTab = tab;
-    // Update active tab button
     document.querySelectorAll('.stats-tab-btn').forEach(btn => {
-        if (btn.innerText.toLowerCase().includes(tab) || (tab==='quran' && btn.innerText.includes("Qur'an"))) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
+        const matches = btn.innerText.toLowerCase().includes(tab) || 
+                        (tab === 'quran' && btn.innerText.includes("Qur'an"));
+        btn.classList.toggle('active', matches);
     });
-    
     renderStatsChart(tab);
 };
 
 window.toggleStatList = (id) => {
     const list = document.getElementById(id);
-    if (list) {
-        list.classList.toggle('open');
+    const hint = document.getElementById('hint-' + id);
+    if (!list) return;
+    const isOpen = list.classList.toggle('open');
+    if (hint) {
+        hint.classList.toggle('expanded', isOpen);
+        const arrow = hint.querySelector('.stat-bar-hint-arrow');
+        if (arrow) arrow.textContent = isOpen ? '▲' : '▼';
+        hint.querySelector('.hint-text').textContent = isOpen ? 'Sembunyikan daftar nama' : 'Ketuk untuk lihat daftar nama';
     }
 };
 
 function renderStatsChart(tab) {
     const container = document.getElementById('statsChartContainer');
     const hariIni = window.getTanggalHariIni();
-    
-    let stats = {
-        'A': { title: 'Nilai A (Melampaui Target)', class: 'a', names: [] },
-        'B': { title: 'Nilai B (Tuntas)', class: 'b', names: [] },
-        'C': { title: 'Nilai C (Sedang Proses)', class: 'c', names: [] },
-        'BelumHariIni': { title: 'Belum Setor Hari Ini', class: 'd', names: [] },
-        'BelumSamaSekali': { title: 'Tidak Setor Sama Sekali', class: 'e', names: [] }
-    };
-    
-    let totalMurid = dataMuridDinamis.length;
+
+    const categoryDef = [
+        { key: 'A',              title: 'Nilai A — Melampaui Target', icon: '👑', cls: 'a' },
+        { key: 'B',              title: 'Nilai B — Tuntas',           icon: '🌟', cls: 'b' },
+        { key: 'C',              title: 'Nilai C — Sedang Proses',    icon: '🔆', cls: 'c' },
+        { key: 'BelumHariIni',   title: 'Belum Setor Hari Ini',      icon: '⏳', cls: 'd' },
+        { key: 'BelumSamaSekali',title: 'Tidak Setor Sama Sekali',   icon: '🚫', cls: 'e' },
+    ];
+
+    const stats = {};
+    categoryDef.forEach(c => { stats[c.key] = { ...c, names: [] }; });
+
+    const totalMurid = dataMuridDinamis.length;
     if (totalMurid === 0) {
-        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">Belum ada data murid.</div>';
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:30px 20px;">Belum ada data murid untuk kelas ini.</div>';
         return;
     }
-    
+
     dataMuridDinamis.forEach(murid => {
-        // Tentukan kolom database berdasarkan tab
         let statusField = '';
-        if (tab === 'quran') statusField = murid.quranStatus;
+        if (tab === 'quran')      statusField = murid.quranStatus;
         else if (tab === 'hadits') statusField = murid.haditsStatus;
-        else if (tab === 'doa') statusField = murid.doaStatus;
-        
+        else if (tab === 'doa')    statusField = murid.doaStatus;
+
         const hasDepositedToday = (murid.tanggalSetor === hariIni) && (murid.setoranHarian !== 'belum');
-        
+
         if (hasDepositedToday) {
-            if (statusField === 'A') stats['A'].names.push(murid.nama);
+            if      (statusField === 'A') stats['A'].names.push(murid.nama);
             else if (statusField === 'B') stats['B'].names.push(murid.nama);
             else if (statusField === 'C') stats['C'].names.push(murid.nama);
-            else stats['BelumHariIni'].names.push(murid.nama); // 'D' or unknown but deposited today
+            else stats['BelumHariIni'].names.push(murid.nama);
         } else {
-            // Did not deposit today
-            // Check if they NEVER deposited (status is empty, undefined, or 'belum')
             if (!statusField || statusField === 'belum') {
                 stats['BelumSamaSekali'].names.push(murid.nama);
             } else {
@@ -1151,43 +1153,63 @@ function renderStatsChart(tab) {
             }
         }
     });
-    
-    let html = '';
-    const categories = ['A', 'B', 'C', 'BelumHariIni', 'BelumSamaSekali'];
-    
-    categories.forEach(cat => {
-        const data = stats[cat];
+
+    // Summary row at top
+    const tuntas = stats['A'].names.length + stats['B'].names.length + stats['C'].names.length;
+    const belum = stats['BelumHariIni'].names.length + stats['BelumSamaSekali'].names.length;
+    const pct = Math.round((tuntas / totalMurid) * 100);
+    const emoji = pct === 100 ? '🎉' : pct >= 70 ? '💪' : pct >= 40 ? '📈' : '🕐';
+
+    let html = `
+        <div style="text-align:center; padding: 12px 0 18px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 16px;">
+            <div style="font-size: 36px; line-height:1; margin-bottom:6px;">${emoji}</div>
+            <div style="font-size:22px; font-weight:800; color: var(--gold);">${tuntas} / ${totalMurid}</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:3px; letter-spacing:0.5px;">SUDAH SETOR HARI INI &nbsp;·&nbsp; ${pct}% Ketuntasan</div>
+        </div>
+    `;
+
+    categoryDef.forEach(cat => {
+        const data = stats[cat.key];
         const count = data.names.length;
         const percentage = Math.round((count / totalMurid) * 100) || 0;
-        const listId = `stat-list-${tab}-${cat}`;
-        
-        // Buat list nama
-        let namesHtml = data.names.map(n => `<div>• ${n}</div>`).join('');
-        if (count === 0) namesHtml = `<div style="opacity:0.5;">Tidak ada murid di kategori ini.</div>`;
-        
+        const listId = `stat-list-${tab}-${cat.key}`;
+        const hintId  = `hint-${listId}`;
+
+        const chipsHtml = count > 0
+            ? data.names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
+            : `<span style="opacity:0.4; font-size:11px;">Tidak ada murid di kategori ini.</span>`;
+
         html += `
             <div class="stat-bar-container">
                 <div class="stat-bar-header">
-                    <span class="stat-color-${data.class}">${data.title}</span>
-                    <span>${count} Anak (${percentage}%)</span>
+                    <span class="stat-color-${cat.cls}" style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:14px;">${cat.icon}</span>
+                        ${cat.title}
+                    </span>
+                    <span class="stat-bar-count-badge">${count} anak</span>
                 </div>
                 <div class="stat-bar-track" onclick="window.toggleStatList('${listId}')">
-                    <div class="stat-bar-fill stat-bg-${data.class}" style="width: 0%;" data-width="${percentage}%"></div>
+                    <div class="stat-bar-fill stat-bg-${cat.cls}" style="width:0%;" data-width="${percentage}%"></div>
                 </div>
-                <div id="${listId}" class="stat-names-list stat-color-${data.class}">
-                    ${namesHtml}
+                <div id="${hintId}" class="stat-bar-hint" onclick="window.toggleStatList('${listId}')">
+                    <span class="stat-bar-hint-arrow">▼</span>
+                    <span class="hint-text">Ketuk untuk lihat daftar nama</span>
+                    <span style="margin-left:auto; opacity:0.4;">${percentage}%</span>
+                </div>
+                <div id="${listId}" class="stat-names-list stat-color-${cat.cls}">
+                    <div style="margin-bottom:4px; font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:0.5px;">Daftar Nama</div>
+                    ${chipsHtml}
                 </div>
             </div>
         `;
     });
-    
+
     container.innerHTML = html;
-    
-    // Trigger CSS animation for bars
+
+    // Staggered bar animation
     setTimeout(() => {
-        const bars = container.querySelectorAll('.stat-bar-fill');
-        bars.forEach(bar => {
+        container.querySelectorAll('.stat-bar-fill').forEach(bar => {
             bar.style.width = bar.getAttribute('data-width');
         });
-    }, 50);
+    }, 80);
 }
