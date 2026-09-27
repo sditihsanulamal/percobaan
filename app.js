@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache, collection, onSnapshot, getDocs, doc, setDoc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -12,7 +12,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// Strategi 1: Aktifkan offline persistence — data di-cache di browser, hemat read saat refresh
+const db = initializeFirestore(app, { localCache: persistentLocalCache() });
 const auth = getAuth(app);
 
 // MULTI-KELAS DINAMIS
@@ -44,8 +45,8 @@ window.currentMadingId = null;
 
 window.getJumlahRakaat = () => {
     const tingkat = parseInt(window.kelasTarget.charAt(0));
-    if (tingkat >= 1 && tingkat <= 2) return 2;
-    if (tingkat === 6) return 6; 
+    if (tingkat === 1) return 2;
+    if (tingkat === 6) return 6;
     return 4;
 };
 window.toggleSidebarMenu = () => document.getElementById('mainSidebar').classList.toggle('open');
@@ -53,19 +54,19 @@ window.toggleSidebarMenu = () => document.getElementById('mainSidebar').classLis
 window.tambahItemMading = (type, data = {}) => {
     const isHadits = type === 'hadits';
     const container = document.getElementById(isHadits ? 'container-hadits' : 'container-doa');
-    
+
     let html = `<div class="dinamis-item" style="border:1px dashed rgba(212,175,55,0.4); padding:15px; margin-bottom:15px; border-radius:8px; position:relative;">
         <button type="button" onclick="this.parentElement.remove()" style="position:absolute; top:10px; right:10px; background:rgba(255,59,48,0.2); color:#ff3b30; border:1px solid #ff3b30; border-radius:4px; padding:4px 8px; font-size:10px; cursor:pointer;">Hapus</button>
         <div class="detail-label" style="margin-bottom:8px;">Judul ${isHadits ? 'Hadits' : 'Doa'}</div>
         <input type="text" class="admin-input dyn-judul" value="${data.judul || ''}" style="margin-bottom:10px;">
         <div class="detail-label" style="margin-bottom:8px;">Teks Arab ${isHadits ? 'Hadits' : 'Doa'}</div>
         <textarea class="admin-input dyn-arab" rows="2" style="font-family:'Amiri'; font-size:18px; direction:rtl; margin-bottom:10px;">${data.arab || ''}</textarea>`;
-        
+
     if (!isHadits) {
         html += `<div class="detail-label" style="margin-bottom:8px;">Latin Doa</div>
                  <textarea class="admin-input dyn-latin" rows="2" style="margin-bottom:10px;">${data.latin || ''}</textarea>`;
     }
-    
+
     html += `<div class="detail-label" style="margin-bottom:8px;">Arti ${isHadits ? 'Hadits' : 'Doa'}</div>
              <textarea class="admin-input dyn-arti" rows="2" style="margin-bottom:16px;">${data.arti || ''}</textarea>
              <div class="audio-url-section" style="margin-bottom:10px;">
@@ -76,7 +77,7 @@ window.tambahItemMading = (type, data = {}) => {
                  </a>
              </div>
         </div>`;
-    
+
     container.insertAdjacentHTML('beforeend', html);
 };
 
@@ -104,7 +105,7 @@ function renderGaleri(fields) {
         if (rawInput) {
             const regexSrc = /src=["'](.*?)["']/;
             const regexBbcode = /\[img\](.*?)\[\/img\]/i;
-            
+
             if (regexSrc.test(rawInput)) {
                 finalUrl = rawInput.match(regexSrc)[1];
             } else if (regexBbcode.test(rawInput)) {
@@ -114,7 +115,7 @@ function renderGaleri(fields) {
             } else if (rawInput.includes('ibb.co/')) {
                 needsExtract = true;
             } else {
-                finalUrl = rawInput; 
+                finalUrl = rawInput;
             }
         }
 
@@ -161,7 +162,7 @@ function renderGaleri(fields) {
             .then(data => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(data.contents, "text/html");
-                
+
                 let directUrl = '';
                 const ogImage = doc.querySelector('meta[property="og:image"]');
                 const linkImage = doc.querySelector('link[rel="image_src"]');
@@ -192,9 +193,10 @@ function renderGaleri(fields) {
 renderGaleri(null);
 let lastGaleriSig = JSON.stringify(null);
 
-onSnapshot(collection(db, koleksiMading), (snapshot) => {
+// Strategi 4: Handler data dipisah menjadi fungsi agar bisa dipakai baik oleh onSnapshot maupun getDocs
+function handleMadingSnapshot(snapshot) {
     dataMadingDinamis = {};
-    snapshot.forEach((doc) => { dataMadingDinamis[doc.id] = doc.data(); });
+    snapshot.forEach((docSnap) => { dataMadingDinamis[docSnap.id] = docSnap.data(); });
 
     const infoDok = dataMadingDinamis['info-dokumentasi'];
     const f = (infoDok && infoDok.fields) ? infoDok.fields : null;
@@ -208,7 +210,22 @@ onSnapshot(collection(db, koleksiMading), (snapshot) => {
         lastGaleriSig = sig;
         renderGaleri(f);
     }
-});
+}
+
+function handleMuridSnapshot(snapshot) {
+    if (!snapshot.empty) {
+        dataMuridDinamis = [];
+        snapshot.forEach((docSnap) => { dataMuridDinamis.push({ id: docSnap.id, ...docSnap.data() }); });
+        dataMuridDinamis.sort((a, b) => a.nama.localeCompare(b.nama));
+        window.renderMurid();
+    } else {
+        document.getElementById('muridList').innerHTML = '<div style="text-align:center; color:var(--gold-muted); margin-top:40px; font-weight:500; grid-column:1/-1;">Belum ada data murid untuk kelas ' + window.kelasTarget + '.<br>Silakan tambahkan data via halaman Setup Murid.</div>';
+    }
+}
+
+// Referensi unsubscribe untuk membersihkan listener lama saat role berubah
+let unsubMading = null;
+let unsubMurid = null;
 
 onAuthStateChanged(auth, (user) => {
     isAdmin = !!user;
@@ -216,20 +233,23 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById('loginForm').style.display = isAdmin ? 'none' : 'block';
     document.getElementById('logoutForm').style.display = isAdmin ? 'block' : 'none';
     document.getElementById('btnEditTanggal').style.display = isAdmin ? 'inline-block' : 'none';
-    
+
     if (isAdmin && user.email) {
         document.getElementById('loggedInAs').innerText = '✉️ ' + user.email;
     }
-});
 
-onSnapshot(collection(db, koleksiMurid), (snapshot) => {
-    if (!snapshot.empty) {
-        dataMuridDinamis = [];
-        snapshot.forEach((doc) => { dataMuridDinamis.push({ id: doc.id, ...doc.data() }); });
-        dataMuridDinamis.sort((a, b) => a.nama.localeCompare(b.nama));
-        window.renderMurid();
+    // Bersihkan listener lama sebelum pasang yang baru
+    if (unsubMading) { unsubMading(); unsubMading = null; }
+    if (unsubMurid) { unsubMurid(); unsubMurid = null; }
+
+    if (isAdmin) {
+        // Guru (admin): real-time listener — selalu dapat update otomatis
+        unsubMading = onSnapshot(collection(db, koleksiMading), handleMadingSnapshot);
+        unsubMurid = onSnapshot(collection(db, koleksiMurid), handleMuridSnapshot);
     } else {
-        document.getElementById('muridList').innerHTML = '<div style="text-align:center; color:var(--gold-muted); margin-top:40px; font-weight:500; grid-column:1/-1;">Belum ada data murid untuk kelas ' + window.kelasTarget + '.<br>Silakan tambahkan data via halaman Setup Murid.</div>';
+        // Wali murid / publik: ambil sekali saja — hemat read, cache persistence yang urus sisanya
+        getDocs(collection(db, koleksiMading)).then(handleMadingSnapshot);
+        getDocs(collection(db, koleksiMurid)).then(handleMuridSnapshot);
     }
 });
 
@@ -246,7 +266,7 @@ window.renderMurid = () => {
             if (status === 'C' || status === 'proses') return 'proses';
             return 'belum';
         };
-        
+
         let cssQ = getCssClass(murid.quranStatus);
         let cssH = getCssClass(murid.haditsStatus);
         let cssD = getCssClass(murid.doaStatus);
@@ -290,50 +310,50 @@ window.switchTab = (tabId, btn) => {
 
 const setBadge = (elementId, status, nilaiAngka) => {
     const el = document.getElementById(elementId);
-    
+
     let grade = status;
     if (status === 'mumtaz') grade = 'A';
     else if (status === 'tuntas') grade = 'B';
     else if (status === 'proses') grade = 'C';
     else if (status === 'belum') grade = 'D';
-    else if (!['A','B','C','D'].includes(status)) grade = 'D';
+    else if (!['A', 'B', 'C', 'D'].includes(status)) grade = 'D';
 
     let cssClass = 'belum';
     if (grade === 'A') cssClass = 'mumtaz';
     else if (grade === 'B') cssClass = 'tuntas';
     else if (grade === 'C') cssClass = 'proses';
-    
+
     el.className = 'dot ' + cssClass;
-    
+
     if (['badgeQuran', 'badgeHadits', 'badgeDoa'].includes(elementId)) {
         el.style.width = 'auto'; el.style.height = 'auto'; el.style.padding = '4px 8px'; el.style.borderRadius = '12px'; el.style.fontSize = '11px'; el.style.fontWeight = 'bold';
         if (grade === 'D' && (!nilaiAngka || nilaiAngka == 0)) {
-             el.innerText = 'Belum Setor';
-             el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)';
+            el.innerText = 'Belum Setor';
+            el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)';
         } else {
-             let prefix = isAdmin ? `Nilai: ${nilaiAngka || '-'} ` : ``;
-             let kurungBuka = isAdmin ? `(` : ``;
-             let kurungTutup = isAdmin ? `)` : ``;
-             
-             if (grade === 'A') { 
-                 el.className = 'status-badge premium-badge grade-a'; 
-                 el.innerText = prefix + `${kurungBuka}👑 A${kurungTutup}`; 
-             }
-             else if (grade === 'B') { 
-                 el.className = 'status-badge premium-badge grade-b'; 
-                 el.innerText = prefix + `${kurungBuka}🌟 B${kurungTutup}`; 
-             }
-             else if (grade === 'C') { 
-                 el.className = 'status-badge premium-badge grade-c'; 
-                 el.innerText = prefix + `${kurungBuka}⚡ C${kurungTutup}`; 
-             }
-             else { 
-                 el.className = 'status-badge premium-badge grade-d'; 
-                 el.innerText = prefix ? prefix + `(⏳ D)` : `⏳ D (Belum)`; 
-             }
-             
-             // Bersihkan inline style lama agar CSS Class berfungsi
-             el.style.background = ''; el.style.color = '';
+            let prefix = isAdmin ? `Nilai: ${nilaiAngka || '-'} ` : ``;
+            let kurungBuka = isAdmin ? `(` : ``;
+            let kurungTutup = isAdmin ? `)` : ``;
+
+            if (grade === 'A') {
+                el.className = 'status-badge premium-badge grade-a';
+                el.innerText = prefix + `${kurungBuka}👑 A${kurungTutup}`;
+            }
+            else if (grade === 'B') {
+                el.className = 'status-badge premium-badge grade-b';
+                el.innerText = prefix + `${kurungBuka}🌟 B${kurungTutup}`;
+            }
+            else if (grade === 'C') {
+                el.className = 'status-badge premium-badge grade-c';
+                el.innerText = prefix + `${kurungBuka}⚡ C${kurungTutup}`;
+            }
+            else {
+                el.className = 'status-badge premium-badge grade-d';
+                el.innerText = prefix ? prefix + `(⏳ D)` : `⏳ D (Belum)`;
+            }
+
+            // Bersihkan inline style lama agar CSS Class berfungsi
+            el.style.background = ''; el.style.color = '';
         }
     } else {
         el.innerText = "";
@@ -346,7 +366,7 @@ window.openModal = (index) => {
     document.getElementById('modalNama').innerText = murid.nama;
     document.getElementById('modalInitials').innerText = window.getInitials(murid.nama);
     document.getElementById('editId').value = murid.id;
-    
+
     const qStatus = murid.quranStatus || "belum";
     const qNilaiAngka = murid.quranNilaiAngka || "";
     const hStatus = murid.haditsStatus || "belum";
@@ -355,13 +375,13 @@ window.openModal = (index) => {
     const dNilaiAngka = murid.doaNilaiAngka || "";
     const hariIni = window.getTanggalHariIni();
     const statusHarian = (murid.tanggalSetor === hariIni) ? (murid.setoranHarian || "belum") : "belum";
-    
+
     window.pilihSetoranHarian(statusHarian);
     document.getElementById('editQuranTarget').value = murid.quranTarget || "";
     document.getElementById('editQuranRealisasi').value = murid.quranRealisasi || "-";
     document.getElementById('editStatusQuran').value = qStatus;
-    
-    if (isAdmin && ['A','B','C','D'].includes(qStatus)) {
+
+    if (isAdmin && ['A', 'B', 'C', 'D'].includes(qStatus)) {
         window.pilihGradeQuran(qStatus);
         if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
     } else if (isAdmin) {
@@ -369,7 +389,7 @@ window.openModal = (index) => {
         document.getElementById('customDropdownContainer').style.display = 'none';
     }
 
-    if (isAdmin && ['A','B','C','D'].includes(hStatus)) {
+    if (isAdmin && ['A', 'B', 'C', 'D'].includes(hStatus)) {
         window.pilihGradeHadits(hStatus);
         if (hNilaiAngka) window.updateHaditsNilai(hNilaiAngka);
     } else if (isAdmin) {
@@ -377,7 +397,7 @@ window.openModal = (index) => {
         document.getElementById('haditsDropdownContainer').style.display = 'none';
     }
 
-    if (isAdmin && ['A','B','C','D'].includes(dStatus)) {
+    if (isAdmin && ['A', 'B', 'C', 'D'].includes(dStatus)) {
         window.pilihGradeDoa(dStatus);
         if (dNilaiAngka) window.updateDoaNilai(dNilaiAngka);
     } else if (isAdmin) {
@@ -419,7 +439,7 @@ window.openModal = (index) => {
 
 window.renderMadingHtml = (id, fields) => {
     if (!fields) return "<p style='text-align:center; color:var(--text-muted);'>Data sedang disinkronkan...</p>";
-    
+
     const buatAudioPlayer = (url) => {
         if (url) {
             let finalUrl = url;
@@ -427,7 +447,7 @@ window.renderMadingHtml = (id, fields) => {
             const driveMatch = url.match(driveRegex);
             const vocarooRegex = /voca\.ro\/([a-zA-Z0-9]+)|vocaroo\.com\/([a-zA-Z0-9]+)/;
             const vocarooMatch = url.match(vocarooRegex);
-            
+
             if (driveMatch && driveMatch[1]) {
                 finalUrl = 'https://drive.google.com/uc?export=download&id=' + driveMatch[1];
             } else if (vocarooMatch) {
@@ -445,18 +465,18 @@ window.renderMadingHtml = (id, fields) => {
 
     if (id === 'jadwal-murajaah') {
         let html = '<div style="display:flex; flex-direction:column; gap:16px;">';
-        ['senin','selasa','rabu','kamis','jumat'].forEach(d => {
+        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
             const D = d.charAt(0).toUpperCase() + d.slice(1);
             html += '<div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:16px;">'
                 + '<div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:15px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px;">'
-                + D + ' - <span style="color:#fff;">' + (fields[d+'_nama'] || '-') + '</span></div>'
+                + D + ' - <span style="color:#fff;">' + (fields[d + '_nama'] || '-') + '</span></div>'
                 + '<div style="display:flex;flex-direction:column;gap:10px;">'
-                + '<div><div style="font-size:11px;color:var(--text-muted);">☀️ Pagi</div><div style="font-size:14px;font-weight:600;color:#fff;">' + (fields[d+'_pagi'] || '-') + '</div></div>'
-                + '<div><div style="font-size:11px;color:var(--text-muted);">🌙 Sore</div><div style="font-size:14px;font-weight:600;color:#fff;">' + (fields[d+'_sore'] || '-') + '</div></div>'
+                + '<div><div style="font-size:11px;color:var(--text-muted);">☀️ Pagi</div><div style="font-size:14px;font-weight:600;color:#fff;">' + (fields[d + '_pagi'] || '-') + '</div></div>'
+                + '<div><div style="font-size:11px;color:var(--text-muted);">🌙 Sore</div><div style="font-size:14px;font-weight:600;color:#fff;">' + (fields[d + '_sore'] || '-') + '</div></div>'
                 + '</div></div>';
         });
         return html + '</div>';
-    
+
     } else if (id === 'target-quran') {
         return '<div style="text-align:center;padding:15px 10px;">'
             + '<div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Mohon Sambil Buka Al-Qur\'an, ya 😇</div>'
@@ -464,12 +484,12 @@ window.renderMadingHtml = (id, fields) => {
             + '<div style="color:var(--gold);font-size:16px;font-weight:600;margin-bottom:20px;">' + (fields.ayat || '') + '</div>'
             + buatAudioPlayer(fields.audio)
             + '</div>';
-    
+
     } else if (id === 'target-hadits') {
         let htmlHadits = '';
-        const listH = fields.listHadits || (fields.h_judul ? [{judul: fields.h_judul, arab: fields.h_arab, arti: fields.h_arti, audio: fields.h_audio}] : []);
+        const listH = fields.listHadits || (fields.h_judul ? [{ judul: fields.h_judul, arab: fields.h_arab, arti: fields.h_arti, audio: fields.h_audio }] : []);
         listH.forEach(h => {
-            if(!h.judul && !h.arab) return;
+            if (!h.judul && !h.arab) return;
             htmlHadits += '<div style="text-align:center;margin-bottom:30px;">'
                 + '<span class="hari-badge" style="margin-top:0;">' + (h.judul || '') + '</span>'
                 + '<div class="arabic-text" style="margin:20px 0;">' + (h.arab || '') + '</div>'
@@ -479,9 +499,9 @@ window.renderMadingHtml = (id, fields) => {
         });
 
         let htmlDoa = '';
-        const listD = fields.listDoa || (fields.d_judul ? [{judul: fields.d_judul, arab: fields.d_arab, latin: fields.d_latin, arti: fields.d_arti, audio: fields.d_audio}] : []);
+        const listD = fields.listDoa || (fields.d_judul ? [{ judul: fields.d_judul, arab: fields.d_arab, latin: fields.d_latin, arti: fields.d_arti, audio: fields.d_audio }] : []);
         listD.forEach(d => {
-            if(!d.judul && !d.arab) return;
+            if (!d.judul && !d.arab) return;
             htmlDoa += '<div style="text-align:center;margin-bottom:30px;">'
                 + '<span class="hari-badge" style="margin-top:0;">' + (d.judul || '') + '</span>'
                 + '<div class="arabic-text" style="margin:20px 0;">' + (d.arab || '') + '</div>'
@@ -490,24 +510,24 @@ window.renderMadingHtml = (id, fields) => {
                 + buatAudioPlayer(d.audio)
                 + '</div>';
         });
-        
+
         const divider = (htmlHadits && htmlDoa) ? '<hr style="border:0;border-top:1px dashed rgba(255,255,255,0.1);margin:20px 0;">' : '';
         return (htmlHadits || '') + divider + (htmlDoa || '');
-    
+
     } else if (id === 'jadwal-imam') {
         const jmlRakaat = window.getJumlahRakaat();
         let html = '<div style="display:flex;flex-direction:column;gap:16px;">';
-        ['senin','selasa','rabu','kamis','jumat'].forEach(d => {
+        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
             const D = d.charAt(0).toUpperCase() + d.slice(1);
             html += '<div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:16px;">'
                 + '<div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:15px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px;">'
-                + D + ' - <span style="color:#fff;">' + (fields[d+'_nama'] || '-') + '</span></div>'
+                + D + ' - <span style="color:#fff;">' + (fields[d + '_nama'] || '-') + '</span></div>'
                 + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
-            
+
             for (let r = 1; r <= jmlRakaat; r++) {
-                html += '<div><div style="font-size:11px;color:var(--text-muted);">Raka\'at ' + r + '</div><div style="font-size:13px;font-weight:600;">' + (fields[d+'_r'+r] || '-') + '</div></div>';
+                html += '<div><div style="font-size:11px;color:var(--text-muted);">Raka\'at ' + r + '</div><div style="font-size:13px;font-weight:600;">' + (fields[d + '_r' + r] || '-') + '</div></div>';
             }
-            
+
             html += '</div></div>';
         });
         return html + '</div>';
@@ -515,9 +535,9 @@ window.renderMadingHtml = (id, fields) => {
         let html = '<div style="display:flex;flex-direction:column;gap:16px;">';
         for (let i = 1; i <= 3; i++) {
             html += '<div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:16px;border-left:4px solid var(--gold);">'
-                + '<div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:4px;">' + (fields['h'+i] || '') + '</div>'
-                + '<div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:2px;">' + (fields['n'+i] || '') + '</div>'
-                + '<div style="font-size:14px;color:var(--text-muted);">' + (fields['s'+i] || '') + '</div></div>';
+                + '<div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:4px;">' + (fields['h' + i] || '') + '</div>'
+                + '<div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:2px;">' + (fields['n' + i] || '') + '</div>'
+                + '<div style="font-size:14px;color:var(--text-muted);">' + (fields['s' + i] || '') + '</div></div>';
         }
         return html + '<div style="margin-top:10px;padding:16px;background:rgba(253,224,71,0.1);border-radius:16px;">'
             + '<div style="color:var(--gold);font-weight:700;margin-bottom:8px;font-size:13px;">📝 Catatan:</div>'
@@ -532,18 +552,18 @@ window.renderMadingHtml = (id, fields) => {
 window.openMading = (id) => {
     window.currentMadingId = id;
     const data = dataMadingDinamis[id] || { title: "Memuat...", fields: {} };
-    
+
     const titleText = document.getElementById('madingTitleText');
     const contentDiv = document.getElementById('madingContent');
     const editTitle = document.getElementById('editMadingTitle');
     const btnSave = document.getElementById('btnSaveMading');
     const adminArea = document.getElementById('madingAdminFormArea');
-    
+
     document.querySelectorAll('.admin-form-mading').forEach(el => el.style.display = 'none');
 
     if (id === 'jadwal-murajaah' && document.getElementById('murajaah-fields-container').innerHTML === '') {
         let h = '';
-        ['senin','selasa','rabu','kamis','jumat'].forEach(day => {
+        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
             const Day = day.charAt(0).toUpperCase() + day.slice(1);
             h += '<div style="background:rgba(0,0,0,0.2);padding:16px;border-radius:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.05);">'
                 + '<div class="detail-label" style="margin-bottom:12px;color:white;">Hari ' + Day + '</div>'
@@ -558,17 +578,17 @@ window.openMading = (id) => {
     if (id === 'jadwal-imam' && document.getElementById('imam-fields-container').innerHTML === '') {
         const jmlRakaat = window.getJumlahRakaat();
         let h = '';
-        ['senin','selasa','rabu','kamis','jumat'].forEach(day => {
+        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
             const Day = day.charAt(0).toUpperCase() + day.slice(1);
             h += '<div style="background:rgba(0,0,0,0.2);padding:16px;border-radius:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.05);">'
                 + '<div class="detail-label" style="margin-bottom:12px;color:white;">Hari ' + Day + '</div>'
                 + '<input type="text" id="fi-' + day + '-nama" class="admin-input" placeholder="Nama Imam" style="margin-bottom:10px;">'
                 + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
-            
+
             for (let r = 1; r <= jmlRakaat; r++) {
                 h += '<input type="text" id="fi-' + day + '-r' + r + '" class="admin-input" placeholder="Rakaat ' + r + '" style="font-size:13px;">';
             }
-            
+
             h += '</div></div>';
         });
         document.getElementById('imam-fields-container').innerHTML = h;
@@ -597,9 +617,9 @@ window.openMading = (id) => {
 
         const f = data.fields || {};
         document.getElementById('form-' + id).style.display = 'block';
-        
+
         if (id === 'jadwal-murajaah') {
-            ['senin','selasa','rabu','kamis','jumat'].forEach(day => {
+            ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
                 document.getElementById('fm-' + day + '-nama').value = f[day + '_nama'] || '';
                 document.getElementById('fm-' + day + '-pagi').value = f[day + '_pagi'] || '';
                 document.getElementById('fm-' + day + '-sore').value = f[day + '_sore'] || '';
@@ -611,13 +631,13 @@ window.openMading = (id) => {
         } else if (id === 'target-hadits') {
             document.getElementById('container-hadits').innerHTML = '';
             document.getElementById('container-doa').innerHTML = '';
-            
-            const listH = f.listHadits || (f.h_judul ? [{judul: f.h_judul, arab: f.h_arab, arti: f.h_arti, audio: f.h_audio}] : []);
-            if(listH.length === 0) listH.push({});
+
+            const listH = f.listHadits || (f.h_judul ? [{ judul: f.h_judul, arab: f.h_arab, arti: f.h_arti, audio: f.h_audio }] : []);
+            if (listH.length === 0) listH.push({});
             listH.forEach(h => window.tambahItemMading('hadits', h));
-            
-            const listD = f.listDoa || (f.d_judul ? [{judul: f.d_judul, arab: f.d_arab, latin: f.d_latin, arti: f.d_arti, audio: f.d_audio}] : []);
-            if(listD.length === 0) listD.push({});
+
+            const listD = f.listDoa || (f.d_judul ? [{ judul: f.d_judul, arab: f.d_arab, latin: f.d_latin, arti: f.d_arti, audio: f.d_audio }] : []);
+            if (listD.length === 0) listD.push({});
             listD.forEach(d => window.tambahItemMading('doa', d));
         } else if (id === 'jadwal-tilawah') {
             for (let i = 1; i <= 3; i++) {
@@ -625,9 +645,9 @@ window.openMading = (id) => {
                 document.getElementById('ft-n' + i).value = f['n' + i] || '';
                 document.getElementById('ft-s' + i).value = f['s' + i] || '';
             }
-       } else if (id === 'jadwal-imam') {
+        } else if (id === 'jadwal-imam') {
             const jmlRakaat = window.getJumlahRakaat();
-            ['senin','selasa','rabu','kamis','jumat'].forEach(day => {
+            ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
                 document.getElementById('fi-' + day + '-nama').value = f[day + '_nama'] || '';
                 for (let r = 1; r <= jmlRakaat; r++) {
                     const inputEl = document.getElementById('fi-' + day + '-r' + r);
@@ -659,9 +679,9 @@ window.simpanDataMading = async () => {
     const id = window.currentMadingId;
     const newTitle = document.getElementById('editMadingTitle').value;
     let newFields = {};
-    
+
     if (id === 'jadwal-murajaah') {
-        ['senin','selasa','rabu','kamis','jumat'].forEach(day => {
+        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
             newFields[day + '_nama'] = document.getElementById('fm-' + day + '-nama').value;
             newFields[day + '_pagi'] = document.getElementById('fm-' + day + '-pagi').value;
             newFields[day + '_sore'] = document.getElementById('fm-' + day + '-sore').value;
@@ -670,7 +690,7 @@ window.simpanDataMading = async () => {
         newFields = {
             surah: document.getElementById('fq-surah').value,
             ayat: document.getElementById('fq-ayat').value,
-            audio: document.getElementById('fq-audio').value 
+            audio: document.getElementById('fq-audio').value
         };
     } else if (id === 'target-hadits') {
         const hItems = Array.from(document.getElementById('container-hadits').children).map(item => ({
@@ -695,7 +715,7 @@ window.simpanDataMading = async () => {
         }
     } else if (id === 'jadwal-imam') {
         const jmlRakaat = window.getJumlahRakaat();
-        ['senin','selasa','rabu','kamis','jumat'].forEach(day => {
+        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
             newFields[day + '_nama'] = document.getElementById('fi-' + day + '-nama').value;
             for (let r = 1; r <= jmlRakaat; r++) {
                 const inputEl = document.getElementById('fi-' + day + '-r' + r);
@@ -707,38 +727,38 @@ window.simpanDataMading = async () => {
     } else if (id === 'info-dokumentasi') {
         newFields = {
             tanggal: document.getElementById('fdok-tanggal').value,
-            foto1: document.getElementById('fdok-foto1').value, 
-            foto2: document.getElementById('fdok-foto2').value, 
-            foto3: document.getElementById('fdok-foto3').value  
+            foto1: document.getElementById('fdok-foto1').value,
+            foto2: document.getElementById('fdok-foto2').value,
+            foto3: document.getElementById('fdok-foto3').value
         };
     }
-    
+
     try {
         await setDoc(doc(db, koleksiMading, id), { title: newTitle, fields: newFields }, { merge: true });
-        
+
         if (id === 'target-quran') {
-                    const batch = writeBatch(db);
-                    const targetGabungan = newFields.surah + ' - ' + newFields.ayat;
-                    dataMuridDinamis.forEach((murid) => {
-                        batch.update(doc(db, koleksiMurid, murid.id), { quranTarget: targetGabungan });
-                    });
-                    await batch.commit();
-                }
+            const batch = writeBatch(db);
+            const targetGabungan = newFields.surah + ' - ' + newFields.ayat;
+            dataMuridDinamis.forEach((murid) => {
+                batch.update(doc(db, koleksiMurid, murid.id), { quranTarget: targetGabungan });
+            });
+            await batch.commit();
+        }
 
-                if (id === 'target-hadits') {
-                    const batch = writeBatch(db);
-                    const haditsTarget = (newFields.listHadits || []).map(h => h.judul).filter(Boolean).join(" & ").trim();
-                    const doaTarget = (newFields.listDoa || []).map(d => d.judul).filter(Boolean).join(" & ").trim();
-                    dataMuridDinamis.forEach((murid) => {
-                        const updates = {};
-                        if (haditsTarget) updates.haditsTarget = haditsTarget;
-                        if (doaTarget) updates.doaTarget = doaTarget;
-                        if (Object.keys(updates).length) batch.update(doc(db, koleksiMurid, murid.id), updates);
-                    });
-                    await batch.commit();
-                }
+        if (id === 'target-hadits') {
+            const batch = writeBatch(db);
+            const haditsTarget = (newFields.listHadits || []).map(h => h.judul).filter(Boolean).join(" & ").trim();
+            const doaTarget = (newFields.listDoa || []).map(d => d.judul).filter(Boolean).join(" & ").trim();
+            dataMuridDinamis.forEach((murid) => {
+                const updates = {};
+                if (haditsTarget) updates.haditsTarget = haditsTarget;
+                if (doaTarget) updates.doaTarget = doaTarget;
+                if (Object.keys(updates).length) batch.update(doc(db, koleksiMurid, murid.id), updates);
+            });
+            await batch.commit();
+        }
 
-                btn.innerText = "Simpan Pengumuman";
+        btn.innerText = "Simpan Pengumuman";
         window.closeModal('madingModal');
     } catch (error) {
         alert("Error: " + error.message);
@@ -769,9 +789,9 @@ window.tambahAyatPintar = (aksi) => {
     let textarea = document.getElementById('editQuranRealisasi');
     let teksAsli = textarea.value.trim();
     if (aksi === 'ulangi') { if (!teksAsli.includes("(Muraja'ah)")) textarea.value = teksAsli + " (Muraja'ah)"; return; }
-    
+
     let teksBersih = teksAsli.toLowerCase().replace(/[^a-z0-9]/g, '');
-    
+
     // Normalisasi ejaan yang sering berbeda transliterasinya
     teksBersih = teksBersih.replace('mujadalah', 'mujadilah');
     teksBersih = teksBersih.replace('baqaroh', 'baqarah');
@@ -782,7 +802,7 @@ window.tambahAyatPintar = (aksi) => {
     teksBersih = teksBersih.replace('thariq', 'tariq');
     teksBersih = teksBersih.replace('thaahaa', 'taha').replace('thaha', 'taha');
     teksBersih = teksBersih.replace('sajadah', 'sajdah');
-    
+
     let indexSurah = -1; let panjangKecocokan = 0;
     for (let i = 0; i < dbQuran.length; i++) {
         let namaNormal = dbQuran[i].nama.toLowerCase().replace(/[^a-z]/g, '');
@@ -822,27 +842,27 @@ window.pilihGradeHadits = (grade) => {
             btn.classList.remove('active');
         }
     });
-    
+
     const container = document.getElementById('haditsDropdownContainer');
     container.style.display = 'block';
-    
+
     let html = '';
     let arr = [];
     if (grade === 'A') {
-        for(let i=100; i>=93; i--) arr.push(i);
+        for (let i = 100; i >= 93; i--) arr.push(i);
     } else if (grade === 'B') {
-        for(let i=92; i>=84; i--) arr.push(i);
+        for (let i = 92; i >= 84; i--) arr.push(i);
     } else if (grade === 'C') {
-        for(let i=83; i>=75; i--) arr.push(i);
+        for (let i = 83; i >= 75; i--) arr.push(i);
     } else if (grade === 'D') {
-        for(let i=74; i>=60; i--) arr.push(i);
+        for (let i = 74; i >= 60; i--) arr.push(i);
     }
-    
+
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectHaditsNilai(${num})">${num}</div>`;
     });
     document.getElementById('haditsDropdownList').innerHTML = html;
-    
+
     const midIndex = Math.floor(arr.length / 2);
     window.updateHaditsNilai(arr[midIndex]);
 };
@@ -856,27 +876,27 @@ window.pilihGradeDoa = (grade) => {
             btn.classList.remove('active');
         }
     });
-    
+
     const container = document.getElementById('doaDropdownContainer');
     container.style.display = 'block';
-    
+
     let html = '';
     let arr = [];
     if (grade === 'A') {
-        for(let i=100; i>=93; i--) arr.push(i);
+        for (let i = 100; i >= 93; i--) arr.push(i);
     } else if (grade === 'B') {
-        for(let i=92; i>=84; i--) arr.push(i);
+        for (let i = 92; i >= 84; i--) arr.push(i);
     } else if (grade === 'C') {
-        for(let i=83; i>=75; i--) arr.push(i);
+        for (let i = 83; i >= 75; i--) arr.push(i);
     } else if (grade === 'D') {
-        for(let i=74; i>=60; i--) arr.push(i);
+        for (let i = 74; i >= 60; i--) arr.push(i);
     }
-    
+
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectDoaNilai(${num})">${num}</div>`;
     });
     document.getElementById('doaDropdownList').innerHTML = html;
-    
+
     const midIndex = Math.floor(arr.length / 2);
     window.updateDoaNilai(arr[midIndex]);
 };
@@ -890,28 +910,28 @@ window.pilihGradeQuran = (grade) => {
             btn.classList.remove('active');
         }
     });
-    
+
     const container = document.getElementById('customDropdownContainer');
     container.style.display = 'block';
-    
+
     let html = '';
     let arr = [];
     if (grade === 'A') {
-        for(let i=100; i>=93; i--) arr.push(i);
+        for (let i = 100; i >= 93; i--) arr.push(i);
     } else if (grade === 'B') {
-        for(let i=92; i>=84; i--) arr.push(i);
+        for (let i = 92; i >= 84; i--) arr.push(i);
     } else if (grade === 'C') {
-        for(let i=83; i>=75; i--) arr.push(i);
+        for (let i = 83; i >= 75; i--) arr.push(i);
     } else if (grade === 'D') {
-        for(let i=74; i>=60; i--) arr.push(i);
+        for (let i = 74; i >= 60; i--) arr.push(i);
     }
-    
+
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectCustomNilai(${num})">${num}</div>`;
     });
-    
+
     document.getElementById('customDropdownList').innerHTML = html;
-    
+
     const midIndex = Math.floor(arr.length / 2);
     window.updateNilaiManual(arr[midIndex]);
 };
@@ -930,7 +950,7 @@ window.updateNilaiManual = (val) => {
     document.getElementById('editQuranNilaiAngka').value = val;
     const textSpan = document.getElementById('customDropdownText');
     if (textSpan) textSpan.innerText = val;
-    
+
     document.getElementById('customDropdownList').querySelectorAll('.custom-dropdown-item').forEach(item => {
         if (item.innerText == val) {
             item.classList.add('selected');
@@ -986,7 +1006,7 @@ window.selectDoaNilai = (val) => {
 };
 
 // Close dropdown when clicking outside
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     ['custom', 'hadits', 'doa'].forEach(prefix => {
         const container = document.getElementById(prefix + 'DropdownContainer');
         if (container && !container.contains(event.target)) {
@@ -1022,8 +1042,9 @@ window.simpanDataMurid = async () => {
             doaTarget: document.getElementById('editDoaTarget').value,
             doaRealisasi: document.getElementById('editDoaRealisasi').value,
             doaStatus: document.getElementById('editStatusDoa').value,
-            doaNilaiAngka: document.getElementById('editDoaNilaiAngka').value,        });
-        
+            doaNilaiAngka: document.getElementById('editDoaNilaiAngka').value,
+        });
+
         // Coba parsing surah dan ayat untuk spreadsheet
         let parsedSurah = "-";
         let parsedAyat = "-";
@@ -1037,13 +1058,13 @@ window.simpanDataMurid = async () => {
 
         const haditsStatus = document.getElementById('editStatusHadits').value;
         const doaStatus = document.getElementById('editStatusDoa').value;
-        
+
         // Webhook Push to Google Sheets (Background)
         if (qStatus !== "belum" || haditsStatus !== "belum" || doaStatus !== "belum") {
             const webhookUrl = "https://script.google.com/macros/s/AKfycbwfOfypie9Xrjf5xz1-v_L5rx5CcbbPBKMn2UUlqvXPFHd8tcWMZXgZ5SE9cF-0PiYt/exec";
             const dt = new Date();
-            const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][dt.getDay()];
-            const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][dt.getMonth()];
+            const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][dt.getDay()];
+            const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'][dt.getMonth()];
             const tanggalStr = namaHari + ", " + ("0" + dt.getDate()).slice(-2) + " " + namaBulan; // e.g. "Selasa, 13 September"
 
             const payload = {
@@ -1091,8 +1112,8 @@ window.openStatsModal = () => {
 window.switchStatsTab = (tab) => {
     window.currentStatsTab = tab;
     document.querySelectorAll('.stats-tab-btn').forEach(btn => {
-        const matches = btn.innerText.toLowerCase().includes(tab) || 
-                        (tab === 'quran' && btn.innerText.includes("Qur'an"));
+        const matches = btn.innerText.toLowerCase().includes(tab) ||
+            (tab === 'quran' && btn.innerText.includes("Qur'an"));
         btn.classList.toggle('active', matches);
     });
     renderStatsChart(tab);
@@ -1116,11 +1137,11 @@ function renderStatsChart(tab) {
     const hariIni = window.getTanggalHariIni();
 
     const categoryDef = [
-        { key: 'A',              title: 'Nilai A', icon: '👑', cls: 'a' },
-        { key: 'B',              title: 'Nilai B', icon: '🌟', cls: 'b' },
-        { key: 'C',              title: 'Nilai C', icon: '🔆', cls: 'c' },
-        { key: 'BelumHariIni',   title: 'Belum Setor Hari Ini',      icon: '⏳', cls: 'd' },
-        { key: 'BelumSamaSekali',title: 'Tidak Setor Sama Sekali',   icon: '🚫', cls: 'e' },
+        { key: 'A', title: 'Nilai A', icon: '👑', cls: 'a' },
+        { key: 'B', title: 'Nilai B', icon: '🌟', cls: 'b' },
+        { key: 'C', title: 'Nilai C', icon: '🔆', cls: 'c' },
+        { key: 'BelumHariIni', title: 'Belum Setor Hari Ini', icon: '⏳', cls: 'd' },
+        { key: 'BelumSamaSekali', title: 'Tidak Setor Sama Sekali', icon: '🚫', cls: 'e' },
     ];
 
     const stats = {};
@@ -1134,14 +1155,14 @@ function renderStatsChart(tab) {
 
     dataMuridDinamis.forEach(murid => {
         let statusField = '';
-        if (tab === 'quran')      statusField = murid.quranStatus;
+        if (tab === 'quran') statusField = murid.quranStatus;
         else if (tab === 'hadits') statusField = murid.haditsStatus;
-        else if (tab === 'doa')    statusField = murid.doaStatus;
+        else if (tab === 'doa') statusField = murid.doaStatus;
 
         const hasDepositedToday = (murid.tanggalSetor === hariIni) && (murid.setoranHarian !== 'belum');
 
         if (hasDepositedToday) {
-            if      (statusField === 'A') stats['A'].names.push(murid.nama);
+            if (statusField === 'A') stats['A'].names.push(murid.nama);
             else if (statusField === 'B') stats['B'].names.push(murid.nama);
             else if (statusField === 'C') stats['C'].names.push(murid.nama);
             else stats['BelumHariIni'].names.push(murid.nama);
@@ -1173,7 +1194,7 @@ function renderStatsChart(tab) {
         const count = data.names.length;
         const percentage = Math.round((count / totalMurid) * 100) || 0;
         const listId = `stat-list-${tab}-${cat.key}`;
-        const hintId  = `hint-${listId}`;
+        const hintId = `hint-${listId}`;
 
         const chipsHtml = count > 0
             ? data.names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
