@@ -543,6 +543,26 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     border-color: rgba(239,68,68,0.4);
     color: #fca5a5;
 }
+.premium-badge.grade-x {
+    background: linear-gradient(135deg, rgba(127,29,29,0.4), rgba(60,0,0,0.3));
+    border-color: rgba(239,68,68,0.7);
+    color: #ff6b6b;
+    text-shadow: 0 0 8px rgba(239,68,68,0.5);
+}
+
+/* Item "Tidak Setor Sama Sekali" di dropdown grade D */
+.tidak-setor-item {
+    border-top: 1px dashed rgba(239,68,68,0.3);
+    margin-top: 4px;
+    padding-top: 8px !important;
+    color: #ff6b6b !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px;
+}
+.tidak-setor-item:hover {
+    background: rgba(239,68,68,0.15) !important;
+    color: #ff4444 !important;
+}
 
 
 /* Keyframes for stats cards */

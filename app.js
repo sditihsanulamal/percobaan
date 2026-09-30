@@ -316,6 +316,7 @@ const setBadge = (elementId, status, nilaiAngka) => {
     else if (status === 'tuntas') grade = 'B';
     else if (status === 'proses') grade = 'C';
     else if (status === 'belum') grade = 'D';
+    else if (status === 'tidakSetor') grade = 'X';
     else if (!['A', 'B', 'C', 'D'].includes(status)) grade = 'D';
 
     let cssClass = 'belum';
@@ -327,7 +328,11 @@ const setBadge = (elementId, status, nilaiAngka) => {
 
     if (['badgeQuran', 'badgeHadits', 'badgeDoa'].includes(elementId)) {
         el.style.width = 'auto'; el.style.height = 'auto'; el.style.padding = '4px 8px'; el.style.borderRadius = '12px'; el.style.fontSize = '11px'; el.style.fontWeight = 'bold';
-        if (grade === 'D' && (!nilaiAngka || nilaiAngka == 0)) {
+        if (grade === 'X') {
+            el.className = 'status-badge premium-badge grade-x';
+            el.innerText = '❌ Tidak Setor';
+            el.style.background = ''; el.style.color = '';
+        } else if (grade === 'D' && (!nilaiAngka || nilaiAngka == 0)) {
             el.innerText = 'Belum Setor';
             el.style.background = 'rgba(239,68,68,0.2)'; el.style.color = 'var(--danger)';
         } else {
@@ -367,53 +372,80 @@ window.openModal = (index) => {
     document.getElementById('modalInitials').innerText = window.getInitials(murid.nama);
     document.getElementById('editId').value = murid.id;
 
-    const qStatus = murid.quranStatus || "belum";
-    const qNilaiAngka = murid.quranNilaiAngka || "";
-    const hStatus = murid.haditsStatus || "belum";
-    const dStatus = murid.doaStatus || "belum";
-    const hNilaiAngka = murid.haditsNilaiAngka || "";
-    const dNilaiAngka = murid.doaNilaiAngka || "";
     const hariIni = window.getTanggalHariIni();
-    const statusHarian = (murid.tanggalSetor === hariIni) ? (murid.setoranHarian || "belum") : "belum";
+    // Cek apakah data ini memang untuk hari ini
+    const sudahDinilaiHariIni = (murid.tanggalSetor === hariIni);
+
+    // Untuk mode admin: nilai ABCD hanya tampil jika memang dinilai hari ini.
+    // Jika beda hari, semua grade pill bersih (reset) agar admin mulai dari nol.
+    const qStatus = sudahDinilaiHariIni ? (murid.quranStatus || "belum") : "belum";
+    const qNilaiAngka = sudahDinilaiHariIni ? (murid.quranNilaiAngka || "") : "";
+    const hStatus = sudahDinilaiHariIni ? (murid.haditsStatus || "belum") : "belum";
+    const hNilaiAngka = sudahDinilaiHariIni ? (murid.haditsNilaiAngka || "") : "";
+    const dStatus = sudahDinilaiHariIni ? (murid.doaStatus || "belum") : "belum";
+    const dNilaiAngka = sudahDinilaiHariIni ? (murid.doaNilaiAngka || "") : "";
+
+    // Untuk mode publik (wali murid): tampilkan nilai apa adanya (tidak terpengaruh tanggal)
+    const qStatusPublik = murid.quranStatus || "belum";
+    const qNilaiAngkaPublik = murid.quranNilaiAngka || "";
+    const hStatusPublik = murid.haditsStatus || "belum";
+    const hNilaiAngkaPublik = murid.haditsNilaiAngka || "";
+    const dStatusPublik = murid.doaStatus || "belum";
+    const dNilaiAngkaPublik = murid.doaNilaiAngka || "";
+
+    const statusHarian = sudahDinilaiHariIni ? (murid.setoranHarian || "belum") : "belum";
 
     window.pilihSetoranHarian(statusHarian);
     document.getElementById('editQuranTarget').value = murid.quranTarget || "";
     document.getElementById('editQuranRealisasi').value = murid.quranRealisasi || "-";
     document.getElementById('editStatusQuran').value = qStatus;
 
-    if (isAdmin && ['A', 'B', 'C', 'D'].includes(qStatus)) {
-        window.pilihGradeQuran(qStatus);
-        if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
+    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(qStatus) && qStatus !== 'belum') {
+        if (qStatus === 'tidakSetor') {
+            window.pilihTidakSetor('quran');
+        } else {
+            window.pilihGradeQuran(qStatus);
+            if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
+        }
     } else if (isAdmin) {
         document.querySelectorAll('.grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => btn.classList.remove('active'));
         document.getElementById('customDropdownContainer').style.display = 'none';
     }
 
-    if (isAdmin && ['A', 'B', 'C', 'D'].includes(hStatus)) {
-        window.pilihGradeHadits(hStatus);
-        if (hNilaiAngka) window.updateHaditsNilai(hNilaiAngka);
+    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(hStatus) && hStatus !== 'belum') {
+        if (hStatus === 'tidakSetor') {
+            window.pilihTidakSetor('hadits');
+        } else {
+            window.pilihGradeHadits(hStatus);
+            if (hNilaiAngka) window.updateHaditsNilai(hNilaiAngka);
+        }
     } else if (isAdmin) {
         document.querySelectorAll('.hadits-pill-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('haditsDropdownContainer').style.display = 'none';
     }
 
-    if (isAdmin && ['A', 'B', 'C', 'D'].includes(dStatus)) {
-        window.pilihGradeDoa(dStatus);
-        if (dNilaiAngka) window.updateDoaNilai(dNilaiAngka);
+    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(dStatus) && dStatus !== 'belum') {
+        if (dStatus === 'tidakSetor') {
+            window.pilihTidakSetor('doa');
+        } else {
+            window.pilihGradeDoa(dStatus);
+            if (dNilaiAngka) window.updateDoaNilai(dNilaiAngka);
+        }
     } else if (isAdmin) {
         document.querySelectorAll('.doa-pill-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('doaDropdownContainer').style.display = 'none';
     }
 
-    setBadge('badgeQuran', qStatus, qNilaiAngka);
+    // Badge: admin pakai nilai hari ini (bisa kosong), publik pakai nilai permanen
+    setBadge('badgeQuran', isAdmin ? qStatus : qStatusPublik, isAdmin ? qNilaiAngka : qNilaiAngkaPublik);
     document.getElementById('editHaditsTarget').value = murid.haditsTarget || "";
     document.getElementById('editHaditsRealisasi').value = murid.haditsRealisasi || "-";
     document.getElementById('editStatusHadits').value = hStatus;
-    setBadge('badgeHadits', hStatus, hNilaiAngka);
+    setBadge('badgeHadits', isAdmin ? hStatus : hStatusPublik, isAdmin ? hNilaiAngka : hNilaiAngkaPublik);
     document.getElementById('editDoaTarget').value = murid.doaTarget || "";
     document.getElementById('editDoaRealisasi').value = murid.doaRealisasi || "-";
     document.getElementById('editStatusDoa').value = dStatus;
-    setBadge('badgeDoa', dStatus, dNilaiAngka);
+    setBadge('badgeDoa', isAdmin ? dStatus : dStatusPublik, isAdmin ? dNilaiAngka : dNilaiAngkaPublik);
     document.getElementById('progressModal').classList.add('open');
 
     const inputs = document.querySelectorAll('#progressModal textarea.admin-input');
@@ -861,6 +893,10 @@ window.pilihGradeHadits = (grade) => {
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectHaditsNilai(${num})">${num}</div>`;
     });
+    // Tambahkan opsi "Tidak Setor Sama Sekali" di paling bawah dropdown D
+    if (grade === 'D') {
+        html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('hadits')">❌ Tidak Setor Sama Sekali</div>`;
+    }
     document.getElementById('haditsDropdownList').innerHTML = html;
 
     const midIndex = Math.floor(arr.length / 2);
@@ -895,6 +931,10 @@ window.pilihGradeDoa = (grade) => {
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectDoaNilai(${num})">${num}</div>`;
     });
+    // Tambahkan opsi "Tidak Setor Sama Sekali" di paling bawah dropdown D
+    if (grade === 'D') {
+        html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('doa')">❌ Tidak Setor Sama Sekali</div>`;
+    }
     document.getElementById('doaDropdownList').innerHTML = html;
 
     const midIndex = Math.floor(arr.length / 2);
@@ -929,11 +969,51 @@ window.pilihGradeQuran = (grade) => {
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectCustomNilai(${num})">${num}</div>`;
     });
+    // Tambahkan opsi "Tidak Setor Sama Sekali" di paling bawah dropdown D
+    if (grade === 'D') {
+        html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('quran')">❌ Tidak Setor Sama Sekali</div>`;
+    }
 
     document.getElementById('customDropdownList').innerHTML = html;
 
     const midIndex = Math.floor(arr.length / 2);
     window.updateNilaiManual(arr[midIndex]);
+};
+
+// Handler untuk status "Tidak Setor Sama Sekali"
+window.pilihTidakSetor = (subject) => {
+    if (subject === 'quran') {
+        document.getElementById('editStatusQuran').value = 'tidakSetor';
+        document.getElementById('editQuranNilaiAngka').value = '';
+        document.getElementById('customDropdownText').innerText = '❌ Tidak Setor';
+        // Tutup dropdown
+        document.getElementById('customDropdownContainer').classList.remove('open');
+        document.getElementById('customDropdownList').classList.remove('show');
+        // Aktifkan pill D agar terlihat konteksnya
+        document.querySelectorAll('.grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-grade') === 'D');
+        });
+    } else if (subject === 'hadits') {
+        document.getElementById('editStatusHadits').value = 'tidakSetor';
+        document.getElementById('editHaditsNilaiAngka').value = '';
+        document.getElementById('haditsDropdownText').innerText = '❌ Tidak Setor';
+        document.getElementById('haditsDropdownContainer').classList.remove('open');
+        document.getElementById('haditsDropdownList').classList.remove('show');
+        document.querySelectorAll('.hadits-pill-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-grade') === 'D');
+        });
+    } else if (subject === 'doa') {
+        document.getElementById('editStatusDoa').value = 'tidakSetor';
+        document.getElementById('editDoaNilaiAngka').value = '';
+        document.getElementById('doaDropdownText').innerText = '❌ Tidak Setor';
+        document.getElementById('doaDropdownContainer').classList.remove('open');
+        document.getElementById('doaDropdownList').classList.remove('show');
+        document.querySelectorAll('.doa-pill-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-grade') === 'D');
+        });
+    }
+    // Otomatis set setoranHarian = 'sudah' agar masuk statistik hari ini
+    window.pilihSetoranHarian('sudah');
 };
 
 window.updateHaditsNilai = (val) => {
@@ -1060,7 +1140,9 @@ window.simpanDataMurid = async () => {
         const doaStatus = document.getElementById('editStatusDoa').value;
 
         // Webhook Push to Google Sheets (Background)
-        if (qStatus !== "belum" || haditsStatus !== "belum" || doaStatus !== "belum") {
+        // Hanya kirim ke spreadsheet jika admin menyematkan badge "Sudah Setor"
+        const statusSetoranFinal = document.getElementById('valSetoranHarian').value;
+        if (statusSetoranFinal === 'sudah') {
             const webhookUrl = "https://script.google.com/macros/s/AKfycbwfOfypie9Xrjf5xz1-v_L5rx5CcbbPBKMn2UUlqvXPFHd8tcWMZXgZ5SE9cF-0PiYt/exec";
             const dt = new Date();
             const namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][dt.getDay()];
@@ -1159,19 +1241,35 @@ function renderStatsChart(tab) {
         else if (tab === 'hadits') statusField = murid.haditsStatus;
         else if (tab === 'doa') statusField = murid.doaStatus;
 
-        const hasDepositedToday = (murid.tanggalSetor === hariIni) && (murid.setoranHarian !== 'belum');
+        // ⚠️ Cek 'tidakSetor' PERTAMA — bersifat permanen, tidak terikat tanggal.
+        // Nama anak akan selalu muncul di 🚫 sampai admin mengubahnya secara eksplisit.
+        if (statusField === 'tidakSetor') {
+            stats['BelumSamaSekali'].names.push(murid.nama);
+            return; // langsung lanjut ke murid berikutnya
+        }
+
+        const sudahDinilaiHariIni = (murid.tanggalSetor === hariIni);
+        const setoranHarian = murid.setoranHarian || 'belum';
+        const hasDepositedToday = sudahDinilaiHariIni && (setoranHarian === 'sudah');
 
         if (hasDepositedToday) {
-            if (statusField === 'A') stats['A'].names.push(murid.nama);
-            else if (statusField === 'B') stats['B'].names.push(murid.nama);
-            else if (statusField === 'C') stats['C'].names.push(murid.nama);
-            else stats['BelumHariIni'].names.push(murid.nama);
-        } else {
-            if (!statusField || statusField === 'belum') {
-                stats['BelumSamaSekali'].names.push(murid.nama);
+            // Sudah setor hari ini — masukkan ke kategori nilai
+            if (statusField === 'A') {
+                stats['A'].names.push(murid.nama);
+            } else if (statusField === 'B') {
+                stats['B'].names.push(murid.nama);
+            } else if (statusField === 'C') {
+                stats['C'].names.push(murid.nama);
             } else {
+                // Sudah setor tapi nilai D atau belum diisi
                 stats['BelumHariIni'].names.push(murid.nama);
             }
+        } else if (sudahDinilaiHariIni && (setoranHarian === 'berhalangan' || setoranHarian === 'izin')) {
+            // Berhalangan / izin hari ini — tidak masuk ke mana-mana (bukan "tidak setor")
+            // Biarkan mereka tidak terhitung di statistik (tidak dihukum)
+        } else {
+            // Belum ada data hari ini sama sekali
+            stats['BelumHariIni'].names.push(murid.nama);
         }
     });
 
