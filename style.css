@@ -841,6 +841,22 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 }
 .stat-names-list.stat-color-e { border-left-color: #ef4444; }
 
+/* Warna untuk kategori Izin/Sakit (biru) */
+.stat-color-izin { color: #93c5fd; }
+.stat-bg-izin {
+    background: linear-gradient(90deg, #1e3a5f, #2563eb, #60a5fa);
+    box-shadow: 0 0 12px rgba(37,99,235,0.4);
+}
+.stat-names-list.stat-color-izin { border-left-color: #3b82f6; }
+
+/* Warna untuk kategori Berhalangan/Uzur (amber/oranye) */
+.stat-color-berhalangan { color: #fcd34d; }
+.stat-bg-berhalangan {
+    background: linear-gradient(90deg, #78350f, #d97706, #fbbf24);
+    box-shadow: 0 0 12px rgba(217,119,6,0.4);
+}
+.stat-names-list.stat-color-berhalangan { border-left-color: #f59e0b; }
+
 /* ========================================================= */
 /* OPTIMASI PERFORMA TINGKAT TINGGI UNTUK HP                 */
 /* ========================================================= */

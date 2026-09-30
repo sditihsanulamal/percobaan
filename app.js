@@ -1184,22 +1184,15 @@ window.simpanDataMurid = async () => {
 /* =========================================
    STATISTICS DASHBOARD LOGIC
 ========================================= */
-window.currentStatsTab = 'quran';
 
 window.openStatsModal = () => {
     document.getElementById('statsModal').classList.add('open');
-    window.switchStatsTab('quran');
+    renderStatsChart();
 };
 
-window.switchStatsTab = (tab) => {
-    window.currentStatsTab = tab;
-    document.querySelectorAll('.stats-tab-btn').forEach(btn => {
-        const matches = btn.innerText.toLowerCase().includes(tab) ||
-            (tab === 'quran' && btn.innerText.includes("Qur'an"));
-        btn.classList.toggle('active', matches);
-    });
-    renderStatsChart(tab);
-};
+// switchStatsTab dipertahankan agar tidak error jika masih ada referensi lama,
+// tapi kini hanya memanggil renderStatsChart() tanpa parameter tab.
+window.switchStatsTab = () => renderStatsChart();
 
 window.toggleStatList = (id) => {
     const list = document.getElementById(id);
@@ -1214,20 +1207,9 @@ window.toggleStatList = (id) => {
     }
 };
 
-function renderStatsChart(tab) {
+function renderStatsChart() {
     const container = document.getElementById('statsChartContainer');
     const hariIni = window.getTanggalHariIni();
-
-    const categoryDef = [
-        { key: 'A', title: 'Nilai A', icon: '👑', cls: 'a' },
-        { key: 'B', title: 'Nilai B', icon: '🌟', cls: 'b' },
-        { key: 'C', title: 'Nilai C', icon: '🔆', cls: 'c' },
-        { key: 'BelumHariIni', title: 'Belum Setor Hari Ini', icon: '⏳', cls: 'd' },
-        { key: 'BelumSamaSekali', title: 'Tidak Setor Sama Sekali', icon: '🚫', cls: 'e' },
-    ];
-
-    const stats = {};
-    categoryDef.forEach(c => { stats[c.key] = { ...c, names: [] }; });
 
     const totalMurid = dataMuridDinamis.length;
     if (totalMurid === 0) {
@@ -1235,93 +1217,122 @@ function renderStatsChart(tab) {
         return;
     }
 
-    dataMuridDinamis.forEach(murid => {
-        let statusField = '';
-        if (tab === 'quran') statusField = murid.quranStatus;
-        else if (tab === 'hadits') statusField = murid.haditsStatus;
-        else if (tab === 'doa') statusField = murid.doaStatus;
+    // Struktur data kategori baru
+    const stats = {
+        sudahSetor:      { names: [], subA: [], subB: [], subC: [], subD: [] },
+        izin:            { names: [] },
+        berhalangan:     { names: [] },
+        belumHariIni:    { names: [] },
+        tidakSetor:      { names: [] },
+    };
 
-        // ⚠️ Cek 'tidakSetor' PERTAMA — bersifat permanen, tidak terikat tanggal.
-        // Nama anak akan selalu muncul di 🚫 sampai admin mengubahnya secara eksplisit.
-        if (statusField === 'tidakSetor') {
-            stats['BelumSamaSekali'].names.push(murid.nama);
-            return; // langsung lanjut ke murid berikutnya
+    dataMuridDinamis.forEach(murid => {
+        // Cek status permanen "Tidak Setor Sama Sekali" (berdasarkan quranStatus sebagai acuan utama)
+        // Jika salah satu dari tiga mata pelajaran ditandai tidakSetor, murid masuk kategori ini
+        const adaTidakSetor = (murid.quranStatus === 'tidakSetor' || murid.haditsStatus === 'tidakSetor' || murid.doaStatus === 'tidakSetor');
+        if (adaTidakSetor) {
+            stats.tidakSetor.names.push(murid.nama);
+            return;
         }
 
         const sudahDinilaiHariIni = (murid.tanggalSetor === hariIni);
         const setoranHarian = murid.setoranHarian || 'belum';
-        const hasDepositedToday = sudahDinilaiHariIni && (setoranHarian === 'sudah');
 
-        if (hasDepositedToday) {
-            // Sudah setor hari ini — masukkan ke kategori nilai
-            if (statusField === 'A') {
-                stats['A'].names.push(murid.nama);
-            } else if (statusField === 'B') {
-                stats['B'].names.push(murid.nama);
-            } else if (statusField === 'C') {
-                stats['C'].names.push(murid.nama);
-            } else {
-                // Sudah setor tapi nilai D atau belum diisi
-                stats['BelumHariIni'].names.push(murid.nama);
-            }
-        } else if (sudahDinilaiHariIni && (setoranHarian === 'berhalangan' || setoranHarian === 'izin')) {
-            // Berhalangan / izin hari ini — tidak masuk ke mana-mana (bukan "tidak setor")
-            // Biarkan mereka tidak terhitung di statistik (tidak dihukum)
+        if (sudahDinilaiHariIni && setoranHarian === 'sudah') {
+            stats.sudahSetor.names.push(murid.nama);
+            // Sub-breakdown berdasarkan nilai Qur'an sebagai representasi utama
+            const grade = murid.quranStatus || 'belum';
+            if (grade === 'A') stats.sudahSetor.subA.push(murid.nama);
+            else if (grade === 'B') stats.sudahSetor.subB.push(murid.nama);
+            else if (grade === 'C') stats.sudahSetor.subC.push(murid.nama);
+            else stats.sudahSetor.subD.push(murid.nama);
+        } else if (sudahDinilaiHariIni && setoranHarian === 'izin') {
+            stats.izin.names.push(murid.nama);
+        } else if (sudahDinilaiHariIni && setoranHarian === 'berhalangan') {
+            stats.berhalangan.names.push(murid.nama);
         } else {
-            // Belum ada data hari ini sama sekali
-            stats['BelumHariIni'].names.push(murid.nama);
+            stats.belumHariIni.names.push(murid.nama);
         }
     });
 
-    // Summary row at top
-    const tuntas = stats['A'].names.length + stats['B'].names.length + stats['C'].names.length;
-    const belum = stats['BelumHariIni'].names.length + stats['BelumSamaSekali'].names.length;
-    const pct = Math.round((tuntas / totalMurid) * 100);
+    // Summary row
+    const sudah = stats.sudahSetor.names.length;
+    const izin = stats.izin.names.length;
+    const berhalangan = stats.berhalangan.names.length;
+    const belum = stats.belumHariIni.names.length;
+    const tidakSetor = stats.tidakSetor.names.length;
+    const terlayani = sudah + izin + berhalangan; // anak yang statusnya sudah dicatat hari ini
+    const pct = Math.round((sudah / totalMurid) * 100);
     const emoji = pct === 100 ? '🎉' : pct >= 70 ? '💪' : pct >= 40 ? '📈' : '🕐';
 
     let html = `
         <div style="text-align:center; padding: 12px 0 18px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 16px;">
             <div style="font-size: 36px; line-height:1; margin-bottom:6px;">${emoji}</div>
-            <div style="font-size:22px; font-weight:800; color: var(--gold);">${tuntas} / ${totalMurid}</div>
+            <div style="font-size:22px; font-weight:800; color: var(--gold);">${sudah} / ${totalMurid}</div>
             <div style="font-size:11px; color:var(--text-muted); margin-top:3px; letter-spacing:0.5px;">SUDAH SETOR HARI INI &nbsp;·&nbsp; ${pct}% Ketuntasan</div>
         </div>
     `;
 
-    categoryDef.forEach(cat => {
-        const data = stats[cat.key];
-        const count = data.names.length;
+    // Helper: render satu bar kategori
+    const renderBar = (key, icon, title, clsColor, names, extraHtml = '') => {
+        const count = names.length;
         const percentage = Math.round((count / totalMurid) * 100) || 0;
-        const listId = `stat-list-${tab}-${cat.key}`;
+        const listId = `stat-list-${key}`;
         const hintId = `hint-${listId}`;
-
         const chipsHtml = count > 0
-            ? data.names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
+            ? names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
             : `<span style="opacity:0.4; font-size:11px;">Tidak ada murid di kategori ini.</span>`;
 
-        html += `
+        return `
             <div class="stat-bar-container">
                 <div class="stat-bar-header">
-                    <span class="stat-color-${cat.cls}" style="display:flex;align-items:center;gap:6px;">
-                        <span style="font-size:14px;">${cat.icon}</span>
-                        ${cat.title}
+                    <span class="stat-color-${clsColor}" style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:14px;">${icon}</span>
+                        ${title}
                     </span>
                     <span class="stat-bar-count-badge">${count} anak</span>
                 </div>
                 <div class="stat-bar-track" onclick="window.toggleStatList('${listId}')">
-                    <div class="stat-bar-fill stat-bg-${cat.cls}" style="width:0%;" data-width="${percentage}%"></div>
+                    <div class="stat-bar-fill stat-bg-${clsColor}" style="width:0%;" data-width="${percentage}%"></div>
                 </div>
                 <div id="${hintId}" class="stat-bar-hint" onclick="window.toggleStatList('${listId}')">
                     <span class="stat-bar-hint-arrow">▼</span>
                     <span class="hint-text">Ketuk untuk lihat daftar nama</span>
                     <span style="margin-left:auto; opacity:0.4;">${percentage}%</span>
                 </div>
-                <div id="${listId}" class="stat-names-list stat-color-${cat.cls}">
+                <div id="${listId}" class="stat-names-list stat-color-${clsColor}">
                     <div style="margin-bottom:4px; font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:0.5px;">Daftar Nama</div>
+                    ${extraHtml}
                     ${chipsHtml}
                 </div>
             </div>
         `;
-    });
+    };
+
+    // Sub-breakdown nilai untuk kategori "Sudah Setor"
+    const subBreakdown = (() => {
+        if (stats.sudahSetor.names.length === 0) return '';
+        const rows = [
+            { label: '👑 Nilai A', names: stats.sudahSetor.subA },
+            { label: '🌟 Nilai B', names: stats.sudahSetor.subB },
+            { label: '⚡ Nilai C', names: stats.sudahSetor.subC },
+            { label: '⏳ Nilai D', names: stats.sudahSetor.subD },
+        ].filter(r => r.names.length > 0);
+
+        if (rows.length === 0) return '';
+        return `<div style="margin-bottom:10px; padding:8px 10px; background:rgba(255,255,255,0.04); border-radius:8px; font-size:11px;">
+            <div style="font-weight:700; color:var(--gold-muted); margin-bottom:6px; letter-spacing:0.5px; text-transform:uppercase; font-size:10px;">Rincian Nilai Qur'an</div>
+            ${rows.map(r => `<div style="display:flex; justify-content:space-between; padding:3px 0; color:var(--text-muted);">
+                <span>${r.label}</span><span style="font-weight:700; color:#fff;">${r.names.length} anak</span>
+            </div>`).join('')}
+        </div>`;
+    })();
+
+    html += renderBar('sudah', '✅', 'Sudah Setor', 'a', stats.sudahSetor.names, subBreakdown);
+    html += renderBar('izin', '🏥', 'Izin / Sakit', 'izin', stats.izin.names);
+    html += renderBar('berhalangan', '🛑', 'Berhalangan / Uzur', 'berhalangan', stats.berhalangan.names);
+    html += renderBar('belum', '⏳', 'Belum Setor Hari Ini', 'd', stats.belumHariIni.names);
+    html += renderBar('tidaksetor', '🚫', 'Tidak Setor Sama Sekali', 'e', stats.tidakSetor.names);
 
     container.innerHTML = html;
 
@@ -1332,3 +1343,4 @@ function renderStatsChart(tab) {
         });
     }, 80);
 }
+
