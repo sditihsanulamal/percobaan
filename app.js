@@ -1190,11 +1190,264 @@ window.openStatsModal = () => {
     renderStatsChart();
 };
 
-// switchStatsTab dipertahankan agar tidak error jika masih ada referensi lama,
-// tapi kini hanya memanggil renderStatsChart() tanpa parameter tab.
+// switchStatsTab dipertahankan agar tidak error jika masih ada referensi lama
 window.switchStatsTab = () => renderStatsChart();
 
 window.toggleStatList = (id) => {
+    const list = document.getElementById(id);
+    const hint = document.getElementById('hint-' + id);
+    if (!list) return;
+    const isOpen = list.classList.toggle('open');
+    if (hint) {
+        hint.classList.toggle('expanded', isOpen);
+        const arrow = hint.querySelector('.stat-bar-hint-arrow');
+        if (arrow) arrow.textContent = isOpen ? '▲' : '▼';
+        hint.querySelector('.hint-text').textContent = isOpen ? 'Sembunyikan daftar nama' : 'Ketuk untuk lihat daftar nama';
+    }
+};
+
+// Toggle baris nilai A/B/C/D di dalam sub-breakdown
+window.toggleSubGrade = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const row = el.previousElementSibling;
+    const isOpen = el.classList.toggle('open');
+    if (row) row.classList.toggle('active', isOpen);
+};
+
+// Ganti tampilan sub-breakdown saat pill mata pelajaran diklik
+window.switchSubBreakdown = (subj, btn) => {
+    btn.closest('.sub-pills').querySelectorAll('.sub-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const data = window._subjectBreakdownData;
+    if (!data) return;
+
+    const gradeConfig = [
+        { g: 'A', icon: '👑', color: '#93c5fd', cls: 'a' },
+        { g: 'B', icon: '🌟', color: '#6ee7b7', cls: 'b' },
+        { g: 'C', icon: '⚡', color: '#fcd34d', cls: 'c' },
+        { g: 'D', icon: '⏳', color: '#94a3b8', cls: 'd' },
+    ];
+
+    const html = gradeConfig.map(gc => {
+        const names = data[subj][gc.g];
+        const chipsHtml = names.length > 0
+            ? names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
+            : `<span style="opacity:0.35; font-size:10px;">Tidak ada murid di kategori ini.</span>`;
+        const listId = `subgrade-${subj}-${gc.g}`;
+        return `
+            <div class="sub-grade-row" onclick="window.toggleSubGrade('${listId}')">
+                <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} Nilai ${gc.g}</span>
+                <span class="sub-grade-count" style="color:${gc.color};">${names.length} anak</span>
+                <span class="sub-grade-arrow">▼</span>
+            </div>
+            <div class="sub-grade-names stat-color-${gc.cls}" id="${listId}">${chipsHtml}</div>
+        `;
+    }).join('');
+
+    document.getElementById('subBreakdownContent').innerHTML = html;
+};
+
+function renderStatsChart() {
+    const container = document.getElementById('statsChartContainer');
+    const hariIni = window.getTanggalHariIni();
+
+    const totalMurid = dataMuridDinamis.length;
+    if (totalMurid === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:30px 20px;">Belum ada data murid untuk kelas ini.</div>';
+        return;
+    }
+
+    // Struktur data kategori
+    const stats = {
+        sudahSetor:   { names: [], muridList: [] },
+        izin:         { names: [] },
+        berhalangan:  { names: [] },
+        belumHariIni: { names: [] },
+        tidakSetor:   { names: [] },
+    };
+
+    dataMuridDinamis.forEach(murid => {
+        // Status permanen "Tidak Setor Sama Sekali"
+        const adaTidakSetor = (murid.quranStatus === 'tidakSetor' || murid.haditsStatus === 'tidakSetor' || murid.doaStatus === 'tidakSetor');
+        if (adaTidakSetor) {
+            stats.tidakSetor.names.push(murid.nama);
+            return;
+        }
+
+        const sudahDinilaiHariIni = (murid.tanggalSetor === hariIni);
+        const setoranHarian = murid.setoranHarian || 'belum';
+
+        if (sudahDinilaiHariIni && setoranHarian === 'sudah') {
+            stats.sudahSetor.names.push(murid.nama);
+            stats.sudahSetor.muridList.push(murid); // simpan objek lengkap untuk sub-breakdown
+        } else if (sudahDinilaiHariIni && setoranHarian === 'izin') {
+            stats.izin.names.push(murid.nama);
+        } else if (sudahDinilaiHariIni && setoranHarian === 'berhalangan') {
+            stats.berhalangan.names.push(murid.nama);
+        } else {
+            stats.belumHariIni.names.push(murid.nama);
+        }
+    });
+
+    // Bangun data per-mata-pelajaran untuk sub-breakdown (disimpan global agar switchSubBreakdown bisa akses)
+    const buildSubjectData = (muridList) => {
+        const subjectMap = {
+            quran:  { Q: 'quranStatus',  A: [], B: [], C: [], D: [] },
+            hadits: { Q: 'haditsStatus', A: [], B: [], C: [], D: [] },
+            doa:    { Q: 'doaStatus',    A: [], B: [], C: [], D: [] },
+        };
+        muridList.forEach(murid => {
+            ['quran', 'hadits', 'doa'].forEach(subj => {
+                const statusRaw = murid[subjectMap[subj].Q] || '';
+                const grade = ['A', 'B', 'C', 'D'].includes(statusRaw) ? statusRaw : 'D';
+                subjectMap[subj][grade].push(murid.nama);
+            });
+        });
+        // Kembalikan hanya A/B/C/D per subjek
+        return {
+            quran:  { A: subjectMap.quran.A,  B: subjectMap.quran.B,  C: subjectMap.quran.C,  D: subjectMap.quran.D  },
+            hadits: { A: subjectMap.hadits.A, B: subjectMap.hadits.B, C: subjectMap.hadits.C, D: subjectMap.hadits.D },
+            doa:    { A: subjectMap.doa.A,    B: subjectMap.doa.B,    C: subjectMap.doa.C,    D: subjectMap.doa.D    },
+        };
+    };
+    window._subjectBreakdownData = buildSubjectData(stats.sudahSetor.muridList);
+
+    // Summary row
+    const sudah = stats.sudahSetor.names.length;
+    const pct = Math.round((sudah / totalMurid) * 100);
+    const emoji = pct === 100 ? '🎉' : pct >= 70 ? '💪' : pct >= 40 ? '📈' : '🕐';
+
+    let html = `
+        <div style="text-align:center; padding: 12px 0 18px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 16px;">
+            <div style="font-size: 36px; line-height:1; margin-bottom:6px;">${emoji}</div>
+            <div style="font-size:22px; font-weight:800; color: var(--gold);">${sudah} / ${totalMurid}</div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:3px; letter-spacing:0.5px;">SUDAH SETOR HARI INI &nbsp;·&nbsp; ${pct}% Ketuntasan</div>
+        </div>
+    `;
+
+    // Helper: render satu bar kategori utama
+    const renderBar = (key, icon, title, clsColor, names, extraHtml = '') => {
+        const count = names.length;
+        const percentage = Math.round((count / totalMurid) * 100) || 0;
+        const listId = `stat-list-${key}`;
+        const hintId = `hint-${listId}`;
+        const chipsHtml = count > 0
+            ? names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
+            : `<span style="opacity:0.4; font-size:11px;">Tidak ada murid di kategori ini.</span>`;
+
+        return `
+            <div class="stat-bar-container">
+                <div class="stat-bar-header">
+                    <span class="stat-color-${clsColor}" style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:14px;">${icon}</span>
+                        ${title}
+                    </span>
+                    <span class="stat-bar-count-badge">${count} anak</span>
+                </div>
+                <div class="stat-bar-track" onclick="window.toggleStatList('${listId}')">
+                    <div class="stat-bar-fill stat-bg-${clsColor}" style="width:0%;" data-width="${percentage}%"></div>
+                </div>
+                <div id="${hintId}" class="stat-bar-hint" onclick="window.toggleStatList('${listId}')">
+                    <span class="stat-bar-hint-arrow">▼</span>
+                    <span class="hint-text">Ketuk untuk lihat daftar nama</span>
+                    <span style="margin-left:auto; opacity:0.4;">${percentage}%</span>
+                </div>
+                <div id="${listId}" class="stat-names-list stat-color-${clsColor}">
+                    ${extraHtml}
+                    ${count > 0 && !extraHtml ? chipsHtml : (extraHtml ? '' : chipsHtml)}
+                </div>
+            </div>
+        `;
+    };
+
+    // Sub-breakdown per mata pelajaran untuk "Sudah Setor"
+    const buildSubBreakdownHtml = (subj) => {
+        const data = window._subjectBreakdownData[subj];
+        const gradeConfig = [
+            { g: 'A', icon: '👑', color: '#93c5fd', cls: 'a' },
+            { g: 'B', icon: '🌟', color: '#6ee7b7', cls: 'b' },
+            { g: 'C', icon: '⚡', color: '#fcd34d', cls: 'c' },
+            { g: 'D', icon: '⏳', color: '#94a3b8', cls: 'd' },
+        ];
+        return gradeConfig.map(gc => {
+            const names = data[gc.g];
+            const chipsHtml = names.length > 0
+                ? names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
+                : `<span style="opacity:0.35; font-size:10px;">Tidak ada murid di kategori ini.</span>`;
+            const listId = `subgrade-${subj}-${gc.g}`;
+            return `
+                <div class="sub-grade-row" onclick="window.toggleSubGrade('${listId}')">
+                    <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} Nilai ${gc.g}</span>
+                    <span class="sub-grade-count" style="color:${gc.color};">${names.length} anak</span>
+                    <span class="sub-grade-arrow">▼</span>
+                </div>
+                <div class="sub-grade-names stat-color-${gc.cls}" id="${listId}">${chipsHtml}</div>
+            `;
+        }).join('');
+    };
+
+    const subBreakdown = sudah === 0 ? '' : `
+        <div class="sub-breakdown-container">
+            <div class="sub-pills">
+                <button class="sub-pill active" onclick="window.switchSubBreakdown('quran', this)">📖 Qur'an</button>
+                <button class="sub-pill" onclick="window.switchSubBreakdown('hadits', this)">📜 Hadits</button>
+                <button class="sub-pill" onclick="window.switchSubBreakdown('doa', this)">🤲 Doa</button>
+            </div>
+            <div id="subBreakdownContent">
+                ${buildSubBreakdownHtml('quran')}
+            </div>
+        </div>
+    `;
+
+    // Untuk bar "Sudah Setor": tidak tampilkan chip nama (sudah ada di sub-breakdown)
+    const renderBarSudah = () => {
+        const count = sudah;
+        const percentage = Math.round((count / totalMurid) * 100) || 0;
+        const listId = 'stat-list-sudah';
+        const hintId = 'hint-stat-list-sudah';
+        return `
+            <div class="stat-bar-container">
+                <div class="stat-bar-header">
+                    <span class="stat-color-a" style="display:flex;align-items:center;gap:6px;">
+                        <span style="font-size:14px;">✅</span>
+                        Sudah Setor
+                    </span>
+                    <span class="stat-bar-count-badge">${count} anak</span>
+                </div>
+                <div class="stat-bar-track" onclick="window.toggleStatList('${listId}')">
+                    <div class="stat-bar-fill stat-bg-a" style="width:0%;" data-width="${percentage}%"></div>
+                </div>
+                <div id="${hintId}" class="stat-bar-hint" onclick="window.toggleStatList('${listId}')">
+                    <span class="stat-bar-hint-arrow">▼</span>
+                    <span class="hint-text">Ketuk untuk lihat rincian nilai</span>
+                    <span style="margin-left:auto; opacity:0.4;">${percentage}%</span>
+                </div>
+                <div id="${listId}" class="stat-names-list stat-color-a">
+                    ${subBreakdown}
+                </div>
+            </div>
+        `;
+    };
+
+    html += renderBarSudah();
+    html += renderBar('izin', '🏥', 'Izin / Sakit', 'izin', stats.izin.names);
+    html += renderBar('berhalangan', '🛑', 'Berhalangan / Uzur', 'berhalangan', stats.berhalangan.names);
+    html += renderBar('belum', '⏳', 'Belum Setor Hari Ini', 'd', stats.belumHariIni.names);
+    html += renderBar('tidaksetor', '🚫', 'Tidak Setor Sama Sekali', 'e', stats.tidakSetor.names);
+
+    container.innerHTML = html;
+
+    // Staggered bar animation
+    setTimeout(() => {
+        container.querySelectorAll('.stat-bar-fill').forEach(bar => {
+            bar.style.width = bar.getAttribute('data-width');
+        });
+    }, 80);
+}
+
+
     const list = document.getElementById(id);
     const hint = document.getElementById('hint-' + id);
     if (!list) return;
