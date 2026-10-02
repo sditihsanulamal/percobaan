@@ -177,8 +177,7 @@ function renderGaleri(fields) {
         html += `<div class="glass-panel gallery-card">
             <div class="foto-placeholder">${fotoKonten}</div>
             <div class="gallery-info-wrapper">
-                <div><div class="gallery-caption">${foto.caption}</div>
-                <span class="gallery-time">${foto.time}</span></div>
+                <div class="gallery-caption">${foto.caption}</div>
                 ${downloadBtn}
             </div></div>`;
     });
