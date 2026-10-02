@@ -375,37 +375,33 @@
 
                 <!-- Form Info Dokumentasi -->
                 <div id="form-info-dokumentasi" class="admin-form-mading" style="display:none;">
-                    <div class="detail-label" style="margin-bottom:8px;">Tanggal Dokumentasi</div>
-                    <input type="text" id="fdok-tanggal" class="admin-input" placeholder="Misal: Kamis, 27 Agustus 2026"
-                        style="margin-bottom:16px;">
+                    <!-- Tanggal diisi otomatis oleh JS, tidak perlu input manual -->
+                    <div style="display:flex; align-items:center; gap:8px; padding:10px 14px; background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.25); border-radius:10px; margin-bottom:16px;">
+                        <span style="font-size:16px;">📅</span>
+                        <div>
+                            <div style="font-size:10px; color:var(--gold-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">Tanggal Otomatis</div>
+                            <div id="fdok-tanggal-preview" style="font-size:13px; font-weight:700; color:var(--gold);"></div>
+                        </div>
+                    </div>
 
                     <div style="border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 16px; margin-top: 8px;">
-                        <div class="detail-label" style="margin-bottom:12px;">📸 URL Foto Dokumentasi</div>
+                        <div class="detail-label" style="margin-bottom:12px;">📸 Item Dokumentasi</div>
 
-                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:16px; line-height: 1.5;">
-                            Upload foto ke PostImg, lalu pastikan Anda menyalin <b>"Direct links" (Tautan
-                                langsung)</b>.<br>
+                        <div style="font-size:12px; color:var(--text-muted); margin-bottom:14px; line-height: 1.5;">
+                            Upload foto ke PostImg, lalu salin <b>"Direct links"</b>.<br>
                             <a href="https://postimages.org/" target="_blank"
-                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--mumtaz); text-decoration:none; margin-top:10px; background:rgba(59,130,246,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(59,130,246,0.3); transition:all 0.2s;">
-                                🖼️ Buka Web PostImg
+                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--mumtaz); text-decoration:none; margin-top:8px; background:rgba(59,130,246,0.1); padding:7px 12px; border-radius:12px; border:1px solid rgba(59,130,246,0.3);">
+                                🖼️ Buka PostImg
                             </a>
                         </div>
 
-                        <div style="margin-bottom:12px;">
-                            <span class="audio-url-label">Foto 1 — Pembacaan Zikir Pagi</span>
-                            <input type="text" id="fdok-foto1" class="admin-input"
-                                placeholder="Tempel URL Tautan Langsung...">
-                        </div>
-                        <div style="margin-bottom:12px;">
-                            <span class="audio-url-label">Foto 2 — Sholat Dhuha</span>
-                            <input type="text" id="fdok-foto2" class="admin-input"
-                                placeholder="Tempel URL Tautan Langsung...">
-                        </div>
-                        <div>
-                            <span class="audio-url-label">Foto 3 — Muraja'ah Hafalan</span>
-                            <input type="text" id="fdok-foto3" class="admin-input"
-                                placeholder="Tempel URL Tautan Langsung...">
-                        </div>
+                        <!-- Container item dinamis — diisi oleh JS -->
+                        <div id="fdok-container"></div>
+
+                        <button type="button" onclick="window._tambahFotoItem()"
+                            style="width:100%; padding:10px; border-radius:10px; border:1px dashed rgba(212,175,55,0.35); background:rgba(212,175,55,0.06); color:var(--gold); font-size:12px; font-weight:700; cursor:pointer; margin-top:4px; transition:all 0.2s ease; font-family:'Plus Jakarta Sans',sans-serif;">
+                            ＋ Tambah Item Kegiatan
+                        </button>
                     </div>
                 </div>
 
