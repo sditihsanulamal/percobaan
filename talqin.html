@@ -195,24 +195,236 @@
             letter-spacing: 0.5px;
         }
 
-        .select-student-dropdown {
+        /* ============================================================
+           CUSTOM LUXURY DROPDOWN (MOBILE-OPTIMIZED & GPU-ACCELERATED)
+           ============================================================ */
+        .custom-dropdown-container {
+            position: relative;
             width: 100%;
-            padding: 12px 14px;
-            border-radius: 14px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(212, 175, 55, 0.25);
-            color: #ffffff;
-            font-size: 13.5px;
-            font-weight: 600;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            outline: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            z-index: 60;
         }
 
-        .select-student-dropdown:focus {
+        .custom-select-trigger {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(3, 42, 28, 0.75), rgba(1, 20, 12, 0.85));
+            border: 1.5px solid rgba(212, 175, 55, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+
+        .custom-select-trigger:active {
+            transform: scale(0.985);
+        }
+
+        .custom-select-trigger.active {
             border-color: var(--gold-main);
-            box-shadow: 0 0 12px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+            background: linear-gradient(135deg, rgba(3, 48, 32, 0.9), rgba(1, 24, 15, 0.95));
+        }
+
+        .trigger-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        .trigger-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            color: var(--gold-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .trigger-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .trigger-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .trigger-sub {
+            font-size: 10.5px;
+            color: var(--gold-light);
+            opacity: 0.85;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .trigger-arrow {
+            color: var(--gold-main);
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+            margin-left: 6px;
+        }
+
+        .custom-select-trigger.active .trigger-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Panel Melayang Dropdown */
+        .custom-dropdown-panel {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 100%;
+            background: rgba(2, 22, 15, 0.98);
+            border: 1.5px solid var(--gold-main);
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translate3d(0, -6px, 0) scale(0.98);
+            transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+            z-index: 150;
+            max-height: 320px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .custom-dropdown-panel.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate3d(0, 0, 0) scale(1);
+        }
+
+        .dropdown-search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .dropdown-search-box svg {
+            color: var(--gold-main);
+            flex-shrink: 0;
+        }
+
+        .dropdown-search-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 12.5px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            outline: none;
+        }
+
+        .dropdown-search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .custom-dropdown-list {
+            overflow-y: auto;
+            max-height: 250px;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .custom-dropdown-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .custom-dropdown-list::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.35);
+            border-radius: 10px;
+        }
+
+        .dropdown-item-option {
+            padding: 11px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background 0.15s ease, padding-left 0.15s ease;
+            user-select: none;
+        }
+
+        .dropdown-item-option:active {
+            background: rgba(212, 175, 55, 0.22);
+        }
+
+        .dropdown-item-option:hover {
+            background: rgba(212, 175, 55, 0.12);
+            padding-left: 20px;
+        }
+
+        .dropdown-item-option.selected {
+            background: rgba(212, 175, 55, 0.18);
+            border-left: 3px solid var(--gold-main);
+        }
+
+        .opt-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .opt-tag-slow {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            padding: 2px 7px;
+            border-radius: 8px;
+        }
+
+        .opt-surah-arab {
+            font-family: 'Amiri', serif;
+            font-size: 16px;
+            color: var(--gold-light);
+            direction: rtl;
+        }
+
+        /* Surah Quick Trigger */
+        .surah-trigger {
+            padding: 10px 14px;
+            border-radius: 14px;
+        }
+
+        .surah-trigger .trigger-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+        }
+
+        .surah-trigger .trigger-title {
+            font-size: 13px;
         }
 
         /* Personal Notification Banner (Untuk Slow Learner) */
@@ -393,7 +605,7 @@
             color: #ffffff;
         }
 
-        /* Display Ayat Arab */
+        /* Display Ayat Arab (Ornate Islamic Frame & Ambient Glow) */
         .studio-arabic-display {
             font-family: 'Amiri', serif;
             font-size: 26px;
@@ -402,16 +614,37 @@
             line-height: 2.1;
             color: #ffffff;
             margin: 6px 0 10px;
-            padding: 12px 14px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 14px 18px;
+            background: radial-gradient(circle at center, rgba(3, 50, 34, 0.45) 0%, rgba(1, 16, 9, 0.75) 100%);
+            border-radius: 18px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
             direction: rtl;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-            min-height: 75px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+            min-height: 78px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5), 0 4px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        .studio-arabic-display::before,
+        .studio-arabic-display::after {
+            content: '۞';
+            position: absolute;
+            color: rgba(212, 175, 55, 0.35);
+            font-size: 13px;
+            pointer-events: none;
+        }
+
+        .studio-arabic-display::before {
+            top: 6px;
+            left: 10px;
+        }
+
+        .studio-arabic-display::after {
+            bottom: 6px;
+            right: 10px;
         }
 
         .studio-translation {
@@ -509,6 +742,15 @@
 
         .play-btn-main:active {
             transform: scale(0.95);
+        }
+
+        .play-btn-main.is-playing {
+            animation: playPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes playPulse {
+            0%, 100% { box-shadow: 0 0 16px rgba(212, 175, 55, 0.45); transform: scale(1); }
+            50% { box-shadow: 0 0 28px rgba(212, 175, 55, 0.85); transform: scale(1.05); }
         }
 
         .tikrar-box {
@@ -944,10 +1186,34 @@
                 <span>👤 Pilih Nama Ananda (Wali Murid):</span>
                 <span id="badgeTipeMurid" style="color:var(--text-secondary); font-size:10px;">Mode Umum</span>
             </div>
-            <select id="selectMurid" class="select-student-dropdown" onchange="onGantiMurid(this.value)">
-                <option value="">-- Mode Umum / Tampilkan Seluruh Rekaman --</option>
-                <!-- Opsi murid diisi otomatis dari database kelas -->
-            </select>
+
+            <!-- Custom Luxury Dropdown Murid -->
+            <div class="custom-dropdown-container" id="wrapMuridDropdown">
+                <div class="custom-select-trigger" id="btnTriggerMurid" onclick="window.toggleCustomDropdown('panelMuridDropdown', 'btnTriggerMurid')">
+                    <div class="trigger-left">
+                        <span class="trigger-avatar" id="avatarSelectedMurid">👥</span>
+                        <div class="trigger-info">
+                            <span class="trigger-title" id="textSelectedMurid">Mode Umum / Seluruh Rekaman</span>
+                            <span class="trigger-sub" id="subSelectedMurid">Ketuk untuk memilih nama ananda</span>
+                        </div>
+                    </div>
+                    <svg class="trigger-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <div class="custom-dropdown-panel" id="panelMuridDropdown">
+                    <div class="dropdown-search-box">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" class="dropdown-search-input" id="searchMuridDropdown" placeholder="Ketik nama ananda..." oninput="window.filterDropdownMurid(this.value)">
+                    </div>
+                    <div class="custom-dropdown-list" id="listMuridDropdown">
+                        <!-- Opsi murid diisi via JavaScript -->
+                    </div>
+                </div>
+            </div>
 
             <!-- Banner Notifikasi Khusus Anak Slow Learner (Target Bimbingan Khusus) -->
             <div class="slow-learner-banner" id="bannerSlowLearner">
@@ -972,11 +1238,29 @@
              ============================================================ -->
         <main class="studio-hub-card" id="studioHubCard">
 
-            <!-- Baris Cepat Pemilih Surah & Filter Juz -->
+            <!-- Baris Cepat Pemilih Surah (Custom Dropdown) & Filter Juz -->
             <div class="surah-quick-bar">
-                <select id="selectSurahQuick" class="select-surah-quick" onchange="onPilihSurahQuick(this.value)">
-                    <!-- Diisi dengan daftar Surah yang tersedia rekaman audionya -->
-                </select>
+                <div class="custom-dropdown-container" id="wrapSurahDropdown" style="flex:1;">
+                    <div class="custom-select-trigger surah-trigger" id="btnTriggerSurah" onclick="window.toggleCustomDropdown('panelSurahDropdown', 'btnTriggerSurah')">
+                        <div class="trigger-left">
+                            <span class="trigger-avatar" style="font-size:15px;">📖</span>
+                            <div class="trigger-info">
+                                <span class="trigger-title" id="textSelectedSurah">Surah An-Nas</span>
+                                <span class="trigger-sub" id="subSelectedSurah">Pilihan Ayat</span>
+                            </div>
+                        </div>
+                        <svg class="trigger-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+
+                    <div class="custom-dropdown-panel" id="panelSurahDropdown">
+                        <div class="custom-dropdown-list" id="listSurahDropdown">
+                            <!-- Opsi surah diisi via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
                 <button class="juz-filter-pill-btn" id="btnFilterJuzQuick" onclick="siklusFilterJuz()">
                     Juz 30
                 </button>
@@ -1531,23 +1815,100 @@
         });
 
         // ============================================================
-        // LOGIKA PEMILIHAN MURID (SLOW LEARNER VS MUMTAZ)
+        // SISTEM CUSTOM LUXURY DROPDOWN (FLUID & GPU ACCELERATED)
         // ============================================================
+        window.toggleCustomDropdown = (panelId, triggerId) => {
+            const panel = document.getElementById(panelId);
+            const trigger = document.getElementById(triggerId);
+            const isOpen = panel.classList.contains('show');
+
+            // Tutup dropdown lain yang sedang terbuka
+            document.querySelectorAll('.custom-dropdown-panel').forEach(p => p.classList.remove('show'));
+            document.querySelectorAll('.custom-select-trigger').forEach(t => t.classList.remove('active'));
+
+            if (!isOpen) {
+                panel.classList.add('show');
+                trigger.classList.add('active');
+                if (panelId === 'panelMuridDropdown') {
+                    const searchInput = document.getElementById('searchMuridDropdown');
+                    if (searchInput) {
+                        searchInput.value = '';
+                        window.filterDropdownMurid('');
+                        setTimeout(() => searchInput.focus(), 80);
+                    }
+                }
+            }
+        };
+
+        // Tutup otomatis jika pengguna mengklik area luar dropdown
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.custom-dropdown-container')) {
+                document.querySelectorAll('.custom-dropdown-panel').forEach(p => p.classList.remove('show'));
+                document.querySelectorAll('.custom-select-trigger').forEach(t => t.classList.remove('active'));
+            }
+        });
+
+        // Filter realtime pencarian murid di dropdown
+        window.filterDropdownMurid = (query) => {
+            const q = query.toLowerCase().trim();
+            const items = document.querySelectorAll('#listMuridDropdown .dropdown-item-option');
+            items.forEach(item => {
+                const name = (item.getAttribute('data-name') || '').toLowerCase();
+                item.style.display = name.includes(q) ? 'flex' : 'none';
+            });
+        };
+
+        let selectedMuridId = "";
+
         function renderStudentDropdown() {
-            const select = document.getElementById('selectMurid');
-            const curVal = select.value;
-            select.innerHTML = '<option value="">-- Mode Umum / Tampilkan Seluruh Rekaman --</option>';
+            const listContainer = document.getElementById('listMuridDropdown');
+            if (!listContainer) return;
+
+            let html = `
+                <div class="dropdown-item-option ${!selectedMuridId ? 'selected' : ''}" data-name="mode umum" onclick="window.pilihMuridItem('', 'Mode Umum / Seluruh Rekaman', 'Ketuk untuk memilih nama ananda', '👥')">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span>👥</span>
+                        <span class="opt-name">Mode Umum (Tampilkan Seluruh Rekaman)</span>
+                    </div>
+                </div>
+            `;
 
             dataMuridDinamis.forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m.id;
-                const statusTag = m.isKlinikTalqin ? ' [🎯 Bimbingan Khusus]' : '';
-                opt.textContent = `${m.nama}${statusTag}`;
-                select.appendChild(opt);
+                const isSlow = m.isKlinikTalqin;
+                const isSelected = (selectedMuridId === m.id);
+                const initial = m.nama ? m.nama.charAt(0).toUpperCase() : 'A';
+                const tagSlow = isSlow ? `<span class="opt-tag-slow">🎯 Bimbingan Khusus</span>` : '';
+                const subTeks = isSlow ? `Target: Surah ${m.targetTalqinSurah || 'An-Nas'} (${m.targetTalqinAyat || 'Ayat 1'})` : 'Tahfiz Reguler';
+
+                html += `
+                    <div class="dropdown-item-option ${isSelected ? 'selected' : ''}" data-name="${m.nama}" onclick="window.pilihMuridItem('${m.id}', '${m.nama}', '${subTeks}', '${initial}')">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span class="trigger-avatar" style="width:24px; height:24px; font-size:10px; border-radius:6px;">${initial}</span>
+                            <div>
+                                <div class="opt-name">${m.nama}</div>
+                                <div style="font-size:10px; color:var(--text-secondary);">${subTeks}</div>
+                            </div>
+                        </div>
+                        ${tagSlow}
+                    </div>
+                `;
             });
 
-            if (curVal) select.value = curVal;
+            listContainer.innerHTML = html;
         }
+
+        window.pilihMuridItem = (muridId, namaDisplay, subDisplay, avatarDisplay) => {
+            selectedMuridId = muridId;
+            document.getElementById('textSelectedMurid').innerText = namaDisplay;
+            document.getElementById('subSelectedMurid').innerText = subDisplay;
+            document.getElementById('avatarSelectedMurid').innerText = avatarDisplay;
+
+            document.getElementById('panelMuridDropdown').classList.remove('show');
+            document.getElementById('btnTriggerMurid').classList.remove('active');
+
+            window.onGantiMurid(muridId);
+            renderStudentDropdown();
+        };
 
         window.onGantiMurid = (muridId) => {
             const bannerSlow = document.getElementById('bannerSlowLearner');
@@ -1557,7 +1918,6 @@
             const badgeTipe = document.getElementById('badgeTipeMurid');
 
             if (!muridId) {
-                // Mode Umum
                 badgeTipe.innerText = 'Mode Umum';
                 badgeTipe.style.color = 'var(--text-secondary)';
                 bannerSlow.style.display = 'none';
@@ -1570,9 +1930,7 @@
             const murid = dataMuridDinamis.find(m => m.id === muridId);
             if (!murid) return;
 
-            // Cek apakah ananda masuk kategori Slow Learner / Bimbingan Khusus
             if (murid.isKlinikTalqin) {
-                // Tampilkan Bimbingan Khusus & langsung arahkan Player ke target ayatnya
                 badgeTipe.innerText = 'Bimbingan Khusus';
                 badgeTipe.style.color = '#6ee7b7';
                 cardPraise.style.display = 'none';
@@ -1585,12 +1943,10 @@
                 document.getElementById('lblTargetAnanda').innerText = `Surah ${targetSurah} ${targetAyat}`;
                 bannerSlow.style.display = 'block';
 
-                // Arahkan Surah & Ayat terpilih
                 selectedSurahName = targetSurah;
                 renderSurahDropdownQuick();
                 renderAyatSelectorHub();
 
-                // Cari rekaman yang cocok
                 const matchRec = listRekaman.find(r =>
                     r.surah.toLowerCase() === targetSurah.toLowerCase() &&
                     r.labelAyat.toLowerCase().includes(targetAyat.toLowerCase())
@@ -1599,7 +1955,6 @@
                     pilihAyat(matchRec);
                 }
             } else {
-                // Murid Reguler / Tuntas -> TAMPILKAN KARTU PUJIAN MURNI (TANPA DATA REALISASI RAPOR)
                 badgeTipe.innerText = 'Target Tuntas';
                 badgeTipe.style.color = 'var(--gold-main)';
                 bannerSlow.style.display = 'none';
@@ -1623,44 +1978,59 @@
         };
 
         // ============================================================
-        // LOGIKA STUDIO ISTIMA' HUB (PLAYER + AYAT SELECTOR)
+        // LOGIKA SURAH QUICK SELECTOR (CUSTOM DROPDOWN)
         // ============================================================
         function renderSurahDropdownQuick() {
-            const select = document.getElementById('selectSurahQuick');
+            const listContainer = document.getElementById('listSurahDropdown');
             const surahTersedia = [...new Set(listRekaman.map(r => r.surah))];
+            if (!listContainer) return;
 
-            select.innerHTML = '';
+            let html = '';
             surahTersedia.forEach(sName => {
-                const opt = document.createElement('option');
-                opt.value = sName;
                 const sample = listRekaman.find(r => r.surah === sName);
-                opt.textContent = `Surah ${sName} ${sample && sample.surahArab ? '(' + sample.surahArab + ')' : ''}`;
-                if (sName === selectedSurahName) opt.selected = true;
-                select.appendChild(opt);
+                const isSelected = (sName === selectedSurahName);
+                const arab = sample && sample.surahArab ? sample.surahArab : '';
+                const juz = sample && sample.juz ? `Juz ${sample.juz}` : '';
+
+                if (isSelected) {
+                    document.getElementById('textSelectedSurah').innerText = `Surah ${sName}`;
+                    document.getElementById('subSelectedSurah').innerText = `${juz} • Pilihan Potongan Ayat`;
+                }
+
+                html += `
+                    <div class="dropdown-item-option ${isSelected ? 'selected' : ''}" onclick="window.pilihSurahQuickItem('${sName}')">
+                        <div>
+                            <div class="opt-name">Surah ${sName}</div>
+                            <div style="font-size:10px; color:var(--text-secondary);">${juz}</div>
+                        </div>
+                        <span class="opt-surah-arab">${arab}</span>
+                    </div>
+                `;
             });
 
+            listContainer.innerHTML = html;
             document.getElementById('btnFilterJuzQuick').innerText = `Juz ${activeJuzFilterQuick}`;
         }
 
-        window.onPilihSurahQuick = (surahName) => {
+        window.pilihSurahQuickItem = (surahName) => {
             selectedSurahName = surahName;
+            document.getElementById('panelSurahDropdown').classList.remove('show');
+            document.getElementById('btnTriggerSurah').classList.remove('active');
+            renderSurahDropdownQuick();
             renderAyatSelectorHub();
         };
 
         window.siklusFilterJuz = () => {
-            // Berganti filter: Juz 30 -> Juz 29 -> Juz 28 -> Juz 1 -> Juz 30
             const arr = [30, 29, 28, 1];
             const idx = arr.indexOf(activeJuzFilterQuick);
             activeJuzFilterQuick = arr[(idx + 1) % arr.length];
             document.getElementById('btnFilterJuzQuick').innerText = `Juz ${activeJuzFilterQuick}`;
 
-            // Pilih surah pertama yang sesuai juz tersebut
             const match = listRekaman.find(r => r.juz === activeJuzFilterQuick);
             if (match) {
                 selectedSurahName = match.surah;
                 renderSurahDropdownQuick();
                 renderAyatSelectorHub();
-            }
         };
 
         function renderAyatSelectorHub() {
@@ -1770,8 +2140,16 @@
         function updatePlayBtnUI() {
             const p = document.getElementById('iconPlay');
             const pa = document.getElementById('iconPause');
-            if (isPlaying) { p.style.display = 'none'; pa.style.display = 'block'; }
-            else { p.style.display = 'block'; pa.style.display = 'none'; }
+            const btn = document.getElementById('btnPlayPause');
+            if (isPlaying) {
+                p.style.display = 'none';
+                pa.style.display = 'block';
+                if (btn) btn.classList.add('is-playing');
+            } else {
+                p.style.display = 'block';
+                pa.style.display = 'none';
+                if (btn) btn.classList.remove('is-playing');
+            }
         }
 
         audioObj.addEventListener('ended', () => {
