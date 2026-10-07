@@ -504,6 +504,73 @@
         }
 
         /* ============================================================
+           KARTU SAMBUTAN AWAL WALI MURID (PROMPT PILIH ANANDA)
+           ============================================================ */
+        .initial-prompt-card {
+            background: linear-gradient(135deg, rgba(3, 40, 27, 0.7) 0%, rgba(1, 18, 10, 0.9) 100%);
+            border: 1.5px dashed rgba(212, 175, 55, 0.4);
+            border-radius: 22px;
+            padding: 26px 20px;
+            margin-bottom: 22px;
+            text-align: center;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .initial-prompt-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid var(--gold-main);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+        }
+
+        .initial-prompt-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+        }
+
+        .initial-prompt-desc {
+            font-size: 12.5px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            max-width: 440px;
+            margin: 0 auto 16px;
+        }
+
+        .btn-open-general {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border-subtle);
+            color: #e2e8f0;
+            padding: 9px 18px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-open-general:hover,
+        .btn-open-general:active {
+            color: var(--gold-main);
+            border-color: var(--gold-main);
+            background: rgba(212, 175, 55, 0.12);
+        }
+
+        /* ============================================================
            STUDIO ISTIMA' HUB (PLAYER + SELECTOR TERPADU DI SEKITAR KARTU)
            ============================================================ */
         .studio-hub-card {
@@ -1184,17 +1251,17 @@
         <section class="student-selector-card">
             <div class="student-selector-header">
                 <span>👤 Pilih Nama Ananda (Wali Murid):</span>
-                <span id="badgeTipeMurid" style="color:var(--text-secondary); font-size:10px;">Mode Umum</span>
+                <span id="badgeTipeMurid" style="color:var(--text-secondary); font-size:10px;">Belum Dipilih</span>
             </div>
 
             <!-- Custom Luxury Dropdown Murid -->
             <div class="custom-dropdown-container" id="wrapMuridDropdown">
                 <div class="custom-select-trigger" id="btnTriggerMurid" onclick="window.toggleCustomDropdown('panelMuridDropdown', 'btnTriggerMurid')">
                     <div class="trigger-left">
-                        <span class="trigger-avatar" id="avatarSelectedMurid">👥</span>
+                        <span class="trigger-avatar" id="avatarSelectedMurid">👤</span>
                         <div class="trigger-info">
-                            <span class="trigger-title" id="textSelectedMurid">Mode Umum / Seluruh Rekaman</span>
-                            <span class="trigger-sub" id="subSelectedMurid">Ketuk untuk memilih nama ananda</span>
+                            <span class="trigger-title" id="textSelectedMurid">Pilih Nama Ananda...</span>
+                            <span class="trigger-sub" id="subSelectedMurid">Ketuk di sini untuk memilih nama ananda</span>
                         </div>
                     </div>
                     <svg class="trigger-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1221,6 +1288,18 @@
             </div>
         </section>
 
+        <!-- Kartu Sambutan Awal (Ditampilkan sebelum Wali Murid memilih nama ananda) -->
+        <section class="initial-prompt-card" id="initialPromptCard">
+            <div class="initial-prompt-icon">📖</div>
+            <h2 class="initial-prompt-title">Ahlan wa Sahlan, Ayah & Bunda!</h2>
+            <p class="initial-prompt-desc">
+                Silakan pilih <strong>Nama Ananda</strong> pada pilihan di atas untuk memantau target bimbingan khusus hafalan atau pencapaian ananda.
+            </p>
+            <button class="btn-open-general" onclick="window.pilihMuridItem('mode_umum', 'Mode Umum / Seluruh Rekaman', 'Daftar seluruh audio klinik talqin', '👥')">
+                <span>🎧</span> Buka Mode Umum (Seluruh Rekaman)
+            </button>
+        </section>
+
         <!-- Kartu Apresiasi Prestasi (Tampil HANYA jika murid adalah Reguler / Tuntas) -->
         <section class="praise-card" id="cardPraiseMumtaz">
             <div class="praise-badge">🏆 PENCAPAIAN TUNTAS & MUMTAZ</div>
@@ -1236,7 +1315,7 @@
         <!-- ============================================================
              2. STUDIO ISTIMA' HUB (PLAYER + SELECTOR SURAH & AYAT INTEGRATED)
              ============================================================ -->
-        <main class="studio-hub-card" id="studioHubCard">
+        <main class="studio-hub-card" id="studioHubCard" style="display: none;">
 
             <!-- Baris Cepat Pemilih Surah (Custom Dropdown) & Filter Juz -->
             <div class="surah-quick-bar">
@@ -1342,7 +1421,7 @@
         <!-- ============================================================
              3. KATALOG REKAMAN SURAH LAINNYA
              ============================================================ -->
-        <section id="catalogSection">
+        <section id="catalogSection" style="display: none;">
             <div class="catalog-section-title">
                 <span>📚 Koleksi Rekaman Surah</span>
             </div>
@@ -1858,14 +1937,14 @@
             });
         };
 
-        let selectedMuridId = "";
+        let selectedMuridId = null;
 
         function renderStudentDropdown() {
             const listContainer = document.getElementById('listMuridDropdown');
             if (!listContainer) return;
 
             let html = `
-                <div class="dropdown-item-option ${!selectedMuridId ? 'selected' : ''}" data-name="mode umum" onclick="window.pilihMuridItem('', 'Mode Umum / Seluruh Rekaman', 'Ketuk untuk memilih nama ananda', '👥')">
+                <div class="dropdown-item-option ${selectedMuridId === 'mode_umum' ? 'selected' : ''}" data-name="mode umum" onclick="window.pilihMuridItem('mode_umum', 'Mode Umum / Seluruh Rekaman', 'Daftar seluruh audio klinik talqin', '👥')">
                     <div style="display:flex; align-items:center; gap:8px;">
                         <span>👥</span>
                         <span class="opt-name">Mode Umum (Tampilkan Seluruh Rekaman)</span>
@@ -1916,14 +1995,19 @@
             const studioHub = document.getElementById('studioHubCard');
             const catalogSec = document.getElementById('catalogSection');
             const badgeTipe = document.getElementById('badgeTipeMurid');
+            const promptCard = document.getElementById('initialPromptCard');
 
-            if (!muridId) {
+            // Sembunyikan pesan sambutan awal setelah ada pilihan
+            if (promptCard) promptCard.style.display = 'none';
+
+            if (!muridId || muridId === 'mode_umum') {
                 badgeTipe.innerText = 'Mode Umum';
                 badgeTipe.style.color = 'var(--text-secondary)';
                 bannerSlow.style.display = 'none';
                 cardPraise.style.display = 'none';
                 studioHub.style.display = 'block';
                 catalogSec.style.display = 'block';
+                studioHub.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 return;
             }
 
@@ -1954,6 +2038,8 @@
                 if (matchRec) {
                     pilihAyat(matchRec);
                 }
+
+                studioHub.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else {
                 badgeTipe.innerText = 'Target Tuntas';
                 badgeTipe.style.color = 'var(--gold-main)';
@@ -1968,6 +2054,7 @@
                 cardPraise.style.display = 'block';
                 studioHub.style.display = 'none';
                 catalogSec.style.display = 'none';
+                cardPraise.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         };
 
@@ -2031,6 +2118,7 @@
                 selectedSurahName = match.surah;
                 renderSurahDropdownQuick();
                 renderAyatSelectorHub();
+            }
         };
 
         function renderAyatSelectorHub() {
@@ -2326,6 +2414,10 @@
                 document.getElementById('adminFloatingBar').style.display = 'flex';
                 document.getElementById('btnLogoutAdmin').style.display = 'block';
                 document.getElementById('btnLoginSubmit').innerText = 'Sudah Masuk (Tutup)';
+                document.getElementById('studioHubCard').style.display = 'block';
+                document.getElementById('catalogSection').style.display = 'block';
+                const promptCard = document.getElementById('initialPromptCard');
+                if (promptCard) promptCard.style.display = 'none';
             } else {
                 isAdmin = false;
                 document.getElementById('adminBadge').style.display = 'none';
