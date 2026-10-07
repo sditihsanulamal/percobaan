@@ -785,7 +785,7 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     border-left: 3px solid transparent;
 }
 .stat-names-list.open {
-    max-height: 300px;
+    max-height: none;       /* tidak dibatasi — scroll ditangani oleh modal */
     padding: 10px 12px;
     margin-top: 10px;
 }
@@ -948,7 +948,7 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     background: rgba(0,0,0,0.15);
 }
 .sub-grade-names.open {
-    max-height: 200px;
+    max-height: none;
     padding: 8px 10px;
 }
 .sub-grade-names.stat-color-a { border-left-color: #3b82f6; }
@@ -984,7 +984,9 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
         width: 100% !important;
         border-radius: 24px 24px 0 0 !important;
         padding: 20px 16px 32px !important;
-        max-height: 82vh !important;
+        max-height: 88vh !important;          /* sedikit lebih tinggi agar lebih banyak konten terlihat */
+        overflow-y: auto !important;          /* ✅ modal bisa di-scroll dari atas ke bawah */
+        -webkit-overflow-scrolling: touch !important; /* scroll mulus di iOS */
         /* Drag handle indicator */
         border-top: 3px solid rgba(212,175,55,0.3) !important;
     }

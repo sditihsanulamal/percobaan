@@ -1197,34 +1197,39 @@ window.simpanDataMurid = async () => {
         const dStatusSave  = document.getElementById('editStatusDoa').value;
         const dNilaiSave   = document.getElementById('editDoaNilaiAngka').value;
 
-        // Bangun update object — selalu update Qur'an dan tanggalSetor utama.
-        // Hadits & Doa hanya di-update jika admin memang mengisinya (bukan 'belum' kosong).
+        // Selalu simpan: setoranHarian, tanggalSetor master, dan semua target/realisasi
+        // (target bisa diupdate kapan saja, tidak perlu ada grade dulu)
         const updatePayload = {
             setoranHarian: document.getElementById('valSetoranHarian').value,
-            tanggalSetor: tglHariIni,           // master date untuk badge setoranHarian
-            tanggalSetorQuran: tglHariIni,      // ✅ Qur'an punya tanggal sendiri
-            quranTarget: document.getElementById('editQuranTarget').value,
+            tanggalSetor: tglHariIni,   // master date untuk badge setoranHarian & glow kartu
+            quranTarget:    document.getElementById('editQuranTarget').value,
             quranRealisasi: qRealisasi,
-            quranStatus: qStatus,
-            quranNilaiAngka: qNilaiAngka,
-            haditsTarget: document.getElementById('editHaditsTarget').value,
+            haditsTarget:    document.getElementById('editHaditsTarget').value,
             haditsRealisasi: document.getElementById('editHaditsRealisasi').value,
+            doaTarget:    document.getElementById('editDoaTarget').value,
+            doaRealisasi: document.getElementById('editDoaRealisasi').value,
         };
 
-        // Hadits: update ke DB + catat tanggalnya HANYA jika admin mengisi (bukan kosong/belum)
+        // ✅ Qur'an: grade & tanggal hanya disimpan jika admin mengisi (bukan 'belum')
+        // Ini mencegah nilai Qur'an dari Kamis tertimpa saat admin isi Hadits di Jumat
+        if (qStatus && qStatus !== 'belum') {
+            updatePayload.quranStatus     = qStatus;
+            updatePayload.quranNilaiAngka = qNilaiAngka;
+            updatePayload.tanggalSetorQuran = tglHariIni;
+        }
+
+        // ✅ Hadits: grade & tanggal hanya disimpan jika admin mengisi
         if (hStatusSave && hStatusSave !== 'belum') {
             updatePayload.haditsStatus      = hStatusSave;
             updatePayload.haditsNilaiAngka  = hNilaiSave;
-            updatePayload.tanggalSetorHadits = tglHariIni; // ✅ Hadits punya tanggal sendiri
+            updatePayload.tanggalSetorHadits = tglHariIni;
         }
 
-        // Doa: sama seperti Hadits
+        // ✅ Doa: grade & tanggal hanya disimpan jika admin mengisi
         if (dStatusSave && dStatusSave !== 'belum') {
-            updatePayload.doaTarget    = document.getElementById('editDoaTarget').value;
-            updatePayload.doaRealisasi = document.getElementById('editDoaRealisasi').value;
-            updatePayload.doaStatus    = dStatusSave;
-            updatePayload.doaNilaiAngka= dNilaiSave;
-            updatePayload.tanggalSetorDoa = tglHariIni; // ✅ Doa punya tanggal sendiri
+            updatePayload.doaStatus     = dStatusSave;
+            updatePayload.doaNilaiAngka = dNilaiSave;
+            updatePayload.tanggalSetorDoa = tglHariIni;
         }
 
         await updateDoc(doc(db, koleksiMurid, docId), updatePayload);
