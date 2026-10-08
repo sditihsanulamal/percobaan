@@ -575,6 +575,169 @@
         }
 
         /* ============================================================
+           KARTU PANDUAN & ONBOARDING KHUSUS GURU (ADMIN)
+           ============================================================ */
+        .admin-guide-card {
+            background: linear-gradient(135deg, rgba(3, 44, 29, 0.9) 0%, rgba(1, 20, 12, 0.96) 100%);
+            border: 1.5px solid var(--gold-main);
+            border-radius: 22px;
+            padding: 20px 18px;
+            margin-bottom: 22px;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: var(--shadow-glow), 0 14px 35px rgba(0, 0, 0, 0.55);
+            animation: fadeIn 0.4s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .admin-guide-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed rgba(212, 175, 55, 0.25);
+        }
+
+        .admin-guide-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+        }
+
+        .admin-guide-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 17.5px;
+            font-weight: 700;
+            color: var(--gold-light);
+            line-height: 1.25;
+        }
+
+        .admin-guide-subtitle {
+            font-size: 11px;
+            color: #a7f3d0;
+            margin-top: 3px;
+            font-weight: 600;
+        }
+
+        .admin-guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .guide-step-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            transition: all 0.2s ease;
+        }
+
+        .guide-step-item:hover {
+            border-color: rgba(212, 175, 55, 0.35);
+            background: rgba(212, 175, 55, 0.04);
+        }
+
+        .guide-step-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid var(--gold-main);
+            color: var(--gold-light);
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .guide-step-content h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .guide-step-content p {
+            font-size: 11px;
+            color: #cbd5e1;
+            line-height: 1.45;
+        }
+
+        .admin-guide-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-guide-action {
+            flex: 1;
+            min-width: 130px;
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 750;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .btn-guide-rec {
+            background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
+            color: #000;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-guide-rec:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.08);
+        }
+
+        .btn-guide-target {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }
+
+        .btn-guide-target:hover {
+            background: rgba(16, 185, 129, 0.25);
+            color: #fff;
+        }
+
+        .btn-guide-preview {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border-subtle);
+            color: #cbd5e1;
+        }
+
+        .btn-guide-preview:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* ============================================================
            STUDIO ISTIMA' HUB (PLAYER + SELECTOR TERPADU DI SEKITAR KARTU)
            ============================================================ */
         .studio-hub-card {
@@ -1306,6 +1469,55 @@
             </button>
         </section>
 
+        <!-- Kartu Panduan & Onboarding Khusus Guru (Ditampilkan jika Admin / Guru login) -->
+        <section class="admin-guide-card" id="adminGuideCard" style="display: none;">
+            <div class="admin-guide-header">
+                <div class="admin-guide-avatar">🎓</div>
+                <div>
+                    <h2 class="admin-guide-title">Ahlan wa Sahlan, Ustadz / Ustadzah!</h2>
+                    <p class="admin-guide-subtitle">✨ Panduan Praktis Pengelolaan Klinik Tahfiz Qur'an</p>
+                </div>
+            </div>
+
+            <div class="admin-guide-steps">
+                <div class="guide-step-item">
+                    <span class="guide-step-badge">1</span>
+                    <div class="guide-step-content">
+                        <h4>Kelola Murid Bimbingan Khusus</h4>
+                        <p>Tandai ananda yang memerlukan bimbingan intensif dan tentukan target hafalan per ayat melalui menu <strong>Bimbingan Khusus</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="guide-step-item">
+                    <span class="guide-step-badge">2</span>
+                    <div class="guide-step-content">
+                        <h4>Unggah Rekaman Suara Talqin Guru</h4>
+                        <p>Pilih dari 114 surah, gunakan tombol <strong>⚡ Tarik Teks Otomatis</strong>, lalu cantumkan link rekaman suara (Vocaroo / Google Drive).</p>
+                    </div>
+                </div>
+
+                <div class="guide-step-item">
+                    <span class="guide-step-badge">3</span>
+                    <div class="guide-step-content">
+                        <h4>Simulasi & Monitoring Hafalan</h4>
+                        <p>Pilih nama murid di menu atas untuk menguji coba audio dan melihat persis tampilan yang diterima oleh wali murid di rumah.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-guide-actions">
+                <button class="btn-guide-action btn-guide-rec" onclick="openModalTambahRekaman()">
+                    <span>➕</span> Unggah Rekaman Baru
+                </button>
+                <button class="btn-guide-action btn-guide-target" onclick="openModalKelolaSlow()">
+                    <span>👥</span> Atur Target Murid
+                </button>
+                <button class="btn-guide-action btn-guide-preview" onclick="window.pilihMuridItem('mode_umum', 'Mode Umum / Seluruh Rekaman', 'Daftar seluruh audio klinik talqin', '👥')">
+                    <span>🎧</span> Buka Bank Rekaman
+                </button>
+            </div>
+        </section>
+
         <!-- Kartu Apresiasi Prestasi (Tampil HANYA jika murid adalah Reguler / Tuntas) -->
         <section class="praise-card" id="cardPraiseMumtaz">
             <div class="praise-badge">🏆 PENCAPAIAN TUNTAS & MUMTAZ</div>
@@ -2002,9 +2214,11 @@
             const catalogSec = document.getElementById('catalogSection');
             const badgeTipe = document.getElementById('badgeTipeMurid');
             const promptCard = document.getElementById('initialPromptCard');
+            const adminGuide = document.getElementById('adminGuideCard');
 
-            // Sembunyikan pesan sambutan awal setelah ada pilihan
+            // Sembunyikan pesan sambutan awal atau panduan guru setelah ada pilihan
             if (promptCard) promptCard.style.display = 'none';
+            if (adminGuide) adminGuide.style.display = 'none';
 
             if (!muridId || muridId === 'mode_umum') {
                 badgeTipe.innerText = 'Mode Umum';
@@ -2414,22 +2628,33 @@
         };
 
         onAuthStateChanged(auth, (user) => {
+            const promptCard = document.getElementById('initialPromptCard');
+            const adminGuide = document.getElementById('adminGuideCard');
+
             if (user) {
                 isAdmin = true;
                 document.getElementById('adminBadge').style.display = 'inline-block';
                 document.getElementById('adminFloatingBar').style.display = 'flex';
                 document.getElementById('btnLogoutAdmin').style.display = 'block';
                 document.getElementById('btnLoginSubmit').innerText = 'Sudah Masuk (Tutup)';
-                document.getElementById('studioHubCard').style.display = 'block';
-                document.getElementById('catalogSection').style.display = 'block';
-                const promptCard = document.getElementById('initialPromptCard');
-                if (promptCard) promptCard.style.display = 'none';
+
+                // Jika belum ada ananda yang dipilih, tampilkan kartu panduan khusus guru
+                if (!selectedMuridId) {
+                    if (promptCard) promptCard.style.display = 'none';
+                    if (adminGuide) adminGuide.style.display = 'block';
+                }
             } else {
                 isAdmin = false;
                 document.getElementById('adminBadge').style.display = 'none';
                 document.getElementById('adminFloatingBar').style.display = 'none';
                 document.getElementById('btnLogoutAdmin').style.display = 'none';
                 document.getElementById('btnLoginSubmit').innerText = 'Masuk Mode Edit';
+
+                // Jika belum ada ananda yang dipilih, kembalikan ke sambutan wali murid
+                if (!selectedMuridId) {
+                    if (promptCard) promptCard.style.display = 'block';
+                    if (adminGuide) adminGuide.style.display = 'none';
+                }
             }
         });
 
@@ -2451,7 +2676,15 @@
                 });
         };
 
-        window.submitLogout = () => signOut(auth).then(() => window.closeModal('loginModal'));
+        window.submitLogout = () => signOut(auth).then(() => {
+            window.closeModal('loginModal');
+            if (!selectedMuridId) {
+                const promptCard = document.getElementById('initialPromptCard');
+                const adminGuide = document.getElementById('adminGuideCard');
+                if (promptCard) promptCard.style.display = 'block';
+                if (adminGuide) adminGuide.style.display = 'none';
+            }
+        });
 
         window.closeModal = (id) => document.getElementById(id).classList.remove('open');
 
