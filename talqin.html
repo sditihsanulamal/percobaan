@@ -1945,6 +1945,38 @@
     </div>
 
     <!-- ============================================================
+         MODAL ATUR TARGET BIMBINGAN MURID (114 SURAH LENGKAP)
+         ============================================================ -->
+    <div id="modalTargetMurid" class="modal center-modal" onclick="closeModalOnBackdrop(event, 'modalTargetMurid')">
+        <div class="modal-content" style="max-width: 400px; padding: 26px 20px;">
+            <div class="close-btn" onclick="closeModal('modalTargetMurid')">&times;</div>
+            <h3 class="modal-title" style="font-size: 18px; margin-bottom: 4px;">Atur Target Bimbingan</h3>
+            <p class="modal-subtitle" id="targetMuridNamaSubtitle" style="color: var(--gold-light); font-weight: 700; margin-bottom: 14px;">Nama Ananda</p>
+
+            <form id="formSetTargetMurid" onsubmit="event.preventDefault(); simpanTargetBimbinganSubmit();">
+                <input type="hidden" id="targetMuridIdInput" value="">
+
+                <div class="form-group">
+                    <label>Pilih Surah Target (114 Surah)</label>
+                    <select id="selectTargetSurah" class="form-select" required>
+                        <option value="">-- Pilih dari 114 Surah --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nomor / Rentang Ayat Target</label>
+                    <input type="text" id="inputTargetAyat" class="form-input" placeholder="Contoh: Ayat 1, 20, atau 1-5" required>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                    <button type="submit" id="btnSimpanTargetMurid" class="btn-primary" style="margin-top:0; flex:1;">Simpan Target</button>
+                    <button type="button" class="btn-primary btn-danger" style="margin-top:0; width:auto; padding:12px 14px; font-size:12px;" onclick="hapusTargetBimbinganMurid()">Reset Target</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================
          JAVASCRIPT & FIREBASE LOGIC
          ============================================================ -->
     <script type="module">
@@ -2108,14 +2140,35 @@
             { no: 114, nama: "An-Nas", arab: "الناس", ayat: 6, juz: 30 }
         ];
 
-        // Isi Dropdown 114 Surah di Modal Form
+        // Isi Dropdown 114 Surah di Modal Form & Modal Target
         const inputSurahSelect = document.getElementById('inputSurahSelect');
+        const selectTargetSurah = document.getElementById('selectTargetSurah');
         DATA_114_SURAH.forEach(s => {
             const opt = document.createElement('option');
             opt.value = s.no;
             opt.textContent = `${s.no}. ${s.nama} (${s.arab}) - Juz ${s.juz} [${s.ayat} ayat]`;
             inputSurahSelect.appendChild(opt);
+
+            if (selectTargetSurah) {
+                const opt2 = document.createElement('option');
+                opt2.value = s.nama;
+                opt2.textContent = `${s.no}. ${s.nama} (${s.arab}) - Juz ${s.juz} [${s.ayat} ayat]`;
+                selectTargetSurah.appendChild(opt2);
+            }
         });
+
+        // Helper Normalisasi Pencarian Data Surah dari 114 Surah
+        function cariInfoSurah(namaAtauNo) {
+            if (!namaAtauNo) return null;
+            let bersih = namaAtauNo.toString().toLowerCase().trim();
+            bersih = bersih.replace(/^surah\s+/, '').trim();
+            let found = DATA_114_SURAH.find(s => s.nama.toLowerCase() === bersih || s.no == bersih);
+            if (!found) {
+                const strip = bersih.replace(/[^a-z0-9]/g, '');
+                found = DATA_114_SURAH.find(s => s.nama.toLowerCase().replace(/[^a-z0-9]/g, '') === strip);
+            }
+            return found || null;
+        }
 
         // State Aplikasi
         let isAdmin = false;
@@ -2348,7 +2401,10 @@
                 const isSelected = (selectedMuridId === m.id);
                 const initial = m.nama ? m.nama.charAt(0).toUpperCase() : 'A';
                 const tagSlow = isSlow ? `<span class="opt-tag-slow">🎯 Bimbingan Khusus</span>` : '';
-                const subTeks = isSlow ? `Target: Surah ${m.targetTalqinSurah || 'An-Nas'} (${m.targetTalqinAyat || 'Ayat 1'})` : 'Tahfiz Reguler';
+                const hasTarget = !!(m.targetTalqinSurah && m.targetTalqinSurah.trim());
+                const subTeks = isSlow ?
+                    (hasTarget ? `Target: Surah ${m.targetTalqinSurah} (${m.targetTalqinAyat || 'Ayat 1'})` : 'Bimbingan Khusus (Target belum diatur)') :
+                    'Tahfiz Reguler';
 
                 html += `
                     <div class="dropdown-item-option ${isSelected ? 'selected' : ''}" data-name="${m.nama}" onclick="window.pilihMuridItem('${m.id}', '${m.nama}', '${subTeks}', '${initial}')">
@@ -2414,22 +2470,48 @@
                 studioHub.style.display = 'block';
                 catalogSec.style.display = 'block';
 
-                const targetSurah = murid.targetTalqinSurah || 'An-Nas';
-                const targetAyat = murid.targetTalqinAyat || 'Ayat 1';
+                const targetSurahRaw = (murid.targetTalqinSurah || '').trim();
+                const targetAyatRaw = (murid.targetTalqinAyat || '').trim();
 
-                document.getElementById('lblTargetAnanda').innerText = `Surah ${targetSurah} ${targetAyat}`;
+                // Jika murid ditandai bimbingan khusus tapi guru BELUM menentukan targetnya
+                if (!targetSurahRaw) {
+                    document.getElementById('lblTargetAnanda').innerText = 'Target belum ditentukan oleh Ustadz/ah';
+                    bannerSlow.style.display = 'block';
+                    tampilkanPesanBelumAdaTarget(murid.nama);
+                    studioHub.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return;
+                }
+
+                const sInfo = cariInfoSurah(targetSurahRaw);
+                const surahName = sInfo ? sInfo.nama : targetSurahRaw;
+                const ayatLabel = targetAyatRaw ? (targetAyatRaw.toLowerCase().startsWith('ayat') ? targetAyatRaw : `Ayat ${targetAyatRaw}`) : 'Ayat 1';
+                const valAyat = ayatLabel.replace(/\D/g, '') || '1';
+
+                document.getElementById('lblTargetAnanda').innerText = `Surah ${surahName} ${ayatLabel}`;
                 bannerSlow.style.display = 'block';
 
-                selectedSurahName = targetSurah;
-                renderSurahDropdownQuick();
-                renderAyatSelectorHub();
+                selectedSurahName = surahName;
+                activeJuzFilterQuick = sInfo ? sInfo.juz : (listRekaman.find(r => r.surah === surahName)?.juz || 30);
 
-                const matchRec = listRekaman.find(r =>
-                    r.surah.toLowerCase() === targetSurah.toLowerCase() &&
-                    r.labelAyat.toLowerCase().includes(targetAyat.toLowerCase())
-                );
+                renderSurahDropdownQuick();
+
+                // Cari rekaman yang cocok di listRekaman
+                const matchRec = listRekaman.find(r => {
+                    const isSameSurah = (r.surah && r.surah.toLowerCase() === surahName.toLowerCase()) ||
+                                        (sInfo && r.nomorSurah && r.nomorSurah == sInfo.no);
+                    if (!isSameSurah) return false;
+                    const rAyatNum = (r.labelAyat || '').replace(/\D/g, '');
+                    if (valAyat && rAyatNum === valAyat) return true;
+                    if (r.labelAyat && r.labelAyat.toLowerCase().includes(ayatLabel.toLowerCase())) return true;
+                    return false;
+                });
+
                 if (matchRec) {
                     pilihAyat(matchRec);
+                    renderAyatSelectorHub();
+                } else {
+                    renderAyatSelectorHub();
+                    tampilkanTargetAyatOtomatis(sInfo, surahName, ayatLabel, valAyat);
                 }
 
                 studioHub.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2462,19 +2544,25 @@
         // ============================================================
         function renderSurahDropdownQuick() {
             const listContainer = document.getElementById('listSurahDropdown');
-            const surahTersedia = [...new Set(listRekaman.map(r => r.surah))];
             if (!listContainer) return;
+
+            // Gabungkan surah yang ada di listRekaman DENGAN selectedSurahName saat ini
+            let surahTersedia = [...new Set(listRekaman.map(r => r.surah))];
+            if (selectedSurahName && !surahTersedia.includes(selectedSurahName)) {
+                surahTersedia.unshift(selectedSurahName);
+            }
 
             let html = '';
             surahTersedia.forEach(sName => {
                 const sample = listRekaman.find(r => r.surah === sName);
                 const isSelected = (sName === selectedSurahName);
-                const arab = sample && sample.surahArab ? sample.surahArab : '';
-                const juz = sample && sample.juz ? `Juz ${sample.juz}` : '';
+                const sInfo = cariInfoSurah(sName);
+                const arab = sample && sample.surahArab ? sample.surahArab : (sInfo ? sInfo.arab : '');
+                const juz = sample && sample.juz ? `Juz ${sample.juz}` : (sInfo ? `Juz ${sInfo.juz}` : '');
 
                 if (isSelected) {
                     document.getElementById('textSelectedSurah').innerText = `Surah ${sName}`;
-                    document.getElementById('subSelectedSurah').innerText = `${juz} • Pilihan Potongan Ayat`;
+                    document.getElementById('subSelectedSurah').innerText = `${juz} • ${sample ? 'Pilihan Potongan Ayat' : 'Target Bimbingan Khusus'}`;
                 }
 
                 html += `
@@ -2494,6 +2582,8 @@
 
         window.pilihSurahQuickItem = (surahName) => {
             selectedSurahName = surahName;
+            const sInfo = cariInfoSurah(surahName);
+            if (sInfo) activeJuzFilterQuick = sInfo.juz;
             document.getElementById('panelSurahDropdown').classList.remove('show');
             document.getElementById('btnTriggerSurah').classList.remove('active');
             renderSurahDropdownQuick();
@@ -2516,12 +2606,11 @@
 
         function renderAyatSelectorHub() {
             const container = document.getElementById('ayatSelectorScroll');
-            const ayatList = listRekaman.filter(r => r.surah === selectedSurahName);
+            const ayatList = listRekaman.filter(r => r.surah.toLowerCase() === selectedSurahName.toLowerCase());
 
             container.innerHTML = '';
             if (ayatList.length === 0) {
-                container.innerHTML = '<span style="font-size:11px; color:var(--text-secondary);">Belum ada potongan ayat</span>';
-                return;
+                return; // Ditangani khusus oleh tampilkanTargetAyatOtomatis jika belum ada rekaman
             }
 
             ayatList.forEach(item => {
@@ -2539,10 +2628,98 @@
             });
 
             // Jika belum ada yang aktif, aktifkan ayat pertama
-            if (!activeAyatItem || activeAyatItem.surah !== selectedSurahName) {
+            if (!activeAyatItem || activeAyatItem.surah.toLowerCase() !== selectedSurahName.toLowerCase()) {
                 pilihAyat(ayatList[0]);
             }
         }
+
+        // Tampilkan teks Al-Qur'an otomatis dari API jika guru belum mengunggah rekaman audio
+        async function tampilkanTargetAyatOtomatis(sInfo, surahName, labelAyat, numAyat) {
+            const noSurah = sInfo ? sInfo.no : 1;
+            const valAyat = numAyat || '1';
+
+            // 1. Reset player audio
+            audioObj.src = '';
+            isPlaying = false;
+            updatePlayBtnUI();
+            document.getElementById('durationText').innerText = 'Audio sedang dipersiapkan';
+            document.getElementById('currTimeText').innerText = '00:00';
+            document.getElementById('progressBarFill').style.width = '0%';
+
+            // 2. Pill khusus target
+            const ayatScroll = document.getElementById('ayatSelectorScroll');
+            ayatScroll.innerHTML = `
+                <button class="pill-ayat-btn active">
+                    <span>🎯</span> <span>Target: ${labelAyat}</span>
+                </button>
+            `;
+
+            // 3. Teks loading
+            document.getElementById('playerArabicText').innerHTML = `
+                <div style="font-size:16px; color:var(--text-secondary); direction:ltr;">⏳ Mengambil lafaz Surah ${surahName} ${labelAyat}...</div>
+            `;
+            document.getElementById('playerTranslationText').innerText = `Target Khusus: Surah ${surahName} ${labelAyat}`;
+
+            // 4. Catatan guru
+            const noteEl = document.getElementById('playerTeacherNote');
+            noteEl.style.display = 'flex';
+            document.getElementById('playerTeacherNoteText').innerHTML = `
+                <strong>Target Bimbingan:</strong> Rekaman suara guru untuk ayat ini sedang dipersiapkan.
+                ${isAdmin ? `<button onclick="window.bukaModalUnggahTargetKhusus('${surahName}', '${labelAyat}', ${noSurah})" style="margin-left:8px; background:linear-gradient(135deg,var(--gold-main),var(--gold-dark)); color:#000; border:none; padding:4px 9px; border-radius:7px; font-weight:800; font-size:11px; cursor:pointer;">➕ Unggah Audio Ayat Ini</button>` : 'Ayah/Bunda dapat mendampingi ananda membaca lafaz di atas terlebih dahulu.'}
+            `;
+
+            // 5. Tarik teks resmi Kemenag & Uthmani dari Al-Qur'an Cloud API
+            try {
+                const res = await fetch(`https://api.alquran.cloud/v1/ayah/${noSurah}:${valAyat}/editions/quran-uthmani,id.indonesian`);
+                const json = await res.json();
+                if (json.code === 200 && json.data && json.data.length >= 2) {
+                    let arab = json.data[0].text;
+                    const bismillah = "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ";
+                    if (noSurah != 1 && arab.startsWith(bismillah)) {
+                        arab = arab.replace(bismillah, '').trim();
+                    }
+                    document.getElementById('playerArabicText').innerText = arab;
+                    document.getElementById('playerTranslationText').innerText = `"${json.data[1].text}"`;
+                } else {
+                    document.getElementById('playerArabicText').innerText = `Surah ${surahName} (${sInfo ? sInfo.arab : ''}) ${labelAyat}`;
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('playerArabicText').innerText = `Surah ${surahName} (${sInfo ? sInfo.arab : ''}) ${labelAyat}`;
+            }
+        }
+
+        // Tampilan khusus jika murid bimbingan khusus belum diset targetnya
+        function tampilkanPesanBelumAdaTarget(namaMurid) {
+            document.getElementById('textSelectedSurah').innerText = 'Target Belum Ditentukan';
+            document.getElementById('subSelectedSurah').innerText = `Ananda ${namaMurid}`;
+            document.getElementById('ayatSelectorScroll').innerHTML = '<span style="font-size:11.5px; color:var(--text-secondary);">Target ayat khusus belum diatur</span>';
+            document.getElementById('playerArabicText').innerHTML = '<div style="font-size:15px; color:var(--text-secondary); direction:ltr;">🎯 Target hafalan khusus untuk ananda belum diatur oleh ustadz/ah.</div>';
+            document.getElementById('playerTranslationText').innerText = 'Silakan hubungi ustadz/ah atau buka Mode Umum untuk mendengarkan seluruh rekaman.';
+            document.getElementById('durationText').innerText = '--:--';
+            const noteEl = document.getElementById('playerTeacherNote');
+            if (isAdmin) {
+                noteEl.style.display = 'flex';
+                document.getElementById('playerTeacherNoteText').innerHTML = `
+                    <strong>Perhatian Guru:</strong> Ananda ini belum memiliki target khusus.
+                    <button onclick="openModalKelolaSlow()" style="margin-left:8px; background:var(--gold-main); color:#000; border:none; padding:4px 8px; border-radius:6px; font-weight:700; cursor:pointer;">Atur Target Sekarang</button>
+                `;
+            } else {
+                noteEl.style.display = 'none';
+            }
+        }
+
+        window.bukaModalUnggahTargetKhusus = (surahName, labelAyat, noSurah) => {
+            openModalTambahRekaman();
+            if (noSurah) {
+                document.getElementById('inputSurahSelect').value = noSurah;
+                onPilihSurahForm(noSurah);
+            }
+            if (labelAyat) {
+                document.getElementById('inputAyatLabel').value = labelAyat;
+            }
+            tarikTeksOtomatisDariApi();
+        };
 
         function pilihAyat(item) {
             if (!item) return;
@@ -2952,22 +3129,26 @@
             let html = '';
             dataMuridDinamis.forEach(m => {
                 const isChecked = m.isKlinikTalqin ? 'checked' : '';
-                const tSurah = m.targetTalqinSurah || 'An-Nas';
-                const tAyat = m.targetTalqinAyat || 'Ayat 1';
+                const hasTarget = !!(m.targetTalqinSurah && m.targetTalqinSurah.trim());
+                const tSurah = hasTarget ? m.targetTalqinSurah : 'Belum ditentukan';
+                const tAyat = m.targetTalqinAyat ? `(${m.targetTalqinAyat})` : '';
+                const targetDisplay = hasTarget ?
+                    `<strong style="color:var(--gold-light);">${tSurah} ${tAyat}</strong>` :
+                    `<span style="color:var(--text-secondary); font-style:italic;">Belum ditentukan</span>`;
 
                 html += `
                     <div class="murid-manage-item">
                         <div style="flex:1;">
                             <div class="murid-manage-name">${m.nama}</div>
                             <div style="font-size:11px; color:var(--text-secondary);">
-                                Target Saat Ini: <strong>${tSurah} (${tAyat})</strong>
+                                Target Saat Ini: ${targetDisplay}
                             </div>
                         </div>
                         <label class="switch-slow-label">
                             <input type="checkbox" ${isChecked} onchange="toggleSlowLearner('${m.id}', this.checked)">
                             <span>Bimbingan Talqin</span>
                         </label>
-                        <button style="background:rgba(212,175,55,0.15); border:1px solid var(--gold-main); color:var(--gold-main); border-radius:8px; padding:4px 8px; font-size:10px; cursor:pointer;" onclick="setTargetBimbinganMurid('${m.id}')">
+                        <button style="background:rgba(212,175,55,0.15); border:1px solid var(--gold-main); color:var(--gold-main); border-radius:8px; padding:6px 10px; font-size:10.5px; font-weight:700; cursor:pointer;" onclick="bukaModalSetTargetMurid('${m.id}')">
                             ✏️ Target
                         </button>
                     </div>
@@ -2981,31 +3162,94 @@
                 await updateDoc(doc(db, koleksiMurid, muridId), {
                     isKlinikTalqin: isSlow
                 });
+                renderMuridManageList();
+                renderStudentDropdown();
+                if (isSlow) {
+                    const murid = dataMuridDinamis.find(m => m.id === muridId);
+                    if (murid && !murid.targetTalqinSurah) {
+                        bukaModalSetTargetMurid(muridId);
+                    }
+                }
             } catch (e) {
                 console.error("Gagal update status bimbingan:", e);
                 alert("Gagal update status: " + e.message);
             }
         };
 
-        window.setTargetBimbinganMurid = async (muridId) => {
+        // Modal Form Atur Target Khusus (114 Surah Dropdown Aman)
+        window.bukaModalSetTargetMurid = (muridId) => {
             const murid = dataMuridDinamis.find(m => m.id === muridId);
             if (!murid) return;
 
-            const newSurah = prompt(`Tentukan Surah target untuk ${murid.nama}:`, murid.targetTalqinSurah || "An-Nas");
-            if (!newSurah) return;
-            const newAyat = prompt(`Tentukan Ayat target untuk ${murid.nama}:`, murid.targetTalqinAyat || "Ayat 1");
-            if (!newAyat) return;
+            document.getElementById('targetMuridIdInput').value = muridId;
+            document.getElementById('targetMuridNamaSubtitle').innerText = `Ananda ${murid.nama}`;
+
+            const selSurah = document.getElementById('selectTargetSurah');
+            const inpAyat = document.getElementById('inputTargetAyat');
+
+            if (murid.targetTalqinSurah) {
+                const sInfo = cariInfoSurah(murid.targetTalqinSurah);
+                selSurah.value = sInfo ? sInfo.nama : murid.targetTalqinSurah;
+            } else {
+                selSurah.value = '';
+            }
+
+            inpAyat.value = murid.targetTalqinAyat || '';
+            document.getElementById('modalTargetMurid').classList.add('open');
+        };
+
+        window.setTargetBimbinganMurid = window.bukaModalSetTargetMurid;
+
+        window.simpanTargetBimbinganSubmit = async () => {
+            const muridId = document.getElementById('targetMuridIdInput').value;
+            const surahVal = document.getElementById('selectTargetSurah').value.trim();
+            let ayatVal = document.getElementById('inputTargetAyat').value.trim();
+            if (!ayatVal.toLowerCase().startsWith('ayat') && !isNaN(ayatVal)) {
+                ayatVal = `Ayat ${ayatVal}`;
+            }
+
+            const btn = document.getElementById('btnSimpanTargetMurid');
+            btn.innerText = 'Menyimpan...';
 
             try {
                 await updateDoc(doc(db, koleksiMurid, muridId), {
                     isKlinikTalqin: true,
-                    targetTalqinSurah: newSurah.trim(),
-                    targetTalqinAyat: newAyat.trim()
+                    targetTalqinSurah: surahVal,
+                    targetTalqinAyat: ayatVal
                 });
+                btn.innerText = 'Simpan Target';
+                window.closeModal('modalTargetMurid');
                 renderMuridManageList();
-                alert(`Target bimbingan khusus untuk ${murid.nama} berhasil diperbarui!`);
+                renderStudentDropdown();
+                if (selectedMuridId === muridId) {
+                    window.onGantiMurid(muridId);
+                }
+                alert("Alhamdulillah, target bimbingan khusus berhasil disimpan!");
             } catch (e) {
-                alert("Gagal simpan target: " + e.message);
+                console.error(e);
+                alert("Gagal menyimpan target: " + e.message);
+                btn.innerText = 'Simpan Target';
+            }
+        };
+
+        window.hapusTargetBimbinganMurid = async () => {
+            const muridId = document.getElementById('targetMuridIdInput').value;
+            if (!confirm("Reset target bimbingan ananda ini ke 'Belum ditentukan'?")) return;
+
+            try {
+                await updateDoc(doc(db, koleksiMurid, muridId), {
+                    targetTalqinSurah: '',
+                    targetTalqinAyat: ''
+                });
+                window.closeModal('modalTargetMurid');
+                renderMuridManageList();
+                renderStudentDropdown();
+                if (selectedMuridId === muridId) {
+                    window.onGantiMurid(muridId);
+                }
+                alert("Target ananda telah direset ke 'Belum ditentukan'.");
+            } catch (e) {
+                alert("Gagal mereset target: " + e.message);
             }
         };
     </script>
