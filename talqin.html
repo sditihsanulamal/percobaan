@@ -1443,70 +1443,255 @@
 
         @media (max-width: 600px) {
             body {
-                padding: 10px 10px 30px;
+                padding: 8px 8px 24px;
+            }
+            .top-bar {
+                margin-bottom: 8px;
+                padding-bottom: 6px;
+            }
+            .btn-back {
+                padding: 5px 8px;
+                font-size: 11px;
+                border-radius: 9px;
+            }
+            .top-right-actions {
+                gap: 5px;
+            }
+            .btn-top-quick {
+                padding: 3px 6px;
+                font-size: 10px;
+                border-radius: 7px;
+                gap: 2px;
+            }
+            .admin-badge {
+                display: none !important;
+            }
+            .btn-admin-icon {
+                width: 31px;
+                height: 31px;
+                border-radius: 9px;
             }
             .page-header {
-                margin-bottom: 10px;
+                margin-bottom: 8px;
+            }
+            .class-badge {
+                font-size: 9px;
+                padding: 2px 7px;
+                margin-bottom: 3px;
             }
             .page-header h1 {
-                font-size: 18px;
+                font-size: 16px;
+                margin-bottom: 1px;
             }
             .page-header p {
-                font-size: 10.5px;
+                font-size: 9.5px;
             }
             .student-selector-card {
-                padding: 12px 10px;
-                margin-bottom: 12px;
+                padding: 9px 10px;
+                margin-bottom: 8px;
+                border-radius: 14px;
             }
-            .custom-select-trigger {
-                padding: 8px 10px;
-            }
-            .trigger-title {
-                font-size: 13px;
-            }
-            .trigger-sub {
-                font-size: 10px;
-            }
-            .admin-guide-card {
-                padding: 13px 11px;
-                margin-bottom: 12px;
-            }
-            .guide-step-item {
-                padding: 6px 8px;
-            }
-            .guide-step-content {
+            .student-selector-header {
+                margin-bottom: 5px;
                 font-size: 10.5px;
             }
-            .btn-guide-action {
-                font-size: 11px;
-                padding: 8px 10px;
+            .custom-select-trigger {
+                padding: 6px 8px;
+                border-radius: 10px;
             }
-            .studio-hub-card {
-                padding: 13px 11px;
-                margin-bottom: 14px;
+            .trigger-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 12px;
+                border-radius: 8px;
             }
-            .studio-arabic-display {
-                font-size: 23px;
-                line-height: 2.2;
+            .trigger-title {
+                font-size: 12px;
+                line-height: 1.25;
+            }
+            .trigger-sub {
+                font-size: 9.5px;
+            }
+            .slow-learner-banner {
+                padding: 7px 9px;
+                margin-top: 7px;
+                font-size: 10.5px;
+                line-height: 1.35;
+                border-radius: 10px;
+            }
+            .initial-prompt-card {
                 padding: 14px 10px;
+                margin-bottom: 10px;
+                border-radius: 14px;
             }
-            .audio-controls-row {
-                gap: 8px;
+            .initial-prompt-icon {
+                font-size: 26px;
+                margin-bottom: 4px;
             }
-            .play-btn-main {
-                width: 44px;
-                height: 44px;
+            .initial-prompt-title {
+                font-size: 14px;
+                margin-bottom: 3px;
             }
-            .tikrar-box {
-                padding: 3px 6px;
-                gap: 3px;
+            .initial-prompt-desc {
+                font-size: 10.5px;
+                line-height: 1.35;
+                margin-bottom: 10px;
             }
-            .tikrar-btn {
-                padding: 4px 6px;
+            .btn-open-general {
+                padding: 7px 11px;
+                font-size: 10.5px;
+            }
+            .admin-guide-card {
+                padding: 10px 10px;
+                margin-bottom: 10px;
+                border-radius: 13px;
+            }
+            .admin-guide-avatar {
+                font-size: 18px;
+                width: 32px;
+                height: 32px;
+            }
+            .admin-guide-title {
+                font-size: 13px;
+            }
+            .admin-guide-subtitle {
+                font-size: 9.5px;
+            }
+            .admin-guide-steps {
+                gap: 4px;
+                margin-bottom: 8px;
+            }
+            .guide-step-item {
+                padding: 5px 7px;
+                border-radius: 8px;
+            }
+            .guide-step-content {
                 font-size: 10px;
             }
+            .btn-guide-action {
+                font-size: 10.5px;
+                padding: 6px 8px;
+                border-radius: 8px;
+            }
+            .studio-hub-card {
+                padding: 10px 10px;
+                margin-bottom: 10px;
+                border-radius: 14px;
+            }
+            .surah-trigger {
+                padding: 6px 8px;
+                margin-bottom: 5px;
+                border-radius: 10px;
+            }
+            .surah-trigger .trigger-avatar {
+                width: 24px;
+                height: 24px;
+                font-size: 11px;
+                border-radius: 6px;
+            }
+            #btnFilterJuzQuick {
+                padding: 3px 7px;
+                font-size: 9.5px;
+                border-radius: 7px;
+            }
+            .ayat-selector-scroll {
+                padding: 2px 0 5px;
+                gap: 5px;
+            }
+            .pill-ayat-btn {
+                padding: 4px 8px;
+                font-size: 10px;
+                border-radius: 7px;
+            }
+            .studio-arabic-display {
+                font-size: 18.5px;
+                line-height: 2.0;
+                padding: 9px 12px;
+                margin: 4px 0 6px;
+                min-height: 52px;
+                border-radius: 12px;
+            }
+            .studio-arabic-display::before,
+            .studio-arabic-display::after {
+                display: none;
+            }
+            .studio-translation {
+                font-size: 10.5px;
+                line-height: 1.35;
+                margin-bottom: 6px;
+                padding: 0 2px;
+            }
+            .studio-teacher-note {
+                padding: 6px 8px;
+                margin-bottom: 7px;
+                font-size: 10px;
+                border-radius: 8px;
+                gap: 5px;
+            }
+            .audio-progress-wrap {
+                margin-bottom: 5px;
+            }
+            .progress-bar-bg {
+                height: 6px;
+            }
+            .time-row {
+                font-size: 9.5px;
+                margin-top: 2px;
+            }
+            .counter-badge {
+                font-size: 9.5px;
+                padding: 2px 7px;
+            }
+            .audio-controls-row {
+                margin-bottom: 6px;
+                gap: 6px;
+            }
+            .play-btn-main {
+                width: 40px;
+                height: 40px;
+            }
+            .tikrar-box {
+                padding: 2px 5px;
+                gap: 3px;
+            }
+            .tikrar-label {
+                font-size: 9px;
+            }
+            .tikrar-btn {
+                padding: 3px 5px;
+                font-size: 9px;
+                border-radius: 5px;
+            }
+            .playback-meta-row {
+                padding-top: 5px;
+                font-size: 9.5px;
+            }
+            .speed-btn {
+                padding: 2px 5px;
+                font-size: 9.5px;
+            }
+            .banner-motivation-footer {
+                margin-top: 10px;
+                padding: 10px 12px;
+                border-radius: 12px;
+            }
+            .banner-motivation-footer .quote-arabic {
+                font-size: 16px;
+                line-height: 1.8;
+                margin-bottom: 3px;
+            }
+            .banner-motivation-footer .quote-trans {
+                font-size: 10px;
+                margin-bottom: 4px;
+                line-height: 1.35;
+            }
+            .banner-motivation-footer .tips-wali {
+                font-size: 9.5px;
+                line-height: 1.35;
+            }
             .modal-content {
-                padding: 24px 16px;
+                padding: 18px 14px;
+                border-radius: 16px;
             }
         }
     </style>
@@ -1670,8 +1855,8 @@
                         <div class="trigger-left">
                             <span class="trigger-avatar" style="font-size:15px;">📖</span>
                             <div class="trigger-info">
-                                <span class="trigger-title" id="textSelectedSurah">Surah An-Nas</span>
-                                <span class="trigger-sub" id="subSelectedSurah">Pilihan Ayat</span>
+                                <span class="trigger-title" id="textSelectedSurah">Pilih Target Surah</span>
+                                <span class="trigger-sub" id="subSelectedSurah">Audio Bimbingan Talqin</span>
                             </div>
                         </div>
                         <svg class="trigger-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -1696,21 +1881,21 @@
                 <!-- Pills Ayat: [ Ayat 1 ] [ Ayat 2 ] [ Gabungan ] -->
             </div>
 
-            <!-- Teks Arab Al-Qur'an (Font Amiri Kaligrafi) -->
+            <!-- Teks Arab Al-Qur'an (Font Kaligrafi) -->
             <div class="studio-arabic-display" id="playerArabicText">
-                قُلْ أَعُوذُ بِرَبِّ النَّاسِ
+                بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </div>
 
             <!-- Terjemahan Ayat -->
             <div class="studio-translation" id="playerTranslationText">
-                "Katakanlah: Aku berlindung kepada Tuhannya manusia"
+                "Dengan nama Allah Yang Maha Pengasih, Maha Penyayang"
             </div>
 
             <!-- Catatan Bimbingan Tajwid dari Ustadz/ah -->
             <div class="studio-teacher-note" id="playerTeacherNote">
                 <span style="font-size:15px;">💡</span>
                 <div id="playerTeacherNoteText">
-                    <strong>Catatan Guru:</strong> Dengungkan huruf Nun bertasydid (Ghunnah) selama 2 harakat.
+                    <strong>Catatan Guru:</strong> Dengarkan bacaan ustadz/ah dengan saksama lalu tirukan dengan tartil.
                 </div>
             </div>
 
@@ -2117,7 +2302,7 @@
         let isAdmin = false;
         let dataMuridDinamis = [];
         let listRekaman = [];
-        let selectedSurahName = 'An-Nas';
+        let selectedSurahName = '';
         let activeAyatItem = null;
         let activeJuzFilterQuick = 30; // Siklus filter
 
@@ -2145,123 +2330,19 @@
         }
 
         // ============================================================
-        // INITIAL SEED REKAMAN PER-AYAT
+        // SINKRONISASI DATA DARI FIRESTORE (REKAMAN RESMI GURU)
         // ============================================================
-        const defaultSeedRekaman = [
-            {
-                id: 'seed_annas_1',
-                juz: 30,
-                surah: 'An-Nas',
-                surahArab: 'الناس',
-                nomorSurah: 114,
-                labelAyat: 'Ayat 1',
-                teksArab: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ',
-                arti: 'Katakanlah: "Aku berlindung kepada Tuhannya manusia"',
-                audioUrl: 'https://media.vocaroo.com/mp3/1bF2UoX2rK4b',
-                qari: 'Ustadz Pembimbing Qur\'an',
-                catatan: 'Perhatikan makhraj huruf \'Ain (ع) di lafaz A\'udzu dan tahan dengung Nun bertasydid 2 harakat.'
-            },
-            {
-                id: 'seed_annas_2',
-                juz: 30,
-                surah: 'An-Nas',
-                surahArab: 'الناس',
-                nomorSurah: 114,
-                labelAyat: 'Ayat 2',
-                teksArab: 'مَلِكِ النَّاسِ',
-                arti: 'Raja manusia',
-                audioUrl: '',
-                qari: 'Ustadz Pembimbing Qur\'an',
-                catatan: 'Huruf Lam dibaca kasrah pendek (Maliki), jangan dipanjangkan.'
-            },
-            {
-                id: 'seed_annas_3',
-                juz: 30,
-                surah: 'An-Nas',
-                surahArab: 'الناس',
-                nomorSurah: 114,
-                labelAyat: 'Ayat 3',
-                teksArab: 'إِلَٰهِ النَّاسِ',
-                arti: 'Sembahan manusia',
-                audioUrl: '',
-                qari: 'Ustadz Pembimbing Qur\'an',
-                catatan: 'Mad thabi\'i pada lafaz Ilaah dibaca 2 harakat.'
-            },
-            {
-                id: 'seed_annas_gabung',
-                juz: 30,
-                surah: 'An-Nas',
-                surahArab: 'الناس',
-                nomorSurah: 114,
-                labelAyat: 'Gabungan 1-3',
-                teksArab: 'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾',
-                arti: 'Latihan melancarkan sambungan ayat 1 sampai 3',
-                audioUrl: '',
-                qari: 'Ustadz Pembimbing Qur\'an',
-                catatan: 'Tirukan sambungan antar ayat dengan satu tarikan nafas yang tenang.'
-            },
-            {
-                id: 'seed_alfalaq_1',
-                juz: 30,
-                surah: 'Al-Falaq',
-                surahArab: 'الفلق',
-                nomorSurah: 113,
-                labelAyat: 'Ayat 1',
-                teksArab: 'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ',
-                arti: 'Katakanlah: "Aku berlindung kepada Tuhan yang menguasai subuh (fajar)"',
-                audioUrl: '',
-                qari: 'Ustadz Pembimbing Qur\'an',
-                catatan: 'Qalqalah kubra pada huruf Qaf di akhir ayat harus membal dengan mantap.'
-            },
-            {
-                id: 'seed_alfalaq_2',
-                juz: 30,
-                surah: 'Al-Falaq',
-                surahArab: 'الفلق',
-                nomorSurah: 113,
-                labelAyat: 'Ayat 2',
-                teksArab: 'مِنْ شَرِّ مَا خَلَقَ',
-                arti: 'Dari kejahatan makhluk yang Dia ciptakan',
-                audioUrl: '',
-                qari: 'Ustadz Pembimbing Qur\'an',
-                catatan: 'Ikhfa haqiqi di lafaz (مِن شَرِّ): samarkan huruf Nun ke Syin dengan dengung.'
-            },
-            {
-                id: 'seed_almulk_1',
-                juz: 29,
-                surah: 'Al-Mulk',
-                surahArab: 'الملك',
-                nomorSurah: 67,
-                labelAyat: 'Ayat 1',
-                teksArab: 'تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ',
-                arti: 'Mahasuci Allah yang di tangan-Nya lah segala kerajaan...',
-                audioUrl: '',
-                qari: 'Ustadz Pembimbing Qur\'an',
-                catatan: 'Mad Jaiz Munfashil dan tebalkan pengucapan huruf Ra (tafkhim).'
-            }
-        ];
-
-        // ============================================================
-        // SINKRONISASI DATA DARI FIRESTORE
-        // ============================================================
-        // 1. Data Rekaman Talqin
+        // 1. Data Rekaman Talqin (Murni dari Firestore tanpa dummy seed)
         const koleksiTalqin = collection(db, "klinik_talqin");
         onSnapshot(koleksiTalqin, (snapshot) => {
             const items = [];
             snapshot.forEach(d => items.push({ id: d.id, ...d.data() }));
-
-            if (items.length > 0) {
-                const mapIds = new Set(items.map(x => x.id));
-                const seedFilter = defaultSeedRekaman.filter(x => !mapIds.has(x.id));
-                listRekaman = [...items, ...seedFilter];
-            } else {
-                listRekaman = [...defaultSeedRekaman];
-            }
+            listRekaman = [...items];
 
             renderSurahDropdownQuick();
             renderAyatSelectorHub();
         }, () => {
-            listRekaman = [...defaultSeedRekaman];
+            listRekaman = [];
             renderSurahDropdownQuick();
             renderAyatSelectorHub();
         });
@@ -2395,6 +2476,20 @@
                 bannerSlow.style.display = 'none';
                 cardPraise.style.display = 'none';
                 studioHub.style.display = 'block';
+                if (listRekaman.length > 0) {
+                    selectedSurahName = listRekaman[0].surah;
+                    renderSurahDropdownQuick();
+                    renderAyatSelectorHub();
+                } else {
+                    selectedSurahName = '';
+                    renderSurahDropdownQuick();
+                    document.getElementById('textSelectedSurah').innerText = 'Pilih Target Surah';
+                    document.getElementById('subSelectedSurah').innerText = 'Belum ada rekaman diunggah guru';
+                    document.getElementById('ayatSelectorScroll').innerHTML = '<span style="font-size:11.5px; color:var(--text-secondary);">Belum ada rekaman audio diunggah ustadz/ah.</span>';
+                    document.getElementById('playerArabicText').innerHTML = '<div style="font-size:14px; color:var(--text-secondary); direction:ltr;">🎙️ Belum ada rekaman audio talqin dari ustadz/ah.</div>';
+                    document.getElementById('playerTranslationText').innerText = 'Silakan pilih nama ananda di atas untuk melihat target khusus, atau login sebagai guru untuk menambah rekaman.';
+                    document.getElementById('durationText').innerText = '--:--';
+                }
                 studioHub.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 return;
             }
@@ -2482,13 +2577,26 @@
             const listContainer = document.getElementById('listSurahDropdown');
             if (!listContainer) return;
 
-            // Gabungkan surah yang ada di listRekaman DENGAN selectedSurahName saat ini
-            let surahTersedia = [...new Set(listRekaman.map(r => r.surah))];
+            // Ambil daftar surah HANYA dari rekaman yang sudah diunggah oleh guru di Firestore
+            let surahTersedia = [...new Set(listRekaman.map(r => r.surah).filter(Boolean))];
+
+            // Jika ada surah target ananda yang sedang dibuka, sertakan surah tersebut
             if (selectedSurahName && !surahTersedia.includes(selectedSurahName)) {
                 surahTersedia.unshift(selectedSurahName);
             }
 
             let html = '';
+            if (surahTersedia.length === 0) {
+                document.getElementById('textSelectedSurah').innerText = 'Pilih Target Surah';
+                document.getElementById('subSelectedSurah').innerText = 'Belum ada rekaman diunggah guru';
+                listContainer.innerHTML = `
+                    <div style="padding:14px 10px; text-align:center; color:var(--text-secondary); font-size:11.5px;">
+                        Belum ada rekaman audio yang diunggah oleh guru.
+                    </div>
+                `;
+                return;
+            }
+
             surahTersedia.forEach(sName => {
                 const sample = listRekaman.find(r => r.surah === sName);
                 const isSelected = (sName === selectedSurahName);
@@ -2542,7 +2650,12 @@
 
         function renderAyatSelectorHub() {
             const container = document.getElementById('ayatSelectorScroll');
-            const ayatList = listRekaman.filter(r => r.surah.toLowerCase() === selectedSurahName.toLowerCase());
+            if (!container) return;
+            if (!selectedSurahName) {
+                container.innerHTML = '';
+                return;
+            }
+            const ayatList = listRekaman.filter(r => r.surah && selectedSurahName && r.surah.toLowerCase() === selectedSurahName.toLowerCase());
 
             container.innerHTML = '';
             if (ayatList.length === 0) {
