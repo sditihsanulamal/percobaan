@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Klinik Tahfiz Guru Qur'an - Pojok Talqin & Istima'</title>
 
-    <!-- Google Fonts: Playfair Display, Plus Jakarta Sans, dan Amiri untuk Al-Qur'an -->
+    <!-- Google Fonts: Playfair Display, Plus Jakarta Sans, Amiri Quran, Scheherazade New, Noto Naskh Arabic untuk Al-Qur'an -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Scheherazade+New:wght@400;600;700&display=swap"
         rel="stylesheet">
 
     <style>
@@ -447,8 +447,8 @@
         }
 
         .opt-surah-arab {
-            font-family: 'Amiri', serif;
-            font-size: 16px;
+            font-family: 'Amiri Quran', 'Scheherazade New', 'Amiri', serif;
+            font-size: 17px;
             color: var(--gold-light);
             direction: rtl;
         }
@@ -863,25 +863,26 @@
 
         /* Display Ayat Arab (Ornate Islamic Frame & Ambient Glow) */
         .studio-arabic-display {
-            font-family: 'Amiri', serif;
-            font-size: 26px;
-            font-weight: 700;
+            font-family: 'Amiri Quran', 'Scheherazade New', 'Amiri', serif;
+            font-size: 28px;
+            font-weight: 400;
             text-align: center;
-            line-height: 2.1;
+            line-height: 2.3;
             color: #ffffff;
             margin: 6px 0 10px;
-            padding: 14px 18px;
+            padding: 16px 20px;
             background: radial-gradient(circle at center, rgba(3, 50, 34, 0.45) 0%, rgba(1, 16, 9, 0.75) 100%);
             border-radius: 18px;
             border: 1px solid rgba(212, 175, 55, 0.25);
             direction: rtl;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-            min-height: 78px;
+            min-height: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5), 0 4px 18px rgba(0, 0, 0, 0.3);
+            word-spacing: 2px;
         }
 
         .studio-arabic-display::before,
@@ -1078,56 +1079,6 @@
         }
 
         /* ============================================================
-           DAFTAR SURAH & AYAT (KATALOG REKAMAN)
-           ============================================================ */
-        .catalog-section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 17px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .surah-card-compact {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border-subtle);
-            border-radius: 16px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-            backdrop-filter: var(--glass-blur);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
-            transition: all 0.2s ease;
-        }
-
-        .surah-card-compact:hover {
-            border-color: rgba(212, 175, 55, 0.3);
-        }
-
-        .surah-compact-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .surah-compact-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 16px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .surah-compact-arabic {
-            font-family: 'Amiri', serif;
-            font-size: 20px;
-            color: var(--gold-light);
-            direction: rtl;
-        }
-
-        /* ============================================================
            BANNER MOTIVASI (DIKEBAWAHKAN SESUAI PERMINTAAN)
            ============================================================ */
         .banner-motivation-footer {
@@ -1141,8 +1092,9 @@
         }
 
         .banner-motivation-footer .quote-arabic {
-            font-family: 'Amiri', serif;
-            font-size: 20px;
+            font-family: 'Amiri Quran', 'Scheherazade New', 'Amiri', serif;
+            font-size: 22px;
+            line-height: 2.1;
             color: var(--gold-light);
             direction: rtl;
             margin-bottom: 6px;
@@ -1335,9 +1287,10 @@
         }
 
         .arabic-input {
-            font-family: 'Amiri', serif;
+            font-family: 'Amiri Quran', 'Scheherazade New', 'Amiri', serif;
             direction: rtl;
-            font-size: 18px;
+            font-size: 20px;
+            line-height: 2.0;
         }
 
         .btn-auto-pull {
@@ -1533,7 +1486,8 @@
                 margin-bottom: 14px;
             }
             .studio-arabic-display {
-                font-size: 22px;
+                font-size: 23px;
+                line-height: 2.2;
                 padding: 14px 10px;
             }
             .audio-controls-row {
@@ -1810,17 +1764,6 @@
             </div>
         </main>
 
-        <!-- ============================================================
-             3. KATALOG REKAMAN SURAH LAINNYA
-             ============================================================ -->
-        <section id="catalogSection" style="display: none;">
-            <div class="catalog-section-title">
-                <span>📚 Koleksi Rekaman Surah</span>
-            </div>
-            <div id="catalogListContainer">
-                <!-- Diisi daftar kartu surah ringkas -->
-            </div>
-        </section>
 
         <!-- ============================================================
              4. BANNER MOTIVASI DIKEBAWAHKAN (FOOTER MOTIVATION)
@@ -2317,12 +2260,10 @@
 
             renderSurahDropdownQuick();
             renderAyatSelectorHub();
-            renderCatalogList();
         }, () => {
             listRekaman = [...defaultSeedRekaman];
             renderSurahDropdownQuick();
             renderAyatSelectorHub();
-            renderCatalogList();
         });
 
         // 2. Data Murid Kelas
@@ -2440,7 +2381,6 @@
             const bannerSlow = document.getElementById('bannerSlowLearner');
             const cardPraise = document.getElementById('cardPraiseMumtaz');
             const studioHub = document.getElementById('studioHubCard');
-            const catalogSec = document.getElementById('catalogSection');
             const badgeTipe = document.getElementById('badgeTipeMurid');
             const promptCard = document.getElementById('initialPromptCard');
             const adminGuide = document.getElementById('adminGuideCard');
@@ -2455,7 +2395,6 @@
                 bannerSlow.style.display = 'none';
                 cardPraise.style.display = 'none';
                 studioHub.style.display = 'block';
-                catalogSec.style.display = 'block';
                 studioHub.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 return;
             }
@@ -2468,7 +2407,6 @@
                 badgeTipe.style.color = '#6ee7b7';
                 cardPraise.style.display = 'none';
                 studioHub.style.display = 'block';
-                catalogSec.style.display = 'block';
 
                 const targetSurahRaw = (murid.targetTalqinSurah || '').trim();
                 const targetAyatRaw = (murid.targetTalqinAyat || '').trim();
@@ -2528,14 +2466,12 @@
 
                 cardPraise.style.display = 'block';
                 studioHub.style.display = 'none';
-                catalogSec.style.display = 'none';
                 cardPraise.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         };
 
         window.paksaBukaStudioHub = () => {
             document.getElementById('studioHubCard').style.display = 'block';
-            document.getElementById('catalogSection').style.display = 'block';
             document.getElementById('studioHubCard').scrollIntoView({ behavior: 'smooth' });
         };
 
@@ -2881,40 +2817,6 @@
             if (btn) btn.classList.add('active');
         };
 
-        // ============================================================
-        // KATALOG SURAH RINGKAS DI BAWAH PLAYER
-        // ============================================================
-        function renderCatalogList() {
-            const container = document.getElementById('catalogListContainer');
-            const grup = {};
-            listRekaman.forEach(r => {
-                if (!grup[r.surah]) grup[r.surah] = { surah: r.surah, surahArab: r.surahArab || '', juz: r.juz, count: 0 };
-                grup[r.surah].count++;
-            });
-
-            let html = '';
-            Object.values(grup).forEach(g => {
-                html += `
-                    <div class="surah-card-compact" onclick="window.bukaSurahDariKatalog('${g.surah}')" style="cursor:pointer;">
-                        <div class="surah-compact-header">
-                            <div>
-                                <div class="surah-compact-name">Surah ${g.surah}</div>
-                                <div style="font-size:11px; color:var(--text-secondary);">Juz ${g.juz} • ${g.count} Potongan Ayat</div>
-                            </div>
-                            <div class="surah-compact-arabic">${g.surahArab}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        window.bukaSurahDariKatalog = (sName) => {
-            selectedSurahName = sName;
-            renderSurahDropdownQuick();
-            renderAyatSelectorHub();
-            document.getElementById('studioHubCard').scrollIntoView({ behavior: 'smooth' });
-        };
 
         // ============================================================
         // PENARIKAN TEKS AL-QUR'AN OTOMATIS (114 SURAH VIA API)
