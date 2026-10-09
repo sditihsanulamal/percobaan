@@ -193,26 +193,12 @@
         /* Header Ringkas & Nyaman di HP */
         .page-header {
             text-align: center;
-            margin-bottom: 12px;
-        }
-
-        .page-header .class-badge {
-            display: inline-block;
-            background: rgba(212, 175, 55, 0.12);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            color: var(--gold-light);
-            font-size: 9.5px;
-            font-weight: 700;
-            padding: 2px 10px;
-            border-radius: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
         }
 
         .page-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 19px;
+            font-size: 18px;
             font-weight: 700;
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
             -webkit-background-clip: text;
@@ -224,7 +210,7 @@
 
         .page-header p {
             color: var(--text-secondary);
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 500;
         }
 
@@ -763,7 +749,7 @@
             gap: 4px;
         }
 
-        /* Kontrol Audio & Tikrar */
+        /* Kontrol Audio, Navigasi Ayat & Tikrar */
         .audio-controls-row {
             display: flex;
             align-items: center;
@@ -772,9 +758,68 @@
             flex-wrap: wrap;
         }
 
+        .player-nav-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-ayat-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--glass-border-subtle);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-ayat-btn:hover:not(:disabled) {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--gold-main);
+            color: var(--gold-light);
+            transform: scale(1.06);
+        }
+
+        .nav-ayat-btn:active:not(:disabled) {
+            transform: scale(0.94);
+        }
+
+        .nav-ayat-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+
+        .btn-quick-upload-player {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(153, 122, 21, 0.32));
+            border: 1px solid var(--gold-main);
+            color: var(--gold-light);
+            padding: 7px 11px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-quick-upload-player:hover {
+            background: var(--gold-main);
+            color: #032418;
+            box-shadow: 0 0 14px rgba(212, 175, 55, 0.45);
+        }
+
         .play-btn-main {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--gold-light), var(--gold-main));
             color: #032418;
@@ -1259,28 +1304,14 @@
                 border-radius: 9px;
             }
             .page-header {
-                margin-bottom: 8px;
-            }
-            .class-badge {
-                font-size: 9px;
-                padding: 2px 7px;
-                margin-bottom: 3px;
+                margin-bottom: 6px;
             }
             .page-header h1 {
-                font-size: 16px;
+                font-size: 15.5px;
                 margin-bottom: 1px;
             }
             .page-header p {
                 font-size: 9.5px;
-            }
-            .student-selector-card {
-                padding: 9px 10px;
-                margin-bottom: 8px;
-                border-radius: 14px;
-            }
-            .student-selector-header {
-                margin-bottom: 5px;
-                font-size: 10.5px;
             }
             .custom-select-trigger {
                 padding: 6px 8px;
@@ -1388,9 +1419,21 @@
                 margin-bottom: 6px;
                 gap: 6px;
             }
+            .player-nav-group {
+                gap: 5px;
+            }
+            .nav-ayat-btn {
+                width: 32px;
+                height: 32px;
+            }
+            .btn-quick-upload-player {
+                padding: 4px 7px;
+                font-size: 9.5px;
+                border-radius: 7px;
+            }
             .play-btn-main {
-                width: 40px;
-                height: 40px;
+                width: 38px;
+                height: 38px;
             }
             .tikrar-box {
                 padding: 2px 5px;
@@ -1470,7 +1513,6 @@
 
         <!-- Header Utama Aplikasi Mandiri -->
         <header class="page-header">
-            <span class="class-badge">Target Hafalan Jenjang Kelas 1 - 6</span>
             <h1>Database Talqin Al-Qur'an</h1>
             <p>Audio Bimbingan & Muraja'ah Hafalan Mandiri Per-Ayat</p>
         </header>
@@ -1573,18 +1615,39 @@
                 </div>
             </div>
 
-            <!-- Baris Kontrol Audio & Fitur Tikrar (Pengulangan Otomatis) -->
+            <!-- Baris Kontrol Audio, Navigasi Ayat & Fitur Tikrar -->
             <div class="audio-controls-row">
-                <button class="play-btn-main" id="btnPlayPause" onclick="togglePlayPause()" title="Putar / Jeda">
-                    <svg id="iconPlay" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    <svg id="iconPause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"
-                        style="display:none;">
-                        <rect x="6" y="4" width="4" height="16"></rect>
-                        <rect x="14" y="4" width="4" height="16"></rect>
-                    </svg>
-                </button>
+                <div class="player-nav-group">
+                    <button class="nav-ayat-btn" id="btnPrevAyat" onclick="window.navigasiAyat(-1)" title="Ayat Sebelumnya">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                            <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"></line>
+                        </svg>
+                    </button>
+
+                    <button class="play-btn-main" id="btnPlayPause" onclick="togglePlayPause()" title="Putar / Jeda">
+                        <svg id="iconPlay" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <svg id="iconPause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"
+                            style="display:none;">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                    </button>
+
+                    <button class="nav-ayat-btn" id="btnNextAyat" onclick="window.navigasiAyat(1)" title="Ayat Selanjutnya">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                            <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"></line>
+                        </svg>
+                    </button>
+
+                    <!-- Tombol Cepat Unggah / Rekam Audio Ayat Ini (Mode Guru) -->
+                    <button class="btn-quick-upload-player" id="btnQuickUploadPlayer" onclick="window.bukaUploadAyatAktif()" title="Unggah / Rekam Audio Ayat Ini">
+                        <span>🎙️ Unggah</span>
+                    </button>
+                </div>
 
                 <!-- Tombol Pengulangan (Tikrar) -->
                 <div class="tikrar-box">
@@ -1901,6 +1964,7 @@
         let activeJuzTab = 30; // 30, 29, 28, 1, 2, 'all'
         let selectedSurahName = 'An-Nas';
         let activeAyatItem = null;
+        let currentAyatNum = 1;
 
         // Audio & Tikrar Engine
         const audioObj = new Audio();
@@ -2009,6 +2073,8 @@
 
         window.pilihTabJuz = (juz) => {
             activeJuzTab = juz;
+            currentAyatNum = 1;
+            activeAyatItem = null;
             updateJuzTabsUI(juz);
 
             const surahsInJuz = getSurahListForJuz(juz);
@@ -2086,6 +2152,8 @@
 
         window.pilihSurahQuickItem = (surahName) => {
             selectedSurahName = surahName;
+            currentAyatNum = 1;
+            activeAyatItem = null;
             const sInfo = cariInfoSurah(surahName);
             if (sInfo && activeJuzTab !== 'all' && activeJuzTab !== sInfo.juz && !(activeJuzTab === 2 && sInfo.no === 2)) {
                 activeJuzTab = sInfo.juz;
@@ -2095,6 +2163,54 @@
             document.getElementById('btnTriggerSurah').classList.remove('active');
             renderSurahDropdownQuick();
             renderAyatSelectorHub();
+        };
+
+        // Helper untuk ekstrak angka nomor ayat dari label string
+        function getNomorAyat(str) {
+            if (!str) return 0;
+            const m = str.toString().match(/\d+/);
+            return m ? parseInt(m[0], 10) : 0;
+        }
+
+        function updateNavAyatButtons(totalAyat) {
+            const btnPrev = document.getElementById('btnPrevAyat');
+            const btnNext = document.getElementById('btnNextAyat');
+            const btnUpload = document.getElementById('btnQuickUploadPlayer');
+
+            if (btnPrev) btnPrev.disabled = (currentAyatNum <= 1);
+            if (btnNext) btnNext.disabled = !!(totalAyat && currentAyatNum >= totalAyat);
+            if (btnUpload) {
+                btnUpload.innerHTML = `<span>🎙️ Unggah Ayat ${currentAyatNum}</span>`;
+                btnUpload.style.display = isAdmin ? 'inline-flex' : 'none';
+            }
+        }
+
+        window.navigasiAyat = (step) => {
+            const sInfo = cariInfoSurah(selectedSurahName);
+            const totalAyat = sInfo ? sInfo.ayat : 30;
+            const target = currentAyatNum + step;
+            if (target < 1 || target > totalAyat) return;
+
+            currentAyatNum = target;
+
+            // Cari apakah sudah ada rekaman untuk target ayat ini
+            const existing = listRekaman.find(r => {
+                if (!r.surah || r.surah.toLowerCase() !== selectedSurahName.toLowerCase()) return false;
+                return getNomorAyat(r.labelAyat) === currentAyatNum;
+            });
+
+            if (existing) {
+                pilihAyat(existing);
+                if (existing.audioUrl) togglePlayPause(true);
+            } else {
+                activeAyatItem = null;
+                tampilkanTargetAyatOtomatis(sInfo, selectedSurahName, `Ayat ${currentAyatNum}`, `${currentAyatNum}`);
+            }
+        };
+
+        window.bukaUploadAyatAktif = () => {
+            const sInfo = cariInfoSurah(selectedSurahName);
+            window.bukaModalUnggahTargetKhusus(selectedSurahName, `Ayat ${currentAyatNum}`, sInfo ? sInfo.no : 1);
         };
 
         // ============================================================
@@ -2117,8 +2233,8 @@
             if (ayatList.length > 0) {
                 // Urutkan rekaman berdasarkan nomor ayat
                 ayatList.sort((a, b) => {
-                    const numA = parseInt((a.labelAyat || '').replace(/\D/g, '') || '0', 10);
-                    const numB = parseInt((b.labelAyat || '').replace(/\D/g, '') || '0', 10);
+                    const numA = getNomorAyat(a.labelAyat);
+                    const numB = getNomorAyat(b.labelAyat);
                     return numA - numB;
                 });
 
@@ -2150,6 +2266,8 @@
                 // Pilih ayat pertama jika belum aktif atau berpindah surah
                 if (!activeAyatItem || activeAyatItem.surah.toLowerCase() !== selectedSurahName.toLowerCase()) {
                     pilihAyat(ayatList[0]);
+                } else {
+                    updateNavAyatButtons(sInfo ? sInfo.ayat : 30);
                 }
             } else {
                 tampilkanTargetAyatOtomatis(sInfo, selectedSurahName, 'Ayat 1', '1');
@@ -2159,6 +2277,9 @@
         async function tampilkanTargetAyatOtomatis(sInfo, surahName, labelAyat, numAyat) {
             const noSurah = sInfo ? sInfo.no : 1;
             const valAyat = numAyat || '1';
+            const numParsed = parseInt(valAyat, 10);
+            currentAyatNum = (isNaN(numParsed) || numParsed < 1) ? 1 : numParsed;
+            updateNavAyatButtons(sInfo ? sInfo.ayat : 30);
 
             // 1. Reset player audio
             audioObj.src = '';
@@ -2174,10 +2295,6 @@
                 <button class="pill-ayat-btn active">
                     <span>📖</span> <span>${labelAyat}</span>
                 </button>
-                ${isAdmin ? `
-                <button class="pill-ayat-btn" onclick="window.bukaModalUnggahTargetKhusus('${surahName}', '${labelAyat}', ${noSurah})" style="border-style:dashed; border-color:var(--gold-main); color:var(--gold-light);">
-                    <span>➕</span> <span>Unggah Audio</span>
-                </button>` : ''}
             `;
 
             // 3. Teks loading
@@ -2190,8 +2307,8 @@
             const noteEl = document.getElementById('playerTeacherNote');
             noteEl.style.display = 'flex';
             document.getElementById('playerTeacherNoteText').innerHTML = `
-                <strong>Bimbingan Guru:</strong> Audio rekaman guru untuk surah ini sedang dipersiapkan.
-                ${isAdmin ? `<button onclick="window.bukaModalUnggahTargetKhusus('${surahName}', '${labelAyat}', ${noSurah})" style="margin-left:8px; background:linear-gradient(135deg,var(--gold-main),var(--gold-dark)); color:#000; border:none; padding:4px 9px; border-radius:7px; font-weight:800; font-size:11px; cursor:pointer;">➕ Unggah Audio</button>` : 'Ayah/Bunda dapat mendampingi ananda membaca lafaz di atas.'}
+                <strong>Bimbingan Guru:</strong> Audio rekaman guru untuk ayat ini sedang dipersiapkan.
+                ${isAdmin ? ` Silakan gunakan tombol <strong>🎙️ Unggah</strong> di samping tombol putar untuk menambahkan audio.` : ' Ayah/Bunda dapat mendampingi ananda membaca lafaz di atas.'}
             `;
             document.getElementById('playerQariText').innerHTML = `<span>🎙️</span> Rekaman: Dewan Guru Qur'an`;
 
@@ -2232,6 +2349,11 @@
             if (!item) return;
             activeAyatItem = item;
             selectedSurahName = item.surah;
+            const sInfo = cariInfoSurah(selectedSurahName);
+
+            const numParsed = getNomorAyat(item.labelAyat);
+            currentAyatNum = (isNaN(numParsed) || numParsed < 1) ? 1 : numParsed;
+            updateNavAyatButtons(sInfo ? sInfo.ayat : 30);
 
             // Pasang Teks Arab & Terjemahan
             document.getElementById('playerArabicText').innerText = item.teksArab || 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ';
@@ -2467,6 +2589,8 @@
                 loggedInAs.innerText = '✉️ ' + user.email;
             }
 
+            const sInfo = cariInfoSurah(selectedSurahName);
+            updateNavAyatButtons(sInfo ? sInfo.ayat : 30);
             renderAyatSelectorHub();
         });
 
