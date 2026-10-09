@@ -581,13 +581,123 @@
             white-space: nowrap;
         }
 
+        /* Baris Navigasi Lompat Ayat & Scroll Pills */
+        .ayat-nav-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .btn-jump-ayat {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(3, 50, 34, 0.7));
+            border: 1px solid var(--gold-main);
+            color: var(--gold-light);
+            padding: 7px 11px;
+            border-radius: 11px;
+            font-size: 11.5px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+            user-select: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .btn-jump-ayat:hover {
+            background: var(--gold-main);
+            color: #021a11;
+            box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-jump-ayat:active {
+            transform: scale(0.96);
+        }
+
+        /* Modal Grid Lompat Ayat (Touch Only) */
+        .grid-nomor-ayat {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+            gap: 7px;
+            max-height: 52vh;
+            overflow-y: auto;
+            padding: 6px 2px;
+            scrollbar-width: thin;
+        }
+
+        .grid-nomor-ayat::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .grid-nomor-ayat::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.35);
+            border-radius: 6px;
+        }
+
+        .grid-ayat-btn {
+            height: 44px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border-subtle);
+            border-radius: 11px;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            user-select: none;
+            position: relative;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .grid-ayat-btn:hover {
+            border-color: var(--gold-main);
+            color: #fff;
+            background: rgba(212, 175, 55, 0.15);
+        }
+
+        .grid-ayat-btn:active {
+            transform: scale(0.93);
+        }
+
+        .grid-ayat-btn.active {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.35), rgba(153, 122, 21, 0.45));
+            border-color: var(--gold-main);
+            color: var(--gold-light);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+        }
+
+        .grid-ayat-btn.has-audio {
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #6ee7b7;
+        }
+
+        .grid-ayat-btn .audio-dot {
+            position: absolute;
+            top: 3px;
+            right: 4px;
+            font-size: 8px;
+            line-height: 1;
+        }
+
         /* Ayat Selector Pills (Horizontal Scroll Touch-Friendly) */
         .ayat-selector-scroll {
             display: flex;
             gap: 6px;
             overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
+            padding-bottom: 4px;
+            margin-bottom: 0;
+            flex: 1;
+            min-width: 0;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-x: contain;
@@ -1367,6 +1477,25 @@
                 font-size: 9.5px;
                 border-radius: 7px;
             }
+            .ayat-nav-bar-row {
+                gap: 5px;
+                margin-bottom: 6px;
+            }
+            .btn-jump-ayat {
+                padding: 4px 8px;
+                font-size: 10px;
+                border-radius: 7px;
+                gap: 3px;
+            }
+            .grid-nomor-ayat {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+                gap: 5px;
+            }
+            .grid-ayat-btn {
+                height: 38px;
+                font-size: 11.5px;
+                border-radius: 9px;
+            }
             .ayat-selector-scroll {
                 padding: 2px 0 5px;
                 gap: 5px;
@@ -1498,7 +1627,6 @@
 
             <div class="top-right-actions">
                 <div id="adminQuickNav" style="display:none; gap:6px; align-items:center;">
-                    <button class="btn-top-quick" onclick="openModalTambahRekaman()" title="Tambah Rekaman">➕ Rekam</button>
                     <button class="btn-top-quick" onclick="window.bukaModalDaftarRekaman()" title="Database Rekaman">📋 Database</button>
                 </div>
                 <span class="admin-badge" id="adminBadge">✓ GURU AKTIF</span>
@@ -1578,9 +1706,15 @@
                 </button>
             </div>
 
-            <!-- Baris Pills Pemilih Ayat Terpadu di Sekitar Kartu -->
-            <div class="ayat-selector-scroll" id="ayatSelectorScroll">
-                <!-- Pills Ayat: [ Ayat 1 ] [ Ayat 2 ] [ Gabungan ] -->
+            <!-- Baris Navigasi Lompat Ayat & Scroll Pills Terpadu -->
+            <div class="ayat-nav-bar-row">
+                <button class="btn-jump-ayat" id="btnBukaJumpAyat" onclick="window.bukaModalLompatAyat()" title="Pilih / Lompat ke Nomor Ayat">
+                    <span>🔢</span>
+                    <span>Lompat</span>
+                </button>
+                <div class="ayat-selector-scroll" id="ayatSelectorScroll">
+                    <!-- Pills Ayat diisi via JavaScript -->
+                </div>
             </div>
 
             <!-- Teks Arab Al-Qur'an (Font Kaligrafi) -->
@@ -1791,6 +1925,25 @@
 
             <div class="rekaman-manage-list" id="daftarRekamanContainer">
                 <div style="text-align:center; color:var(--text-secondary); padding:20px;">Memuat data rekaman...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         MODAL LOMPAT AYAT (TOUCH GRID NUMBER PICKER - ZERO TYPING)
+         ============================================================ -->
+    <div id="modalLompatAyat" class="modal center-modal" onclick="closeModalOnBackdrop(event, 'modalLompatAyat')">
+        <div class="modal-content" style="max-width: 440px; padding: 22px 18px;">
+            <div class="close-btn" onclick="closeModal('modalLompatAyat')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+            <h3 class="modal-title" id="lompatModalTitle" style="text-align: center; margin-bottom: 3px; font-size:18px;">Lompat ke Ayat</h3>
+            <p class="modal-subtitle" id="lompatModalSubtitle" style="text-align: center; margin-bottom: 14px; font-size:11.5px;">Sentuh nomor ayat yang ingin disimak langsung.</p>
+            <div class="grid-nomor-ayat" id="gridNomorAyat">
+                <!-- Diisi nomor ayat secara otomatis via JS -->
             </div>
         </div>
     </div>
@@ -2185,18 +2338,17 @@
             }
         }
 
-        window.navigasiAyat = (step) => {
+        window.lompatKeAyat = (num) => {
             const sInfo = cariInfoSurah(selectedSurahName);
             const totalAyat = sInfo ? sInfo.ayat : 30;
-            const target = currentAyatNum + step;
-            if (target < 1 || target > totalAyat) return;
+            if (num < 1 || num > totalAyat) return;
 
-            currentAyatNum = target;
+            currentAyatNum = num;
 
             // Cari apakah sudah ada rekaman untuk target ayat ini
             const existing = listRekaman.find(r => {
                 if (!r.surah || r.surah.toLowerCase() !== selectedSurahName.toLowerCase()) return false;
-                return getNomorAyat(r.labelAyat) === currentAyatNum;
+                return getNomorAyat(r.labelAyat) === currentAyatNum && !r.labelAyat.toLowerCase().includes('gabung');
             });
 
             if (existing) {
@@ -2206,6 +2358,57 @@
                 activeAyatItem = null;
                 tampilkanTargetAyatOtomatis(sInfo, selectedSurahName, `Ayat ${currentAyatNum}`, `${currentAyatNum}`);
             }
+
+            // Update highlight pill dan auto-scroll ke tengah
+            document.querySelectorAll('.pill-ayat-btn').forEach(b => {
+                if (b.innerText.includes(`Ayat ${currentAyatNum}`)) {
+                    b.classList.add('active');
+                    b.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else if (!b.classList.contains('gabung')) {
+                    b.classList.remove('active');
+                }
+            });
+        };
+
+        window.navigasiAyat = (step) => {
+            window.lompatKeAyat(currentAyatNum + step);
+        };
+
+        window.bukaModalLompatAyat = () => {
+            const sInfo = cariInfoSurah(selectedSurahName);
+            const totalAyat = sInfo ? sInfo.ayat : 30;
+            const gridContainer = document.getElementById('gridNomorAyat');
+            const titleEl = document.getElementById('lompatModalTitle');
+            const subEl = document.getElementById('lompatModalSubtitle');
+
+            if (titleEl) titleEl.innerText = `Lompat Ayat Surah ${selectedSurahName}`;
+            if (subEl) subEl.innerText = `Pilih ayat (1 s/d ${totalAyat}). Sentuh nomor untuk langsung menyimak.`;
+
+            if (!gridContainer) return;
+            gridContainer.innerHTML = '';
+
+            const surahRecs = listRekaman.filter(r => r.surah && selectedSurahName && r.surah.toLowerCase() === selectedSurahName.toLowerCase());
+
+            for (let i = 1; i <= totalAyat; i++) {
+                const btn = document.createElement('button');
+                const hasAudio = surahRecs.some(r => getNomorAyat(r.labelAyat) === i && r.audioUrl);
+                const isActive = (currentAyatNum === i);
+
+                btn.className = `grid-ayat-btn ${isActive ? 'active' : ''} ${hasAudio ? 'has-audio' : ''}`;
+                btn.innerHTML = `<span>${i}</span>${hasAudio ? '<span class="audio-dot">🎵</span>' : ''}`;
+                btn.onclick = () => {
+                    window.closeModal('modalLompatAyat');
+                    window.lompatKeAyat(i);
+                };
+                gridContainer.appendChild(btn);
+            }
+
+            document.getElementById('modalLompatAyat').classList.add('open');
+
+            setTimeout(() => {
+                const activeBtn = gridContainer.querySelector('.grid-ayat-btn.active');
+                if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 80);
         };
 
         window.bukaUploadAyatAktif = () => {
@@ -2226,51 +2429,58 @@
             }
 
             const sInfo = cariInfoSurah(selectedSurahName);
-            const ayatList = listRekaman.filter(r => r.surah && selectedSurahName && r.surah.toLowerCase() === selectedSurahName.toLowerCase());
+            const totalAyat = sInfo ? sInfo.ayat : 30;
+            const surahRecs = listRekaman.filter(r => r.surah && selectedSurahName && r.surah.toLowerCase() === selectedSurahName.toLowerCase());
 
             container.innerHTML = '';
 
-            if (ayatList.length > 0) {
-                // Urutkan rekaman berdasarkan nomor ayat
-                ayatList.sort((a, b) => {
-                    const numA = getNomorAyat(a.labelAyat);
-                    const numB = getNomorAyat(b.labelAyat);
-                    return numA - numB;
-                });
+            // 1. Render pills untuk seluruh nomor ayat surah ini (Sentuh langsung / swipe)
+            for (let i = 1; i <= totalAyat; i++) {
+                const rec = surahRecs.find(r => getNomorAyat(r.labelAyat) === i && !r.labelAyat.toLowerCase().includes('gabung'));
+                const btn = document.createElement('button');
+                const isAktif = (currentAyatNum === i && (!activeAyatItem || !activeAyatItem.labelAyat.toLowerCase().includes('gabung')));
+                const hasAudio = !!(rec && rec.audioUrl);
 
-                ayatList.forEach(item => {
-                    const btn = document.createElement('button');
-                    const isAktif = (activeAyatItem && activeAyatItem.id === item.id);
-                    const isGabung = item.labelAyat && item.labelAyat.toLowerCase().includes('gabung');
+                btn.className = `pill-ayat-btn ${isAktif ? 'active' : ''}`;
+                btn.innerHTML = `<span>${hasAudio ? '🎵' : '📖'}</span> <span>Ayat ${i}</span>`;
+                btn.onclick = () => {
+                    window.lompatKeAyat(i);
+                };
+                container.appendChild(btn);
+            }
 
-                    btn.className = `pill-ayat-btn ${isAktif ? 'active' : ''} ${isGabung ? 'gabung' : ''}`;
-                    btn.innerHTML = `<span>${item.audioUrl ? '🎵' : '📝'}</span> <span>${item.labelAyat}</span>`;
-                    btn.onclick = () => {
-                        pilihAyat(item);
-                        if (item.audioUrl) togglePlayPause(true);
-                    };
-                    container.appendChild(btn);
-                });
+            // 2. Render rekaman gabungan jika ada (misal: "Gabungan 1-3")
+            const gabungRecs = surahRecs.filter(r => r.labelAyat && r.labelAyat.toLowerCase().includes('gabung'));
+            gabungRecs.forEach(item => {
+                const btn = document.createElement('button');
+                const isAktif = (activeAyatItem && activeAyatItem.id === item.id);
+                btn.className = `pill-ayat-btn gabung ${isAktif ? 'active' : ''}`;
+                btn.innerHTML = `<span>🎵</span> <span>${item.labelAyat}</span>`;
+                btn.onclick = () => {
+                    pilihAyat(item);
+                    if (item.audioUrl) togglePlayPause(true);
+                };
+                container.appendChild(btn);
+            });
 
-                if (isAdmin) {
-                    const btnAdd = document.createElement('button');
-                    btnAdd.className = 'pill-ayat-btn';
-                    btnAdd.style.borderStyle = 'dashed';
-                    btnAdd.style.borderColor = 'var(--gold-main)';
-                    btnAdd.style.color = 'var(--gold-light)';
-                    btnAdd.innerHTML = `<span>➕</span> <span>Tambah Ayat</span>`;
-                    btnAdd.onclick = () => window.bukaModalUnggahTargetKhusus(selectedSurahName, '', sInfo ? sInfo.no : 1);
-                    container.appendChild(btnAdd);
-                }
+            // 3. Tombol tambah ayat bagi mode guru
+            if (isAdmin) {
+                const btnAdd = document.createElement('button');
+                btnAdd.className = 'pill-ayat-btn';
+                btnAdd.style.borderStyle = 'dashed';
+                btnAdd.style.borderColor = 'var(--gold-main)';
+                btnAdd.style.color = 'var(--gold-light)';
+                btnAdd.innerHTML = `<span>➕</span> <span>Tambah Ayat</span>`;
+                btnAdd.onclick = () => window.bukaModalUnggahTargetKhusus(selectedSurahName, `Ayat ${currentAyatNum}`, sInfo ? sInfo.no : 1);
+                container.appendChild(btnAdd);
+            }
 
-                // Pilih ayat pertama jika belum aktif atau berpindah surah
-                if (!activeAyatItem || activeAyatItem.surah.toLowerCase() !== selectedSurahName.toLowerCase()) {
-                    pilihAyat(ayatList[0]);
-                } else {
-                    updateNavAyatButtons(sInfo ? sInfo.ayat : 30);
-                }
+            // 4. Muat data ayat yang aktif
+            const existingActive = surahRecs.find(r => getNomorAyat(r.labelAyat) === currentAyatNum);
+            if (existingActive) {
+                pilihAyat(existingActive);
             } else {
-                tampilkanTargetAyatOtomatis(sInfo, selectedSurahName, 'Ayat 1', '1');
+                tampilkanTargetAyatOtomatis(sInfo, selectedSurahName, `Ayat ${currentAyatNum}`, `${currentAyatNum}`);
             }
         }
 
@@ -2289,13 +2499,15 @@
             document.getElementById('currTimeText').innerText = '00:00';
             document.getElementById('progressBarFill').style.width = '0%';
 
-            // 2. Pill ayat default
-            const ayatScroll = document.getElementById('ayatSelectorScroll');
-            ayatScroll.innerHTML = `
-                <button class="pill-ayat-btn active">
-                    <span>📖</span> <span>${labelAyat}</span>
-                </button>
-            `;
+            // 2. Highlight pill ayat aktif dan scroll ke tengah
+            document.querySelectorAll('.pill-ayat-btn').forEach(b => {
+                if (b.innerText.includes(`Ayat ${currentAyatNum}`)) {
+                    b.classList.add('active');
+                    b.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else if (!b.classList.contains('gabung')) {
+                    b.classList.remove('active');
+                }
+            });
 
             // 3. Teks loading
             document.getElementById('playerArabicText').innerHTML = `
@@ -2389,10 +2601,14 @@
             isPlaying = false;
             updatePlayBtnUI();
 
-            // Refresh highlight pill
+            // Refresh highlight pill dan auto scroll
             document.querySelectorAll('.pill-ayat-btn').forEach(b => {
-                if (b.innerText.includes(item.labelAyat)) b.classList.add('active');
-                else b.classList.remove('active');
+                if (b.innerText.includes(`Ayat ${currentAyatNum}`) || (item.labelAyat && b.innerText.includes(item.labelAyat))) {
+                    b.classList.add('active');
+                    b.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                } else {
+                    b.classList.remove('active');
+                }
             });
         }
 
