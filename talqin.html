@@ -25,6 +25,9 @@
             --blue-soft: #38bdf8;
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
+            --gold: #d4af37;
+            --success: #10b981;
+            --text-muted: #94a3b8;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(212, 175, 55, 0.22);
             --glass-border-subtle: rgba(255, 255, 255, 0.08);
@@ -49,15 +52,15 @@
                 radial-gradient(circle at 50% 50%, rgba(1, 18, 10, 0.95) 0%, transparent 100%);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 16px 14px 90px;
+            padding: 14px 12px 35px;
             background-attachment: fixed;
-            line-height: 1.5;
+            line-height: 1.45;
         }
 
         /* Container Mobile-First: Nyaman di HP, Elegan di PC */
         .container {
             width: 100%;
-            max-width: 680px;
+            max-width: 620px;
             margin: 0 auto;
             position: relative;
         }
@@ -67,21 +70,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--glass-border-subtle);
         }
 
         .btn-back {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--glass-border-subtle);
             color: var(--text-secondary);
-            padding: 7px 12px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 6px 11px;
+            border-radius: 11px;
+            font-size: 11.5px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s ease;
@@ -98,24 +101,45 @@
         .top-right-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
+        }
+
+        .btn-top-quick {
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            color: var(--gold-light);
+            padding: 4px 8px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .btn-top-quick:hover {
+            background: var(--gold-main);
+            color: #000;
         }
 
         .admin-badge {
             display: none;
             background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
             color: #000;
-            padding: 3px 10px;
+            padding: 3px 9px;
             border-radius: 20px;
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 800;
             letter-spacing: 0.5px;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
         }
 
         .btn-admin-icon {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--glass-border-subtle);
@@ -133,10 +157,10 @@
             background: rgba(212, 175, 55, 0.12);
         }
 
-        /* Header Ringkas */
+        /* Header Ringkas & Nyaman di HP */
         .page-header {
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .page-header .class-badge {
@@ -144,29 +168,30 @@
             background: rgba(212, 175, 55, 0.12);
             border: 1px solid rgba(212, 175, 55, 0.3);
             color: var(--gold-light);
-            font-size: 10.5px;
+            font-size: 9.5px;
             font-weight: 700;
-            padding: 3px 12px;
+            padding: 2px 10px;
             border-radius: 20px;
-            letter-spacing: 1.2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .page-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 700;
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
+            line-height: 1.25;
         }
 
         .page-header p {
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
         }
 
@@ -176,8 +201,8 @@
         .student-selector-card {
             background: linear-gradient(135deg, rgba(3, 36, 24, 0.8), rgba(2, 22, 15, 0.95));
             border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            padding: 14px 16px;
+            border-radius: 16px;
+            padding: 12px 14px;
             margin-bottom: 16px;
             backdrop-filter: var(--glass-blur);
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
@@ -510,46 +535,46 @@
            ============================================================ */
         .initial-prompt-card {
             background: linear-gradient(135deg, rgba(3, 40, 27, 0.7) 0%, rgba(1, 18, 10, 0.9) 100%);
-            border: 1.5px dashed rgba(212, 175, 55, 0.4);
-            border-radius: 22px;
-            padding: 26px 20px;
-            margin-bottom: 22px;
+            border: 1.5px dashed rgba(212, 175, 55, 0.35);
+            border-radius: 18px;
+            padding: 18px 16px;
+            margin-bottom: 16px;
             text-align: center;
             backdrop-filter: var(--glass-blur);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-            animation: fadeIn 0.4s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+            animation: fadeIn 0.3s ease;
             position: relative;
             z-index: 1;
         }
 
         .initial-prompt-icon {
-            width: 56px;
-            height: 56px;
+            width: 44px;
+            height: 44px;
             background: rgba(212, 175, 55, 0.12);
             border: 1px solid var(--gold-main);
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            margin-bottom: 12px;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+            font-size: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 0 16px rgba(212, 175, 55, 0.2);
         }
 
         .initial-prompt-title {
             font-family: 'Playfair Display', serif;
-            font-size: 19px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--gold-light);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .initial-prompt-desc {
-            font-size: 12.5px;
+            font-size: 11.5px;
             color: #cbd5e1;
-            line-height: 1.6;
-            max-width: 440px;
-            margin: 0 auto 16px;
+            line-height: 1.5;
+            max-width: 420px;
+            margin: 0 auto 12px;
         }
 
         .btn-open-general {
@@ -559,9 +584,9 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border-subtle);
             color: #e2e8f0;
-            padding: 9px 18px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 8px 14px;
+            border-radius: 11px;
+            font-size: 11.5px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -578,14 +603,14 @@
            KARTU PANDUAN & ONBOARDING KHUSUS GURU (ADMIN)
            ============================================================ */
         .admin-guide-card {
-            background: linear-gradient(135deg, rgba(3, 44, 29, 0.9) 0%, rgba(1, 20, 12, 0.96) 100%);
+            background: linear-gradient(135deg, rgba(3, 44, 29, 0.88) 0%, rgba(1, 20, 12, 0.96) 100%);
             border: 1.5px solid var(--gold-main);
-            border-radius: 22px;
-            padding: 20px 18px;
-            margin-bottom: 22px;
+            border-radius: 18px;
+            padding: 16px 14px;
+            margin-bottom: 16px;
             backdrop-filter: var(--glass-blur);
-            box-shadow: var(--shadow-glow), 0 14px 35px rgba(0, 0, 0, 0.55);
-            animation: fadeIn 0.4s ease;
+            box-shadow: var(--shadow-glow), 0 8px 24px rgba(0, 0, 0, 0.45);
+            animation: fadeIn 0.3s ease;
             position: relative;
             z-index: 1;
         }
@@ -593,107 +618,95 @@
         .admin-guide-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
-            padding-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
             border-bottom: 1px dashed rgba(212, 175, 55, 0.25);
         }
 
         .admin-guide-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
             background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
             color: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 16px;
             flex-shrink: 0;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
         }
 
         .admin-guide-title {
             font-family: 'Playfair Display', serif;
-            font-size: 17.5px;
+            font-size: 15.5px;
             font-weight: 700;
             color: var(--gold-light);
-            line-height: 1.25;
+            line-height: 1.2;
         }
 
         .admin-guide-subtitle {
-            font-size: 11px;
+            font-size: 10px;
             color: #a7f3d0;
-            margin-top: 3px;
+            margin-top: 1px;
             font-weight: 600;
         }
 
         .admin-guide-steps {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 6px;
+            margin-bottom: 11px;
         }
 
         .guide-step-item {
             background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 14px;
-            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 7px 9px;
             display: flex;
-            gap: 10px;
-            align-items: flex-start;
-            transition: all 0.2s ease;
-        }
-
-        .guide-step-item:hover {
-            border-color: rgba(212, 175, 55, 0.35);
-            background: rgba(212, 175, 55, 0.04);
+            gap: 7px;
+            align-items: center;
         }
 
         .guide-step-badge {
-            width: 24px;
-            height: 24px;
-            border-radius: 8px;
+            width: 19px;
+            height: 19px;
+            border-radius: 5px;
             background: rgba(212, 175, 55, 0.15);
             border: 1px solid var(--gold-main);
             color: var(--gold-light);
-            font-size: 11px;
+            font-size: 9.5px;
             font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            margin-top: 1px;
         }
 
-        .guide-step-content h4 {
-            font-size: 12px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 2px;
-        }
-
-        .guide-step-content p {
+        .guide-step-content {
             font-size: 11px;
             color: #cbd5e1;
-            line-height: 1.45;
+            line-height: 1.35;
+        }
+
+        .guide-step-content strong {
+            color: #ffffff;
         }
 
         .admin-guide-actions {
             display: flex;
-            flex-wrap: wrap;
             gap: 8px;
-            padding-top: 12px;
+            padding-top: 10px;
             border-top: 1px dashed rgba(255, 255, 255, 0.08);
         }
 
         .btn-guide-action {
             flex: 1;
-            min-width: 130px;
-            padding: 9px 12px;
+            padding: 10px 12px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 750;
             cursor: pointer;
             display: inline-flex;
@@ -702,6 +715,7 @@
             gap: 6px;
             transition: all 0.2s ease;
             border: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .btn-guide-rec {
@@ -716,24 +730,13 @@
         }
 
         .btn-guide-target {
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: #6ee7b7;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            color: #a7f3d0;
         }
 
         .btn-guide-target:hover {
-            background: rgba(16, 185, 129, 0.25);
-            color: #fff;
-        }
-
-        .btn-guide-preview {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border-subtle);
-            color: #cbd5e1;
-        }
-
-        .btn-guide-preview:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(16, 185, 129, 0.28);
             color: #fff;
         }
 
@@ -743,10 +746,10 @@
         .studio-hub-card {
             background: linear-gradient(180deg, rgba(3, 40, 27, 0.85) 0%, rgba(1, 18, 10, 0.95) 100%);
             border: 1.5px solid var(--gold-main);
-            border-radius: 22px;
-            padding: 18px 16px;
-            margin-bottom: 22px;
-            box-shadow: var(--shadow-glow), 0 14px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 15px 14px;
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-glow), 0 10px 24px rgba(0, 0, 0, 0.45);
             backdrop-filter: var(--glass-blur);
             position: relative;
         }
@@ -1143,49 +1146,64 @@
             padding-top: 8px;
         }
 
-        /* Floating Admin Action Bar */
-        .admin-floating-bar {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: none;
-            gap: 10px;
-            z-index: 90;
-            width: calc(100% - 28px);
-            max-width: 500px;
+        /* ============================================================
+           MODALS (LOGIN ADMIN, INPUT REKAMAN, & KELOLA SLOW LEARNER)
+           ============================================================ */
+        .center-modal {
+            align-items: center !important;
         }
 
-        .btn-floating-action {
-            flex: 1;
+        .admin-input {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            font-size: 13.5px;
             padding: 12px 14px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 800;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: all 0.2s ease;
+            transition: all 0.3s;
+            outline: none;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-sizing: border-box;
         }
 
-        .btn-add-rec {
+        .admin-input:focus {
+            border-color: var(--gold-main);
+            background: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+        }
+
+        .btn-primary {
+            width: 100%;
             background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
             color: #000;
+            border: none;
+            padding: 13px;
+            border-radius: 14px;
+            font-weight: 750;
+            font-size: 14px;
+            margin-top: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25);
+            letter-spacing: 0.3px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .btn-manage-slow {
-            background: rgba(3, 45, 30, 0.95);
-            color: var(--gold-light);
-            border: 1px solid var(--gold-main);
+        .btn-primary:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
         }
 
-        /* ============================================================
-           MODALS (LOGIN, INPUT REKAMAN, & KELOLA SLOW LEARNER)
-           ============================================================ */
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white;
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3);
+        }
         .modal {
             display: none;
             position: fixed;
@@ -1219,12 +1237,13 @@
             overflow-y: auto;
         }
 
-        .modal-close-btn {
+        .modal-close-btn,
+        .close-btn {
             position: absolute;
             top: 16px;
             right: 16px;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1233,6 +1252,14 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close-btn:hover,
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            transform: rotate(90deg);
         }
 
         .modal-title {
@@ -1379,6 +1406,74 @@
                 transform: translateY(0);
             }
         }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px 10px 30px;
+            }
+            .page-header {
+                margin-bottom: 10px;
+            }
+            .page-header h1 {
+                font-size: 18px;
+            }
+            .page-header p {
+                font-size: 10.5px;
+            }
+            .student-selector-card {
+                padding: 12px 10px;
+                margin-bottom: 12px;
+            }
+            .custom-select-trigger {
+                padding: 8px 10px;
+            }
+            .trigger-title {
+                font-size: 13px;
+            }
+            .trigger-sub {
+                font-size: 10px;
+            }
+            .admin-guide-card {
+                padding: 13px 11px;
+                margin-bottom: 12px;
+            }
+            .guide-step-item {
+                padding: 6px 8px;
+            }
+            .guide-step-content {
+                font-size: 10.5px;
+            }
+            .btn-guide-action {
+                font-size: 11px;
+                padding: 8px 10px;
+            }
+            .studio-hub-card {
+                padding: 13px 11px;
+                margin-bottom: 14px;
+            }
+            .studio-arabic-display {
+                font-size: 22px;
+                padding: 14px 10px;
+            }
+            .audio-controls-row {
+                gap: 8px;
+            }
+            .play-btn-main {
+                width: 44px;
+                height: 44px;
+            }
+            .tikrar-box {
+                padding: 3px 6px;
+                gap: 3px;
+            }
+            .tikrar-btn {
+                padding: 4px 6px;
+                font-size: 10px;
+            }
+            .modal-content {
+                padding: 24px 16px;
+            }
+        }
     </style>
 </head>
 
@@ -1397,6 +1492,10 @@
             </a>
 
             <div class="top-right-actions">
+                <div id="adminQuickNav" style="display:none; gap:5px; align-items:center;">
+                    <button class="btn-top-quick" onclick="openModalTambahRekaman()" title="Tambah Rekaman">➕ Rekam</button>
+                    <button class="btn-top-quick" onclick="openModalKelolaSlow()" title="Kelola Bimbingan Khusus">👥 Murid</button>
+                </div>
                 <span class="admin-badge" id="adminBadge">✓ GURU AKTIF</span>
                 <button class="btn-admin-icon" id="btnLockAdmin" title="Mode Guru Qur'an">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1483,37 +1582,31 @@
                 <div class="guide-step-item">
                     <span class="guide-step-badge">1</span>
                     <div class="guide-step-content">
-                        <h4>Kelola Murid Bimbingan Khusus</h4>
-                        <p>Tandai ananda yang memerlukan bimbingan intensif dan tentukan target hafalan per ayat melalui menu <strong>Bimbingan Khusus</strong>.</p>
+                        <strong>Bimbingan Khusus:</strong> Tandai murid bimbingan & target ayatnya
                     </div>
                 </div>
 
                 <div class="guide-step-item">
                     <span class="guide-step-badge">2</span>
                     <div class="guide-step-content">
-                        <h4>Unggah Rekaman Suara Talqin Guru</h4>
-                        <p>Pilih dari 114 surah, gunakan tombol <strong>⚡ Tarik Teks Otomatis</strong>, lalu cantumkan link rekaman suara (Vocaroo / Google Drive).</p>
+                        <strong>Unggah Rekaman:</strong> Tarik 114 surah otomatis & cantumkan link audio
                     </div>
                 </div>
 
                 <div class="guide-step-item">
                     <span class="guide-step-badge">3</span>
                     <div class="guide-step-content">
-                        <h4>Simulasi & Monitoring Hafalan</h4>
-                        <p>Pilih nama murid di menu atas untuk menguji coba audio dan melihat persis tampilan yang diterima oleh wali murid di rumah.</p>
+                        <strong>Simulasi Santri:</strong> Pilih nama murid di menu atas untuk uji dengar
                     </div>
                 </div>
             </div>
 
             <div class="admin-guide-actions">
                 <button class="btn-guide-action btn-guide-rec" onclick="openModalTambahRekaman()">
-                    <span>➕</span> Unggah Rekaman Baru
+                    <span>➕</span> Tambah Rekaman Baru
                 </button>
                 <button class="btn-guide-action btn-guide-target" onclick="openModalKelolaSlow()">
-                    <span>👥</span> Atur Target Murid
-                </button>
-                <button class="btn-guide-action btn-guide-preview" onclick="window.pilihMuridItem('mode_umum', 'Mode Umum / Seluruh Rekaman', 'Daftar seluruh audio klinik talqin', '👥')">
-                    <span>🎧</span> Buka Bank Rekaman
+                    <span>👥</span> Bimbingan Khusus
                 </button>
             </div>
         </section>
@@ -1665,39 +1758,34 @@
 
     </div>
 
-    <!-- Floating Action Bar Khusus Mode Guru (Admin) -->
-    <div class="admin-floating-bar" id="adminFloatingBar">
-        <button class="btn-floating-action btn-add-rec" onclick="openModalTambahRekaman()">
-            ➕ Tambah Rekaman Ayat
-        </button>
-        <button class="btn-floating-action btn-manage-slow" onclick="openModalKelolaSlow()">
-            👥 Bimbingan Khusus
-        </button>
-    </div>
-
     <!-- ============================================================
-         MODAL LOGIN ADMIN (GURU QUR'AN)
+         MODAL 3: Login Admin / Guru (Persis UI/UX Jurnal)
          ============================================================ -->
-    <div id="loginModal" class="modal" onclick="if(event.target===this) closeModal('loginModal')">
-        <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal('loginModal')">&times;</button>
-            <h3 class="modal-title">Akses Guru Qur'an</h3>
-            <p class="modal-subtitle">Silakan masuk untuk mengunggah rekaman atau menetapkan target ananda.</p>
-
-            <form onsubmit="event.preventDefault(); submitLogin();">
-                <div class="form-group">
-                    <label>Email Guru</label>
-                    <input type="email" id="adminEmail" class="form-input" placeholder="guru@sekolah.sch.id" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="adminPassword" class="form-input" placeholder="••••••••" required>
-                </div>
-                <button type="submit" id="btnLoginSubmit" class="btn-submit-modal">Masuk Mode Edit</button>
-                <button type="button" id="btnLogoutAdmin" class="btn-submit-modal"
-                    style="display:none; background:rgba(239,68,68,0.2); color:#fca5a5; margin-top:8px;"
-                    onclick="submitLogout()">Keluar dari Mode Guru</button>
-            </form>
+    <div id="loginModal" class="modal center-modal" onclick="closeModalOnBackdrop(event, 'loginModal')">
+        <div class="modal-content" style="max-width: 360px; padding: 36px 26px;">
+            <div class="close-btn" onclick="closeModal('loginModal')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+            <h2 style="text-align: center; color: var(--gold-main); margin-bottom: 8px; font-weight: 700; font-family:'Playfair Display', serif; font-size:20px;">Akses Guru Qur'an</h2>
+            <p style="text-align:center; font-size:12px; color:var(--text-secondary); margin-bottom:22px;"
+                id="loginKelasInfo">Masuk sebagai guru kelas ini</p>
+            <div id="loginForm">
+                <input type="email" id="adminEmail" class="admin-input" placeholder="Email Guru / Admin">
+                <input type="password" id="adminPassword" class="admin-input" placeholder="Password"
+                    style="margin-top: 14px;">
+                <button class="btn-primary" onclick="loginAdmin()">Masuk Dashboard</button>
+            </div>
+            <div id="logoutForm" style="display: none; text-align: center;">
+                <div
+                    style="width:58px; height:58px; border-radius:50%; background:rgba(16, 185, 129, 0.2); color:#10b981; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:24px; font-weight:bold;">
+                    ✓</div>
+                <p id="loggedInAs" style="margin-bottom: 6px; font-size: 13px; color: #fff; font-weight:600;"></p>
+                <p style="margin-bottom: 20px; font-size: 11.5px; color: var(--text-secondary); line-height: 1.45;">Sesi guru sedang aktif. Anda dapat mengunggah rekaman talqin dan menetapkan bimbingan khusus.</p>
+                <button class="btn-primary btn-danger" onclick="logoutAdmin()">Akhiri Sesi (Logout)</button>
+            </div>
         </div>
     </div>
 
@@ -1811,6 +1899,10 @@
         const namaLengkapKelas = kamusKelas[window.kelasTarget] || ("Kelas " + window.kelasTarget);
 
         document.getElementById('lblKelas').innerText = namaLengkapKelas;
+        const loginKelasInfo = document.getElementById('loginKelasInfo');
+        if (loginKelasInfo) {
+            loginKelasInfo.innerText = "Masuk sebagai guru " + namaLengkapKelas;
+        }
         document.getElementById('btnBackToJurnal').onclick = () => {
             window.location.href = 'jurnal.html?kelas=' + window.kelasTarget;
         };
@@ -2628,28 +2720,31 @@
         };
 
         onAuthStateChanged(auth, (user) => {
+            isAdmin = !!user;
+            const adminBadge = document.getElementById('adminBadge');
+            const adminQuickNav = document.getElementById('adminQuickNav');
+            const loginForm = document.getElementById('loginForm');
+            const logoutForm = document.getElementById('logoutForm');
+            const loggedInAs = document.getElementById('loggedInAs');
             const promptCard = document.getElementById('initialPromptCard');
             const adminGuide = document.getElementById('adminGuideCard');
 
-            if (user) {
-                isAdmin = true;
-                document.getElementById('adminBadge').style.display = 'inline-block';
-                document.getElementById('adminFloatingBar').style.display = 'flex';
-                document.getElementById('btnLogoutAdmin').style.display = 'block';
-                document.getElementById('btnLoginSubmit').innerText = 'Sudah Masuk (Tutup)';
+            if (adminBadge) adminBadge.style.display = isAdmin ? 'inline-block' : 'none';
+            if (adminQuickNav) adminQuickNav.style.display = isAdmin ? 'flex' : 'none';
+            if (loginForm) loginForm.style.display = isAdmin ? 'none' : 'block';
+            if (logoutForm) logoutForm.style.display = isAdmin ? 'block' : 'none';
 
+            if (isAdmin && user && user.email && loggedInAs) {
+                loggedInAs.innerText = '✉️ ' + user.email;
+            }
+
+            if (isAdmin) {
                 // Jika belum ada ananda yang dipilih, tampilkan kartu panduan khusus guru
                 if (!selectedMuridId) {
                     if (promptCard) promptCard.style.display = 'none';
                     if (adminGuide) adminGuide.style.display = 'block';
                 }
             } else {
-                isAdmin = false;
-                document.getElementById('adminBadge').style.display = 'none';
-                document.getElementById('adminFloatingBar').style.display = 'none';
-                document.getElementById('btnLogoutAdmin').style.display = 'none';
-                document.getElementById('btnLoginSubmit').innerText = 'Masuk Mode Edit';
-
                 // Jika belum ada ananda yang dipilih, kembalikan ke sambutan wali murid
                 if (!selectedMuridId) {
                     if (promptCard) promptCard.style.display = 'block';
@@ -2658,25 +2753,42 @@
             }
         });
 
-        window.submitLogin = () => {
-            if (isAdmin) {
-                window.closeModal('loginModal');
+        window.closeModal = (modalId) => {
+            const el = document.getElementById(modalId);
+            if (el) el.classList.remove('open');
+        };
+
+        window.closeModalOnBackdrop = (event, modalId) => {
+            if (event.target.id === modalId) window.closeModal(modalId);
+        };
+
+        window.loginAdmin = () => {
+            const btn = document.querySelector('#loginForm button');
+            if (btn) btn.innerText = "Memproses...";
+            const emailInput = document.getElementById('adminEmail');
+            const passInput = document.getElementById('adminPassword');
+            const e = emailInput ? emailInput.value.trim() : '';
+            const p = passInput ? passInput.value : '';
+
+            if (!e || !p) {
+                alert("Harap isi email dan password guru.");
+                if (btn) btn.innerText = "Masuk Dashboard";
                 return;
             }
-            const e = document.getElementById('adminEmail').value;
-            const p = document.getElementById('adminPassword').value;
-            const btn = document.getElementById('btnLoginSubmit');
-            btn.innerText = 'Memverifikasi...';
 
             signInWithEmailAndPassword(auth, e, p)
-                .then(() => window.closeModal('loginModal'))
-                .catch(() => {
-                    alert("Login gagal! Pastikan akun terdaftar di Firebase.");
-                    btn.innerText = 'Masuk Mode Edit';
+                .then(() => {
+                    if (btn) btn.innerText = "Masuk Dashboard";
+                    window.closeModal('loginModal');
+                })
+                .catch((err) => {
+                    console.error("Login error:", err);
+                    alert("Login gagal. Periksa kembali email & password Anda.");
+                    if (btn) btn.innerText = "Masuk Dashboard";
                 });
         };
 
-        window.submitLogout = () => signOut(auth).then(() => {
+        window.logoutAdmin = () => signOut(auth).then(() => {
             window.closeModal('loginModal');
             if (!selectedMuridId) {
                 const promptCard = document.getElementById('initialPromptCard');
@@ -2686,7 +2798,19 @@
             }
         });
 
-        window.closeModal = (id) => document.getElementById(id).classList.remove('open');
+        // Alias backwards compatibility
+        window.submitLogin = window.loginAdmin;
+        window.submitLogout = window.logoutAdmin;
+
+        // Enter key to submit login
+        ['adminEmail', 'adminPassword'].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') window.loginAdmin();
+                });
+            }
+        });
 
         // Modal Form Rekaman
         window.openModalTambahRekaman = () => {
