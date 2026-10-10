@@ -385,15 +385,7 @@ window.switchAdminQuranDay = (day) => {
     });
 };
 
-window.switchPublicQuranDay = (day) => {
-    document.querySelectorAll('#publicQuranDayTabs .mading-day-pill').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-day') === day);
-    });
-    ['senin', 'selasa', 'rabu', 'kamis'].forEach(d => {
-        const pane = document.getElementById('pub-pane-' + d);
-        if (pane) pane.style.display = (d === day) ? 'block' : 'none';
-    });
-};
+window.switchPublicQuranDay = () => {};
 
 // Tutup dropdown surah jika klik di luar
 document.addEventListener('click', (e) => {
@@ -849,44 +841,26 @@ window.renderMadingHtml = (id, fields) => {
         return html + '</div>';
 
     } else if (id === 'target-quran') {
-        const days = [
-            { key: 'senin', label: 'Senin' },
-            { key: 'selasa', label: 'Selasa' },
-            { key: 'rabu', label: 'Rabu' },
-            { key: 'kamis', label: 'Kamis' }
-        ];
         const activeDay = window.getHariQuranAktif();
+        const hasNewFormat = !!(fields.senin_surah || fields.selasa_surah || fields.rabu_surah || fields.kamis_surah);
+        const surah = fields[activeDay + '_surah'] || (!hasNewFormat ? (fields.surah || '') : '');
+        const rawAyat = fields[activeDay + '_ayat'] || (!hasNewFormat ? (fields.ayat ? fields.ayat.replace(/[^0-9]/g, '') : '') : '');
+        const ayatStr = rawAyat ? ('Ayat ' + rawAyat) : (!hasNewFormat && fields.ayat ? fields.ayat : '-');
+        const audio = fields[activeDay + '_audio'] || (!hasNewFormat ? (fields.audio || '') : '');
 
-        let tabsHtml = '<div class="mading-day-tabs" id="publicQuranDayTabs">';
-        days.forEach(d => {
-            const isActive = (d.key === activeDay);
-            tabsHtml += `<button type="button" class="mading-day-pill ${isActive ? 'active' : ''}" data-day="${d.key}" onclick="window.switchPublicQuranDay('${d.key}')">${d.label}</button>`;
-        });
-        tabsHtml += '</div>';
+        const cleanSurahName = surah.replace(/^surah\s+/i, '').trim();
+        const displaySurah = cleanSurahName ? ('Surah ' + cleanSurahName) : '-';
 
-        let contentHtml = '<div id="publicQuranDayPanes">';
-        days.forEach(d => {
-            const isVisible = (d.key === activeDay);
-            const surah = fields[d.key + '_surah'] || (d.key === 'senin' ? (fields.surah || '') : '');
-            const rawAyat = fields[d.key + '_ayat'] || (d.key === 'senin' ? (fields.ayat ? fields.ayat.replace(/[^0-9]/g, '') : '') : '');
-            const ayatStr = rawAyat ? ('Ayat ' + rawAyat) : (d.key === 'senin' && fields.ayat ? fields.ayat : '-');
-            const audio = fields[d.key + '_audio'] || (d.key === 'senin' ? (fields.audio || '') : '');
+        const sObj = DATA_114_SURAH.find(s => s.nama.toLowerCase() === cleanSurahName.toLowerCase());
+        const namaArab = sObj ? ` <span style="font-family:'Amiri',serif; font-size:26px; color:var(--gold-light); display:block; margin:8px 0 4px;">${sObj.arab}</span>` : '';
 
-            const sObj = DATA_114_SURAH.find(s => s.nama.toLowerCase() === surah.toLowerCase());
-            const namaArab = sObj ? ` <span style="font-family:'Amiri',serif; font-size:24px; color:var(--gold-light); display:block; margin:6px 0 2px;">${sObj.arab}</span>` : '';
-
-            contentHtml += `<div class="public-quran-day-pane" id="pub-pane-${d.key}" style="text-align:center; padding:10px 5px; ${isVisible ? '' : 'display:none;'}">`
-                + `<span class="hari-badge" style="margin-top:0; margin-bottom:12px;">Target Hari ${d.label}</span>`
-                + `<div style="color:var(--text-muted);font-size:13px;margin-bottom:12px;">Mohon Sambil Buka Al-Qur'an, ya 😇</div>`
-                + `<div style="font-size:22px;font-weight:800;color:#fff;margin-bottom:4px;font-family:'Lora',serif;">${surah ? ('Surah ' + surah) : '-'}</div>`
-                + namaArab
-                + `<div style="color:var(--gold);font-size:16px;font-weight:700;margin-top:6px;margin-bottom:20px;">${ayatStr}</div>`
-                + buatAudioPlayer(audio)
-                + `</div>`;
-        });
-        contentHtml += '</div>';
-
-        return tabsHtml + contentHtml;
+        return '<div style="text-align:center; padding:15px 10px;">'
+            + '<div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Mohon Sambil Buka Al-Qur\'an, ya 😇</div>'
+            + `<div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:4px;font-family:'Lora',serif;">${displaySurah}</div>`
+            + namaArab
+            + `<div style="color:var(--gold);font-size:17px;font-weight:700;margin-top:6px;margin-bottom:24px;">${ayatStr}</div>`
+            + buatAudioPlayer(audio)
+            + '</div>';
 
     } else if (id === 'target-hadits') {
         let htmlHadits = '';
