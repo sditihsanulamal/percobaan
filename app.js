@@ -851,14 +851,10 @@ window.renderMadingHtml = (id, fields) => {
         const cleanSurahName = surah.replace(/^surah\s+/i, '').trim();
         const displaySurah = cleanSurahName ? ('Surah ' + cleanSurahName) : '-';
 
-        const sObj = DATA_114_SURAH.find(s => s.nama.toLowerCase() === cleanSurahName.toLowerCase());
-        const namaArab = sObj ? ` <span style="font-family:'Amiri',serif; font-size:26px; color:var(--gold-light); display:block; margin:8px 0 4px;">${sObj.arab}</span>` : '';
-
         return '<div style="text-align:center; padding:15px 10px;">'
             + '<div style="color:var(--text-muted);font-size:13px;margin-bottom:16px;">Mohon Sambil Buka Al-Qur\'an, ya 😇</div>'
-            + `<div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:4px;font-family:'Lora',serif;">${displaySurah}</div>`
-            + namaArab
-            + `<div style="color:var(--gold);font-size:17px;font-weight:700;margin-top:6px;margin-bottom:24px;">${ayatStr}</div>`
+            + `<div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:6px;font-family:'Lora',serif;">${displaySurah}</div>`
+            + `<div style="color:var(--gold);font-size:18px;font-weight:700;margin-bottom:24px;">${ayatStr}</div>`
             + buatAudioPlayer(audio)
             + '</div>';
 
