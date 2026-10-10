@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Database Talqin Al-Qur'an - SDIT Ihsanul Amal</title>
+    <title>Pojok Talqin Al-Qur'an - SDIT Ihsanul Amal</title>
 
     <!-- Google Fonts: Playfair Display, Plus Jakarta Sans, Amiri Quran, Scheherazade New, Noto Naskh Arabic untuk Al-Qur'an -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -916,8 +916,17 @@
         }
 
         @keyframes playPulse {
-            0%, 100% { box-shadow: 0 0 16px rgba(212, 175, 55, 0.45); transform: scale(1); }
-            50% { box-shadow: 0 0 28px rgba(212, 175, 55, 0.85); transform: scale(1.05); }
+
+            0%,
+            100% {
+                box-shadow: 0 0 16px rgba(212, 175, 55, 0.45);
+                transform: scale(1);
+            }
+
+            50% {
+                box-shadow: 0 0 28px rgba(212, 175, 55, 0.85);
+                transform: scale(1.05);
+            }
         }
 
         .tikrar-box {
@@ -1083,6 +1092,7 @@
             color: white;
             box-shadow: 0 6px 18px rgba(239, 68, 68, 0.3);
         }
+
         .modal {
             display: none;
             position: fixed;
@@ -1237,14 +1247,212 @@
             margin-top: 10px;
         }
 
-        /* Database Rekaman Manager Table / List (Admin) */
+        /* Form Upload Pintasan Tools: Vocaroo & Drive */
+        .form-quick-tools-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-tool-link {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-tool-vocaroo {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.4);
+            color: var(--gold-light);
+        }
+
+        .btn-tool-vocaroo:hover {
+            background: rgba(212, 175, 55, 0.28);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-tool-gdrive {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: rgba(56, 189, 248, 0.4);
+            color: #7dd3fc;
+        }
+
+        .btn-tool-gdrive:hover {
+            background: rgba(56, 189, 248, 0.28);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* Database Rekaman Manager & Backup (Admin) */
+        .db-drive-access-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border-subtle);
+            border-radius: 14px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+
+        .db-drive-access-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--gold-main);
+            margin-bottom: 7px;
+        }
+
+        .db-drive-chips-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .chip-drive-btn {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #7dd3fc;
+            padding: 5px 9px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .chip-drive-btn:hover {
+            background: #0284c7;
+            color: #ffffff;
+            border-color: #0284c7;
+            transform: translateY(-1px);
+        }
+
+        .db-stats-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 7px 10px;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .db-stat-item {
+            color: var(--text-secondary);
+        }
+
+        .db-stat-item.stat-backed {
+            color: #6ee7b7;
+            font-weight: 700;
+        }
+
+        .db-stat-item.stat-unbacked {
+            color: #fcd34d;
+            font-weight: 700;
+        }
+
+        .db-stat-divider {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .db-search-filter-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .db-search-input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .db-search-icon {
+            position: absolute;
+            left: 10px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .db-search-input {
+            width: 100%;
+            padding: 8px 30px 8px 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border-subtle);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 12px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .db-search-input:focus {
+            border-color: var(--gold-main);
+        }
+
+        .db-search-clear {
+            position: absolute;
+            right: 8px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+
+        .db-filter-tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .db-filter-tab {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border-subtle);
+            color: var(--text-secondary);
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .db-filter-tab.active {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: var(--gold-main);
+            color: var(--gold-light);
+        }
+
         .rekaman-manage-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 10px;
-            max-height: 380px;
+            max-height: 350px;
             overflow-y: auto;
+            padding-right: 2px;
         }
 
         .rekaman-manage-item {
@@ -1256,19 +1464,34 @@
             border-radius: 12px;
             padding: 9px 12px;
             gap: 10px;
+            transition: background 0.2s, border 0.2s;
         }
 
-        .rekaman-manage-info {
+        .rekaman-manage-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .rekaman-manage-clickable-info {
             display: flex;
             flex-direction: column;
             gap: 2px;
             flex: 1;
+            cursor: pointer;
+            user-select: none;
         }
 
         .rekaman-manage-title {
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 700;
             color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rekaman-manage-clickable-info:hover .rekaman-manage-title {
+            color: var(--gold-light);
         }
 
         .rekaman-manage-meta {
@@ -1276,11 +1499,83 @@
             color: var(--text-secondary);
         }
 
+        .rekaman-actions-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .btn-backup-toggle {
+            padding: 5px 8px;
+            border-radius: 8px;
+            font-size: 10.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .btn-backup-toggle.backed {
+            background: rgba(16, 185, 129, 0.18);
+            border-color: rgba(16, 185, 129, 0.45);
+            color: #6ee7b7;
+        }
+
+        .btn-backup-toggle.backed:hover {
+            background: rgba(16, 185, 129, 0.32);
+        }
+
+        .btn-backup-toggle.unbacked {
+            background: rgba(245, 158, 11, 0.16);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: #fcd34d;
+        }
+
+        .btn-backup-toggle.unbacked:hover {
+            background: rgba(245, 158, 11, 0.28);
+        }
+
+        .btn-row-drive {
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #7dd3fc;
+            padding: 5px 7px;
+            border-radius: 8px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-row-drive:hover {
+            background: #0284c7;
+            color: #fff;
+        }
+
+        .btn-row-edit {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #e2e8f0;
+            padding: 5px 7px;
+            border-radius: 8px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-row-edit:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
         .btn-del-rekaman {
             background: rgba(239, 68, 68, 0.15);
             border: 1px solid rgba(239, 68, 68, 0.4);
             color: #fca5a5;
-            padding: 5px 9px;
+            padding: 5px 7px;
             border-radius: 8px;
             font-size: 11px;
             font-weight: 600;
@@ -1309,6 +1604,7 @@
         /* OPTIMASI PERFORMA TINGKAT TINGGI UNTUK HP (BEBAS NGELAG)  */
         /* ========================================================= */
         @media (max-width: 768px) {
+
             /* 1. Matikan efek Kaca Buram (Blur) yang menguras GPU HP */
             .custom-select-trigger,
             .custom-dropdown-panel,
@@ -1357,119 +1653,146 @@
             body {
                 padding: 8px 8px 24px;
             }
+
             .top-bar {
                 margin-bottom: 8px;
                 padding-bottom: 6px;
             }
+
             .top-right-actions {
                 gap: 5px;
             }
+
             .btn-top-quick {
                 padding: 3px 6px;
                 font-size: 10px;
                 border-radius: 7px;
                 gap: 2px;
             }
+
             .admin-badge {
                 display: none !important;
             }
+
             .btn-admin-icon {
                 width: 31px;
                 height: 31px;
                 border-radius: 9px;
             }
+
             .page-header {
                 margin-bottom: 6px;
             }
+
             .page-header h1 {
                 font-size: 15.5px;
                 margin-bottom: 1px;
             }
+
             .page-header p {
                 font-size: 9.5px;
             }
+
             .custom-select-trigger {
                 padding: 6px 8px;
                 border-radius: 10px;
             }
+
             .trigger-avatar {
                 width: 28px;
                 height: 28px;
                 font-size: 12px;
                 border-radius: 8px;
             }
+
             .trigger-title {
                 font-size: 12px;
                 line-height: 1.25;
             }
+
             .trigger-sub {
                 font-size: 9.5px;
             }
+
             .juz-tabs-nav {
                 margin-bottom: 8px;
                 padding-bottom: 5px;
                 gap: 5px;
             }
+
             .juz-tab-btn {
                 min-width: 70px;
                 padding: 5px 3px;
                 border-radius: 11px;
             }
+
             .juz-tab-title {
                 font-size: 11px;
             }
+
             .juz-tab-sub {
                 font-size: 8.5px;
             }
+
             .studio-hub-card {
                 padding: 10px 10px;
                 margin-bottom: 10px;
                 border-radius: 14px;
             }
+
             .surah-trigger {
                 padding: 6px 8px;
                 margin-bottom: 5px;
                 border-radius: 10px;
             }
+
             .surah-trigger .trigger-avatar {
                 width: 24px;
                 height: 24px;
                 font-size: 11px;
                 border-radius: 6px;
             }
+
             #btnFilterJuzQuick {
                 padding: 3px 7px;
                 font-size: 9.5px;
                 border-radius: 7px;
             }
+
             .ayat-nav-bar-row {
                 gap: 6px;
                 margin-bottom: 7px;
             }
+
             .active-ayat-pill {
                 padding: 5px 10px;
                 font-size: 11px;
                 border-radius: 9px;
                 gap: 5px;
             }
+
             .active-ayat-pill .active-ayat-total {
                 font-size: 9.5px;
             }
+
             .btn-jump-ayat {
                 padding: 5px 10px;
                 font-size: 10.5px;
                 border-radius: 9px;
                 gap: 4px;
             }
+
             .grid-nomor-ayat {
                 grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
                 gap: 5px;
             }
+
             .grid-ayat-btn {
                 height: 38px;
                 font-size: 11.5px;
                 border-radius: 9px;
             }
+
             .studio-arabic-display {
                 font-size: 18.5px;
                 line-height: 2.0;
@@ -1478,16 +1801,19 @@
                 min-height: 52px;
                 border-radius: 12px;
             }
+
             .studio-arabic-display::before,
             .studio-arabic-display::after {
                 display: none;
             }
+
             .studio-translation {
                 font-size: 10.5px;
                 line-height: 1.35;
                 margin-bottom: 6px;
                 padding: 0 2px;
             }
+
             .studio-teacher-note {
                 padding: 6px 8px;
                 margin-bottom: 7px;
@@ -1495,79 +1821,98 @@
                 border-radius: 8px;
                 gap: 5px;
             }
+
             .audio-progress-wrap {
                 margin-bottom: 5px;
             }
+
             .progress-bar-bg {
                 height: 6px;
             }
+
             .time-row {
                 font-size: 9.5px;
                 margin-top: 2px;
             }
+
             .counter-badge {
                 font-size: 9.5px;
                 padding: 2px 7px;
             }
+
             .audio-controls-row {
                 margin-bottom: 6px;
                 gap: 6px;
             }
+
             .player-nav-group {
                 gap: 5px;
             }
+
             .nav-ayat-btn {
                 width: 32px;
                 height: 32px;
             }
+
             .btn-quick-upload-player {
                 padding: 4px 7px;
                 font-size: 9.5px;
                 border-radius: 7px;
             }
+
             .play-btn-main {
                 width: 38px;
                 height: 38px;
             }
+
             .tikrar-box {
                 padding: 2px 5px;
                 gap: 3px;
             }
+
             .tikrar-label {
                 font-size: 9px;
             }
+
             .tikrar-btn {
                 padding: 3px 5px;
                 font-size: 9px;
                 border-radius: 5px;
             }
+
             .playback-meta-row {
                 padding-top: 5px;
                 font-size: 9.5px;
             }
+
             .speed-btn {
                 padding: 2px 5px;
                 font-size: 9.5px;
             }
+
             .banner-motivation-footer {
                 margin-top: 10px;
                 padding: 10px 12px;
                 border-radius: 12px;
             }
+
             .banner-motivation-footer .quote-arabic {
                 font-size: 16px;
                 line-height: 1.8;
                 margin-bottom: 3px;
             }
+
             .banner-motivation-footer .quote-trans {
                 font-size: 10px;
                 margin-bottom: 4px;
                 line-height: 1.35;
             }
+
             .banner-motivation-footer .tips-wali {
                 font-size: 9.5px;
                 line-height: 1.35;
             }
+
             .modal-content {
                 padding: 18px 14px;
                 border-radius: 16px;
@@ -1592,7 +1937,8 @@
 
             <div class="top-right-actions">
                 <div id="adminQuickNav" style="display:none; gap:6px; align-items:center;">
-                    <button class="btn-top-quick" onclick="window.bukaModalDaftarRekaman()" title="Database Rekaman">📋 Database</button>
+                    <button class="btn-top-quick" onclick="window.bukaModalDaftarRekaman()" title="Database Rekaman">📋
+                        Database</button>
                 </div>
                 <span class="admin-badge" id="adminBadge">✓ GURU AKTIF</span>
                 <button class="btn-admin-icon" id="btnLockAdmin" title="Mode Guru Qur'an">
@@ -1606,7 +1952,7 @@
 
         <!-- Header Utama Aplikasi Mandiri -->
         <header class="page-header">
-            <h1>Database Talqin Al-Qur'an</h1>
+            <h1>Pojok Talqin Al-Qur'an</h1>
             <p>Audio Bimbingan & Muraja'ah Hafalan Mandiri Per-Ayat</p>
         </header>
 
@@ -1646,7 +1992,8 @@
             <!-- Baris Cepat Pemilih Surah (Custom Dropdown) & Filter Juz -->
             <div class="surah-quick-bar">
                 <div class="custom-dropdown-container" id="wrapSurahDropdown" style="flex:1;">
-                    <div class="custom-select-trigger surah-trigger" id="btnTriggerSurah" onclick="window.toggleCustomDropdown('panelSurahDropdown', 'btnTriggerSurah')">
+                    <div class="custom-select-trigger surah-trigger" id="btnTriggerSurah"
+                        onclick="window.toggleCustomDropdown('panelSurahDropdown', 'btnTriggerSurah')">
                         <div class="trigger-left">
                             <span class="trigger-avatar" style="font-size:15px;">📖</span>
                             <div class="trigger-info">
@@ -1654,7 +2001,8 @@
                                 <span class="trigger-sub" id="subSelectedSurah">Audio Bimbingan Talqin</span>
                             </div>
                         </div>
-                        <svg class="trigger-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <svg class="trigger-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </div>
@@ -1678,7 +2026,8 @@
                     <span id="activeAyatText">Ayat 1</span>
                     <span class="active-ayat-total" id="activeAyatTotal">/ 286</span>
                 </div>
-                <button class="btn-jump-ayat" id="btnBukaJumpAyat" onclick="window.bukaModalLompatAyat()" title="Pilih / Lompat ke Nomor Ayat">
+                <button class="btn-jump-ayat" id="btnBukaJumpAyat" onclick="window.bukaModalLompatAyat()"
+                    title="Pilih / Lompat ke Nomor Ayat">
                     <span>🔢 Lompat Ayat</span>
                 </button>
             </div>
@@ -1718,7 +2067,8 @@
             <!-- Baris Kontrol Audio, Navigasi Ayat & Fitur Tikrar -->
             <div class="audio-controls-row">
                 <div class="player-nav-group">
-                    <button class="nav-ayat-btn" id="btnPrevAyat" onclick="window.navigasiAyat(-1)" title="Ayat Sebelumnya">
+                    <button class="nav-ayat-btn" id="btnPrevAyat" onclick="window.navigasiAyat(-1)"
+                        title="Ayat Sebelumnya">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                             <polygon points="19 20 9 12 19 4 19 20"></polygon>
                             <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"></line>
@@ -1736,7 +2086,8 @@
                         </svg>
                     </button>
 
-                    <button class="nav-ayat-btn" id="btnNextAyat" onclick="window.navigasiAyat(1)" title="Ayat Selanjutnya">
+                    <button class="nav-ayat-btn" id="btnNextAyat" onclick="window.navigasiAyat(1)"
+                        title="Ayat Selanjutnya">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
                             <polygon points="5 4 15 12 5 20 5 4"></polygon>
                             <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"></line>
@@ -1744,7 +2095,8 @@
                     </button>
 
                     <!-- Tombol Cepat Unggah / Rekam Audio Ayat Ini (Mode Guru) -->
-                    <button class="btn-quick-upload-player" id="btnQuickUploadPlayer" onclick="window.bukaUploadAyatAktif()" title="Unggah / Rekam Audio Ayat Ini">
+                    <button class="btn-quick-upload-player" id="btnQuickUploadPlayer"
+                        onclick="window.bukaUploadAyatAktif()" title="Unggah / Rekam Audio Ayat Ini">
                         <span>🎙️ Unggah</span>
                     </button>
                 </div>
@@ -1754,8 +2106,10 @@
                     <span class="tikrar-label">Tikrar:</span>
                     <button class="tikrar-btn active" data-repeat="1" onclick="setTikrarMode(1, this)">1x</button>
                     <button class="tikrar-btn" data-repeat="3" onclick="setTikrarMode(3, this)">3x</button>
-                    <button class="tikrar-btn" data-repeat="5" onclick="setTikrarMode(5, this)" title="Rekomendasi hafalan baru">5x ⭐</button>
-                    <button class="tikrar-btn" data-repeat="loop" onclick="setTikrarMode('loop', this)">🔁 Terus</button>
+                    <button class="tikrar-btn" data-repeat="5" onclick="setTikrarMode(5, this)"
+                        title="Rekomendasi hafalan baru">5x ⭐</button>
+                    <button class="tikrar-btn" data-repeat="loop" onclick="setTikrarMode('loop', this)">🔁
+                        Terus</button>
                 </div>
             </div>
 
@@ -1766,7 +2120,8 @@
                 </div>
                 <div style="display:flex; align-items:center; gap:4px;">
                     <span style="font-size:10px; color:var(--text-secondary);">Tempo:</span>
-                    <button class="speed-btn" onclick="setPlaybackSpeed(0.75, this)" title="Lambat untuk menyimak tajwid">0.75x</button>
+                    <button class="speed-btn" onclick="setPlaybackSpeed(0.75, this)"
+                        title="Lambat untuk menyimak tajwid">0.75x</button>
                     <button class="speed-btn active" onclick="setPlaybackSpeed(1.0, this)">1.0x</button>
                 </div>
             </div>
@@ -1781,10 +2136,12 @@
                 وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ فَهَلْ مِن مُّدَّكِرٍ
             </div>
             <div class="quote-trans">
-                "Dan sungguh, telah Kami mudahkan Al-Qur'an untuk peringatan dan hafalan, maka adakah yang mau mengambil pelajaran?" (QS. Al-Qamar: 17)
+                "Dan sungguh, telah Kami mudahkan Al-Qur'an untuk peringatan dan hafalan, maka adakah yang mau mengambil
+                pelajaran?" (QS. Al-Qamar: 17)
             </div>
             <div class="tips-wali">
-                <strong>💡 Pesan untuk Ayah/Bunda:</strong> Setiap anak memiliki kecepatan tumbuh yang istimewa. Mengulang satu ayat dengan sabar adalah pahala yang terus mengalir di sisi Allah ﷻ.
+                <strong>💡 Pesan untuk Ayah/Bunda:</strong> Setiap anak memiliki kecepatan tumbuh yang istimewa.
+                Mengulang satu ayat dengan sabar adalah pahala yang terus mengalir di sisi Allah ﷻ.
             </div>
         </footer>
 
@@ -1801,7 +2158,9 @@
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
             </div>
-            <h2 style="text-align: center; color: var(--gold-main); margin-bottom: 8px; font-weight: 700; font-family:'Playfair Display', serif; font-size:20px;">Akses Guru Qur'an</h2>
+            <h2
+                style="text-align: center; color: var(--gold-main); margin-bottom: 8px; font-weight: 700; font-family:'Playfair Display', serif; font-size:20px;">
+                Akses Guru Qur'an</h2>
             <p style="text-align:center; font-size:12px; color:var(--text-secondary); margin-bottom:22px;"
                 id="loginKelasInfo">Masuk sebagai Dewan Guru / Asatidzah SDIT Ihsanul Amal</p>
             <div id="loginForm">
@@ -1815,7 +2174,8 @@
                     style="width:58px; height:58px; border-radius:50%; background:rgba(16, 185, 129, 0.2); color:#10b981; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:24px; font-weight:bold;">
                     ✓</div>
                 <p id="loggedInAs" style="margin-bottom: 6px; font-size: 13px; color: #fff; font-weight:600;"></p>
-                <p style="margin-bottom: 20px; font-size: 11.5px; color: var(--text-secondary); line-height: 1.45;">Sesi guru sedang aktif. Anda dapat mengunggah dan mengelola database rekaman talqin Al-Qur'an.</p>
+                <p style="margin-bottom: 20px; font-size: 11.5px; color: var(--text-secondary); line-height: 1.45;">Sesi
+                    guru sedang aktif. Anda dapat mengunggah dan mengelola database rekaman talqin Al-Qur'an.</p>
                 <button class="btn-primary btn-danger" onclick="logoutAdmin()">Akhiri Sesi (Logout)</button>
             </div>
         </div>
@@ -1847,12 +2207,14 @@
                             ⚡ Tarik Teks & Terjemahan Otomatis
                         </button>
                     </div>
-                    <input type="text" id="inputAyatLabel" class="form-input" placeholder="Contoh: 1 (atau: Ayat 1, Gabungan 1-3)" required>
+                    <input type="text" id="inputAyatLabel" class="form-input"
+                        placeholder="Contoh: 1 (atau: Ayat 1, Gabungan 1-3)" required>
                 </div>
 
                 <div class="form-group">
                     <label>Lafaz Teks Arab (Al-Qur'an)</label>
-                    <textarea id="inputTeksArab" class="form-textarea arabic-input" placeholder="Teks Arab akan terisi otomatis atau bisa ditulis manual"></textarea>
+                    <textarea id="inputTeksArab" class="form-textarea arabic-input"
+                        placeholder="Teks Arab akan terisi otomatis atau bisa ditulis manual"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -1861,18 +2223,38 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Link Audio Rekaman (Vocaroo / Google Drive)</label>
-                    <input type="url" id="inputAudioUrl" class="form-input" placeholder="https://voca.ro/... atau https://drive.google.com/..." required>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <label style="margin:0;">Link Audio Rekaman (Vocaroo)</label>
+                        <span style="font-size:10.5px; color:var(--gold-main);">🎙️ Alur Kerja Rekam & Backup</span>
+                    </div>
+
+                    <!-- Tombol Pintasan Cepat Vocaroo & Folder Google Drive -->
+                    <div class="form-quick-tools-row">
+                        <a href="https://vocaroo.com" target="_blank" rel="noopener noreferrer" class="btn-tool-link btn-tool-vocaroo">
+                            <span>🎙️</span> Buka Vocaroo (Rekam) ↗
+                        </a>
+                        <button type="button" class="btn-tool-link btn-tool-gdrive" id="btnBukaDriveForm" onclick="window.bukaDriveDariForm()">
+                            <span>📁</span> <span id="labelDriveForm">Folder Drive Juz 30 ↗</span>
+                        </button>
+                    </div>
+
+                    <input type="url" id="inputAudioUrl" class="form-input"
+                        placeholder="Tempel link Vocaroo di sini (contoh: https://voca.ro/...)" required>
+                    <div style="font-size:11px; color:var(--text-secondary); margin-top:5px; line-height:1.4;">
+                        💡 <em>Tips: Rekam di Vocaroo, unduh file MP3-nya lalu unggah ke Folder Google Drive sebagai arsip cadangan. Tempelkan tautan Vocaroo pada kolom di atas.</em>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label>Pengisi Suara (Ustadz / Ustadzah)</label>
-                    <input type="text" id="inputQari" class="form-input" placeholder="Contoh: Ustadz Ahmad Fauzi, S.Pd.I">
+                    <input type="text" id="inputQari" class="form-input"
+                        placeholder="Contoh: Ustadz Ahmad Fauzi, S.Pd.I">
                 </div>
 
                 <div class="form-group">
                     <label>Bimbingan Tajwid / Catatan Guru</label>
-                    <textarea id="inputCatatan" class="form-textarea" placeholder="Contoh: Perhatikan makhraj huruf 'Ain dan tahan dengung nun bertasydid 2 harakat."></textarea>
+                    <textarea id="inputCatatan" class="form-textarea"
+                        placeholder="Contoh: Perhatikan makhraj huruf 'Ain dan tahan dengung nun bertasydid 2 harakat."></textarea>
                 </div>
 
                 <button type="submit" id="btnSimpanRekaman" class="btn-submit-modal">Simpan Rekaman Ayat</button>
@@ -1884,10 +2266,51 @@
          MODAL DATABASE & KELOLA REKAMAN GURU
          ============================================================ -->
     <div id="modalDaftarRekaman" class="modal" onclick="if(event.target===this) closeModal('modalDaftarRekaman')">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 560px; max-height: 88vh; display: flex; flex-direction: column;">
             <button class="modal-close-btn" onclick="closeModal('modalDaftarRekaman')">&times;</button>
-            <h3 class="modal-title">Database Rekaman Talqin</h3>
-            <p class="modal-subtitle">Daftar rekaman audio guru yang tersimpan di cloud SDIT Ihsanul Amal.</p>
+            
+            <div style="margin-bottom: 10px;">
+                <h3 class="modal-title" style="margin-bottom: 2px;">Database Rekaman & Backup</h3>
+                <p class="modal-subtitle">Kelola rekaman suara guru dan pantau arsip cadangan Google Drive.</p>
+            </div>
+
+            <!-- Akses Pintas Folder Google Drive -->
+            <div class="db-drive-access-box">
+                <div class="db-drive-access-header">
+                    <span>📁 Folder Arsip Google Drive:</span>
+                    <span style="font-size: 10.5px; color: var(--text-secondary);">Buka Drive</span>
+                </div>
+                <div class="db-drive-chips-row">
+                    <button type="button" class="chip-drive-btn" onclick="window.bukaGoogleDriveJuz(30)">Juz 30 ↗</button>
+                    <button type="button" class="chip-drive-btn" onclick="window.bukaGoogleDriveJuz(29)">Juz 29 ↗</button>
+                    <button type="button" class="chip-drive-btn" onclick="window.bukaGoogleDriveJuz(28)">Juz 28 ↗</button>
+                    <button type="button" class="chip-drive-btn" onclick="window.bukaGoogleDriveJuz(1)">Juz 1 ↗</button>
+                    <button type="button" class="chip-drive-btn" onclick="window.bukaGoogleDriveJuz(2)">Juz 2 ↗</button>
+                </div>
+            </div>
+
+            <!-- Ringkasan Statistik -->
+            <div class="db-stats-bar" id="dbStatsBar">
+                <span class="db-stat-item" id="statTotalRec">Total: 0</span>
+                <span class="db-stat-divider">•</span>
+                <span class="db-stat-item stat-backed" id="statBackupRec">✅ 0 Sudah Backup</span>
+                <span class="db-stat-divider">•</span>
+                <span class="db-stat-item stat-unbacked" id="statUnbackupRec">⚠️ 0 Belum Backup</span>
+            </div>
+
+            <!-- Baris Pencarian & Filter Status -->
+            <div class="db-search-filter-wrap">
+                <div class="db-search-input-box">
+                    <span class="db-search-icon">🔍</span>
+                    <input type="text" id="dbSearchInput" class="db-search-input" placeholder="Cari surah atau nomor ayat..." oninput="window.filterDaftarRekaman()">
+                    <button type="button" class="db-search-clear" id="dbSearchClear" onclick="window.clearDbSearch()" style="display:none;">&times;</button>
+                </div>
+                <div class="db-filter-tabs">
+                    <button type="button" class="db-filter-tab active" id="tabFilterAll" onclick="window.setDbFilter('all')">Semua</button>
+                    <button type="button" class="db-filter-tab" id="tabFilterUnbacked" onclick="window.setDbFilter('unbacked')">⚠️ Belum Backup</button>
+                    <button type="button" class="db-filter-tab" id="tabFilterBacked" onclick="window.setDbFilter('backed')">✅ Sudah Backup</button>
+                </div>
+            </div>
 
             <div class="rekaman-manage-list" id="daftarRekamanContainer">
                 <div style="text-align:center; color:var(--text-secondary); padding:20px;">Memuat data rekaman...</div>
@@ -1906,8 +2329,11 @@
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
             </div>
-            <h3 class="modal-title" id="lompatModalTitle" style="text-align: center; margin-bottom: 3px; font-size:18px;">Lompat ke Ayat</h3>
-            <p class="modal-subtitle" id="lompatModalSubtitle" style="text-align: center; margin-bottom: 14px; font-size:11.5px;">Sentuh nomor ayat yang ingin disimak langsung.</p>
+            <h3 class="modal-title" id="lompatModalTitle"
+                style="text-align: center; margin-bottom: 3px; font-size:18px;">Lompat ke Ayat</h3>
+            <p class="modal-subtitle" id="lompatModalSubtitle"
+                style="text-align: center; margin-bottom: 14px; font-size:11.5px;">Sentuh nomor ayat yang ingin disimak
+                langsung.</p>
             <div class="grid-nomor-ayat" id="gridNomorAyat">
                 <!-- Diisi nomor ayat secara otomatis via JS -->
             </div>
@@ -2643,6 +3069,7 @@
             if (dataS) {
                 document.getElementById('inputAyatLabel').placeholder = `Ayat 1 s/d ${dataS.ayat}`;
             }
+            if (typeof updateDriveButtonForm === 'function') updateDriveButtonForm();
         };
 
         window.tarikTeksOtomatisDariApi = async () => {
@@ -2771,7 +3198,44 @@
             }
         });
 
-        // Modal Form Rekaman
+        // ============================================================
+        // SISTEM INTEGRASI BACKUP GOOGLE DRIVE & REKAMAN VOCAROO
+        // ============================================================
+        const GOOGLE_DRIVE_JUZ_LINKS = {
+            30: "https://drive.google.com/drive/folders/19pkg0qwZ00l_n_2IT9lXNcuavZ7isWX_?usp=drive_link",
+            29: "https://drive.google.com/drive/folders/1qjwLDOtGIe5zAbeNqOfFUxBs9n3IL9S9?usp=drive_link",
+            28: "https://drive.google.com/drive/folders/1bDAq6JCBjnhSXO9_j2DlSVhxB0Himp3j?usp=drive_link",
+            1: "https://drive.google.com/drive/folders/1yXjoe_8_-xqCsxzTwhzHR98uMTCpPAdy?usp=drive_link",
+            2: "https://drive.google.com/drive/folders/10IeAqXmlXkcq6yN0bs2Zp7Gmv53aS3M9?usp=drive_link"
+        };
+
+        window.bukaGoogleDriveJuz = (juz) => {
+            const numJuz = parseInt(juz, 10) || 30;
+            const url = GOOGLE_DRIVE_JUZ_LINKS[numJuz];
+            if (url) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            } else {
+                alert(`Folder Google Drive untuk Juz ${numJuz} belum dikonfigurasi. Mengalihkan ke Juz 30.`);
+                window.open(GOOGLE_DRIVE_JUZ_LINKS[30], '_blank', 'noopener,noreferrer');
+            }
+        };
+
+        function updateDriveButtonForm() {
+            const noSurah = document.getElementById('inputSurahSelect')?.value;
+            const dataS = DATA_114_SURAH.find(s => s.no == noSurah);
+            const targetJuz = dataS ? dataS.juz : (activeJuzTab || 30);
+            const lbl = document.getElementById('labelDriveForm');
+            if (lbl) lbl.innerText = `Folder Drive Juz ${targetJuz} ↗`;
+        }
+
+        window.bukaDriveDariForm = () => {
+            const noSurah = document.getElementById('inputSurahSelect')?.value;
+            const dataS = DATA_114_SURAH.find(s => s.no == noSurah);
+            const targetJuz = dataS ? dataS.juz : (activeJuzTab || 30);
+            window.bukaGoogleDriveJuz(targetJuz);
+        };
+
+        // Modal Form Rekaman (Tambah / Edit)
         window.openModalTambahRekaman = () => {
             document.getElementById('editRekamanId').value = '';
             document.getElementById('formModalTitle').innerText = 'Tambah Rekaman Ayat Baru';
@@ -2780,7 +3244,27 @@
             if (sInfo) {
                 document.getElementById('inputSurahSelect').value = sInfo.no;
                 onPilihSurahForm(sInfo.no);
+            } else {
+                updateDriveButtonForm();
             }
+            document.getElementById('formRekamanModal').classList.add('open');
+        };
+
+        window.editRekaman = (id) => {
+            const rec = listRekaman.find(r => r.id === id);
+            if (!rec) return;
+            document.getElementById('editRekamanId').value = rec.id;
+            document.getElementById('formModalTitle').innerText = 'Edit Rekaman Ayat';
+            document.getElementById('inputSurahSelect').value = rec.nomorSurah || '';
+            onPilihSurahForm(rec.nomorSurah);
+            document.getElementById('inputAyatLabel').value = rec.labelAyat || '';
+            document.getElementById('inputTeksArab').value = rec.teksArab || '';
+            document.getElementById('inputArti').value = rec.arti || '';
+            document.getElementById('inputAudioUrl').value = rec.audioUrl || '';
+            document.getElementById('inputQari').value = rec.qari || '';
+            document.getElementById('inputCatatan').value = rec.catatan || '';
+            updateDriveButtonForm();
+            window.closeModal('modalDaftarRekaman');
             document.getElementById('formRekamanModal').classList.add('open');
         };
 
@@ -2789,6 +3273,9 @@
             const dataS = DATA_114_SURAH.find(s => s.no == noSurah);
             const btn = document.getElementById('btnSimpanRekaman');
             btn.innerText = 'Menyimpan...';
+
+            const editId = document.getElementById('editRekamanId').value;
+            const existingRec = editId ? listRekaman.find(r => r.id === editId) : null;
 
             const payload = {
                 juz: dataS ? dataS.juz : 30,
@@ -2804,9 +3291,16 @@
                 updatedAt: Date.now()
             };
 
+            // Pertahankan status backup jika edit, default false jika rekaman baru
+            if (existingRec && typeof existingRec.isBackup !== 'undefined') {
+                payload.isBackup = existingRec.isBackup;
+            } else if (!editId) {
+                payload.isBackup = false;
+            }
+
             try {
-                const newId = 'talqin_' + Date.now();
-                await setDoc(doc(db, "klinik_talqin", newId), payload);
+                const idToSave = editId || ('talqin_' + Date.now());
+                await setDoc(doc(db, "klinik_talqin", idToSave), payload, { merge: true });
                 btn.innerText = 'Simpan Rekaman Ayat';
                 window.closeModal('formRekamanModal');
                 alert("Alhamdulillah, rekaman ayat berhasil disimpan!");
@@ -2815,6 +3309,60 @@
                 alert("Kendala simpan online: " + err.message);
                 btn.innerText = 'Simpan Rekaman Ayat';
             }
+        };
+
+        // Mengubah status penanda backup ke Google Drive
+        window.toggleBackupStatus = async (id) => {
+            const rec = listRekaman.find(r => r.id === id);
+            if (!rec) return;
+            const currentStatus = !!rec.isBackup;
+            const newStatus = !currentStatus;
+
+            // Update lokal optimis untuk responsivitas instan
+            rec.isBackup = newStatus;
+            renderDaftarRekamanManage();
+
+            try {
+                await setDoc(doc(db, "klinik_talqin", id), {
+                    isBackup: newStatus,
+                    backupUpdatedAt: Date.now()
+                }, { merge: true });
+            } catch (err) {
+                console.error("Gagal update status backup:", err);
+                rec.isBackup = currentStatus;
+                renderDaftarRekamanManage();
+                alert("Gagal memperbarui status backup: " + err.message);
+            }
+        };
+
+        // Filter & Pencarian Database Rekaman
+        let currentDbFilter = 'all'; // 'all' | 'unbacked' | 'backed'
+        let currentDbSearch = '';
+
+        window.setDbFilter = (type) => {
+            currentDbFilter = type;
+            document.querySelectorAll('.db-filter-tab').forEach(b => b.classList.remove('active'));
+            if (type === 'all') document.getElementById('tabFilterAll')?.classList.add('active');
+            if (type === 'unbacked') document.getElementById('tabFilterUnbacked')?.classList.add('active');
+            if (type === 'backed') document.getElementById('tabFilterBacked')?.classList.add('active');
+            renderDaftarRekamanManage();
+        };
+
+        window.filterDaftarRekaman = () => {
+            const input = document.getElementById('dbSearchInput');
+            currentDbSearch = input ? input.value.trim() : '';
+            const clearBtn = document.getElementById('dbSearchClear');
+            if (clearBtn) clearBtn.style.display = currentDbSearch ? 'block' : 'none';
+            renderDaftarRekamanManage();
+        };
+
+        window.clearDbSearch = () => {
+            const input = document.getElementById('dbSearchInput');
+            if (input) input.value = '';
+            currentDbSearch = '';
+            const clearBtn = document.getElementById('dbSearchClear');
+            if (clearBtn) clearBtn.style.display = 'none';
+            renderDaftarRekamanManage();
         };
 
         // Modal Database Rekaman
@@ -2826,8 +3374,21 @@
         function renderDaftarRekamanManage() {
             const container = document.getElementById('daftarRekamanContainer');
             if (!container) return;
+
+            // Hitung statistik
+            const totalAll = listRekaman.length;
+            const totalBacked = listRekaman.filter(r => !!r.isBackup).length;
+            const totalUnbacked = totalAll - totalBacked;
+
+            const elStatTotal = document.getElementById('statTotalRec');
+            const elStatBacked = document.getElementById('statBackupRec');
+            const elStatUnbacked = document.getElementById('statUnbackupRec');
+            if (elStatTotal) elStatTotal.innerText = `Total: ${totalAll}`;
+            if (elStatBacked) elStatBacked.innerText = `✅ ${totalBacked} Backup`;
+            if (elStatUnbacked) elStatUnbacked.innerText = `⚠️ ${totalUnbacked} Belum`;
+
             if (listRekaman.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-secondary); padding:20px;">Belum ada rekaman tersimpan di database.</div>';
+                container.innerHTML = '<div style="text-align:center; color:var(--text-secondary); padding:24px 10px;">Belum ada rekaman tersimpan di database.</div>';
                 return;
             }
 
@@ -2840,17 +3401,62 @@
                 return numA - numB;
             });
 
+            // Filter status backup
+            let filtered = sorted;
+            if (currentDbFilter === 'unbacked') {
+                filtered = filtered.filter(r => !r.isBackup);
+            } else if (currentDbFilter === 'backed') {
+                filtered = filtered.filter(r => !!r.isBackup);
+            }
+
+            // Filter teks pencarian
+            if (currentDbSearch) {
+                const q = currentDbSearch.toLowerCase();
+                filtered = filtered.filter(r => 
+                    (r.surah && r.surah.toLowerCase().includes(q)) ||
+                    (r.labelAyat && r.labelAyat.toLowerCase().includes(q)) ||
+                    (r.qari && r.qari.toLowerCase().includes(q)) ||
+                    (r.juz && String(r.juz).includes(q))
+                );
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; color:var(--text-secondary); padding:24px 10px; font-size:12px;">
+                        Tidak ada rekaman yang cocok dengan filter / pencarian.
+                    </div>`;
+                return;
+            }
+
             let html = '';
-            sorted.forEach(rec => {
+            filtered.forEach(rec => {
+                const isBacked = !!rec.isBackup;
+                const badgeBackupClass = isBacked ? 'backed' : 'unbacked';
+                const badgeBackupText = isBacked ? '✅ Sudah Backup' : '⚠️ Belum Backup';
+                const badgeBackupTitle = isBacked ? 'Klik untuk tandai Belum Backup' : 'Klik untuk tandai Sudah Backup';
+
                 html += `
                     <div class="rekaman-manage-item">
-                        <div class="rekaman-manage-info">
-                            <div class="rekaman-manage-title">Surah ${rec.surah} - ${rec.labelAyat}</div>
+                        <div class="rekaman-manage-clickable-info" onclick="window.putarDariDatabase('${rec.id}')" title="Klik judul untuk langsung memutar ayat ini">
+                            <div class="rekaman-manage-title">
+                                <span style="color:var(--gold-main); font-size:11px;">▶</span>
+                                <span>Surah ${rec.surah} - ${rec.labelAyat}</span>
+                            </div>
                             <div class="rekaman-manage-meta">Juz ${rec.juz || '-'} • Qari: ${rec.qari || 'Guru'}</div>
                         </div>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <button style="background:rgba(212,175,55,0.15); border:1px solid var(--gold-main); color:var(--gold-main); border-radius:8px; padding:5px 9px; font-size:11px; cursor:pointer;" onclick="window.putarDariDatabase('${rec.id}')">▶ Putar</button>
-                            <button class="btn-del-rekaman" onclick="window.hapusRekaman('${rec.id}')">🗑️ Hapus</button>
+                        <div class="rekaman-actions-group">
+                            <button type="button" class="btn-backup-toggle ${badgeBackupClass}" onclick="window.toggleBackupStatus('${rec.id}')" title="${badgeBackupTitle}">
+                                ${badgeBackupText}
+                            </button>
+                            <button type="button" class="btn-row-drive" onclick="window.bukaGoogleDriveJuz(${rec.juz || 30})" title="Buka Folder Drive Juz ${rec.juz || 30}">
+                                📁
+                            </button>
+                            <button type="button" class="btn-row-edit" onclick="window.editRekaman('${rec.id}')" title="Edit Data Rekaman">
+                                ✏️
+                            </button>
+                            <button type="button" class="btn-del-rekaman" onclick="window.hapusRekaman('${rec.id}')" title="Hapus dari Database">
+                                🗑️
+                            </button>
                         </div>
                     </div>
                 `;
