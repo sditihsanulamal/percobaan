@@ -421,7 +421,7 @@ window.switchAdminImamDay = (day) => {
 };
 
 window.switchPublicMurajaahDay = (day) => {
-    document.querySelectorAll('#publicMurajaahDayTabs .mading-day-pill').forEach(btn => {
+    document.querySelectorAll('#publicMurajaahDayTabs .royal-day-pill, #publicMurajaahDayTabs .mading-day-pill').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-day') === day);
     });
     ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
@@ -431,7 +431,7 @@ window.switchPublicMurajaahDay = (day) => {
 };
 
 window.switchPublicImamDay = (day) => {
-    document.querySelectorAll('#publicImamDayTabs .mading-day-pill').forEach(btn => {
+    document.querySelectorAll('#publicImamDayTabs .royal-day-pill, #publicImamDayTabs .mading-day-pill').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-day') === day);
     });
     ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
@@ -988,10 +988,10 @@ window.renderMadingHtml = (id, fields) => {
         ];
         const activeDay = window.getHariSekolahAktif();
 
-        let tabsHtml = '<div class="mading-day-tabs" id="publicMurajaahDayTabs">';
+        let tabsHtml = '<div class="royal-day-tabs" id="publicMurajaahDayTabs">';
         days.forEach(d => {
             const isActive = (d.key === activeDay);
-            tabsHtml += `<button type="button" class="mading-day-pill ${isActive ? 'active' : ''}" data-day="${d.key}" onclick="window.switchPublicMurajaahDay('${d.key}')">${d.label}</button>`;
+            tabsHtml += `<button type="button" class="royal-day-pill ${isActive ? 'active' : ''}" data-day="${d.key}" onclick="window.switchPublicMurajaahDay('${d.key}')">${d.label}</button>`;
         });
         tabsHtml += '</div>';
 
@@ -1001,22 +1001,43 @@ window.renderMadingHtml = (id, fields) => {
             const nama = fields[d.key + '_nama'] || '-';
             const pagi = fields[d.key + '_pagi'] || '-';
             const sore = fields[d.key + '_sore'] || '-';
-            const initials = nama !== '-' ? window.getInitials(nama) : '👤';
+            const initials = nama !== '-' ? window.getInitials(nama) : '📖';
 
-            panesHtml += `<div class="public-murajaah-pane" id="pub-pane-murajaah-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
-                + `<div class="mading-person-hero">`
-                + `<div class="student-picker-avatar large">${initials}</div>`
-                + `<div class="mading-person-name">${nama}</div>`
+            panesHtml += `<div class="royal-pane" id="pub-pane-murajaah-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
+                + `<div class="royal-hero-card">`
+                + `  <div class="royal-badge-emblem">`
+                + `    <div class="royal-emblem-star">`
+                + `      <div class="royal-emblem-core">`
+                + `        <span class="royal-emblem-icon">📖</span>`
+                + `        <span class="royal-emblem-initials">${initials}</span>`
+                + `      </div>`
+                + `    </div>`
+                + `  </div>`
+                + `  <div class="royal-honor-ribbon"><span class="royal-star">✦</span> PEMANDU MURAJA'AH <span class="royal-star">✦</span></div>`
+                + `  <div class="royal-person-name">${nama}</div>`
+                + `  <div class="royal-flourish"><span>✦</span></div>`
                 + `</div>`
-                + `<div class="murajaah-sesi-list">`
-                + `<div class="murajaah-sesi-row">`
-                + `<span class="murajaah-sesi-label">☀️ Sesi Pagi</span>`
-                + `<span class="murajaah-sesi-val">${pagi}</span>`
-                + `</div>`
-                + `<div class="murajaah-sesi-row">`
-                + `<span class="murajaah-sesi-label">🌙 Sesi Sore</span>`
-                + `<span class="murajaah-sesi-val">${sore}</span>`
-                + `</div>`
+                + `<div class="royal-murajaah-cards">`
+                + `  <div class="royal-sesi-card pagi">`
+                + `    <div class="royal-sesi-header">`
+                + `      <span class="royal-sesi-badge pagi">☀️ Sesi Pagi</span>`
+                + `      <span class="royal-sesi-sub">Fajar & Pagi</span>`
+                + `    </div>`
+                + `    <div class="royal-sesi-content">`
+                + `      <div class="royal-sesi-book-icon">📖</div>`
+                + `      <div class="royal-sesi-val">${pagi}</div>`
+                + `    </div>`
+                + `  </div>`
+                + `  <div class="royal-sesi-card sore">`
+                + `    <div class="royal-sesi-header">`
+                + `      <span class="royal-sesi-badge sore">🌙 Sesi Sore</span>`
+                + `      <span class="royal-sesi-sub">Ashar & Senja</span>`
+                + `    </div>`
+                + `    <div class="royal-sesi-content">`
+                + `      <div class="royal-sesi-book-icon">📖</div>`
+                + `      <div class="royal-sesi-val">${sore}</div>`
+                + `    </div>`
+                + `  </div>`
                 + `</div>`
                 + `</div>`;
         });
@@ -1081,10 +1102,10 @@ window.renderMadingHtml = (id, fields) => {
         const activeDay = window.getHariSekolahAktif();
         const jmlRakaat = window.getJumlahRakaat();
 
-        let tabsHtml = '<div class="mading-day-tabs" id="publicImamDayTabs">';
+        let tabsHtml = '<div class="royal-day-tabs" id="publicImamDayTabs">';
         days.forEach(d => {
             const isActive = (d.key === activeDay);
-            tabsHtml += `<button type="button" class="mading-day-pill ${isActive ? 'active' : ''}" data-day="${d.key}" onclick="window.switchPublicImamDay('${d.key}')">${d.label}</button>`;
+            tabsHtml += `<button type="button" class="royal-day-pill ${isActive ? 'active' : ''}" data-day="${d.key}" onclick="window.switchPublicImamDay('${d.key}')">${d.label}</button>`;
         });
         tabsHtml += '</div>';
 
@@ -1094,22 +1115,37 @@ window.renderMadingHtml = (id, fields) => {
             const nama = fields[d.key + '_nama'] || '-';
             const initials = nama !== '-' ? window.getInitials(nama) : '🕌';
 
-            let rakaatRowsHtml = '';
+            let rakaatCardsHtml = '';
             for (let r = 1; r <= jmlRakaat; r++) {
                 const val = fields[d.key + '_r' + r] || '-';
-                rakaatRowsHtml += `<div class="imam-rakaat-row">`
-                    + `<span class="rakaat-pill">Raka'at ${r}</span>`
-                    + `<span class="rakaat-surah">${val}</span>`
+                rakaatCardsHtml += `<div class="royal-rakaat-item">`
+                    + `  <div class="royal-rakaat-node">`
+                    + `    <span class="num">${r}</span>`
+                    + `    <span class="lbl">Raka'at</span>`
+                    + `  </div>`
+                    + `  <div class="royal-rakaat-detail">`
+                    + `    <div class="royal-rakaat-title">Surah Bacaan Raka'at ke-${r}</div>`
+                    + `    <div class="royal-rakaat-surah">📖 ${val}</div>`
+                    + `  </div>`
                     + `</div>`;
             }
 
-            panesHtml += `<div class="public-imam-pane" id="pub-pane-imam-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
-                + `<div class="mading-person-hero">`
-                + `<div class="student-picker-avatar large">${initials}</div>`
-                + `<div class="mading-person-name">${nama}</div>`
+            panesHtml += `<div class="royal-pane" id="pub-pane-imam-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
+                + `<div class="royal-hero-card">`
+                + `  <div class="royal-badge-emblem">`
+                + `    <div class="royal-emblem-star imam">`
+                + `      <div class="royal-emblem-core">`
+                + `        <span class="royal-emblem-icon">🕌</span>`
+                + `        <span class="royal-emblem-initials">${initials}</span>`
+                + `      </div>`
+                + `    </div>`
+                + `  </div>`
+                + `  <div class="royal-honor-ribbon imam"><span class="royal-star">✦</span> IMAM SHOLAT DHUHA <span class="royal-star">✦</span></div>`
+                + `  <div class="royal-person-name">${nama}</div>`
+                + `  <div class="royal-flourish"><span>✦</span></div>`
                 + `</div>`
-                + `<div class="imam-rakaat-list">`
-                + rakaatRowsHtml
+                + `<div class="royal-rakaat-flow">`
+                + rakaatCardsHtml
                 + `</div>`
                 + `</div>`;
         });

@@ -1336,108 +1336,360 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 }
 
 /* ========================================================= */
-/* MADING MODERN AIRY LAYOUT (ANTI-SESAK UNTUK HP)           */
+/* ROYAL ISLAMIC BADGE SYSTEM (JADWAL MURAJA'AH & IMAM)      */
 /* ========================================================= */
-.mading-person-hero {
-    text-align: center;
-    padding: 6px 0 16px;
-}
 
-.mading-person-hero .student-picker-avatar.large {
-    width: 54px;
-    height: 54px;
-    font-size: 20px;
-    margin: 0 auto 10px;
-    box-shadow: 0 4px 18px rgba(212, 175, 55, 0.4);
-    border: 2px solid rgba(212, 175, 55, 0.6);
-}
-
-.mading-person-name {
-    font-size: 21px;
-    font-weight: 800;
-    color: #fff;
-    font-family: 'Lora', serif;
-    letter-spacing: 0.2px;
-}
-
-/* Sesi Murajaah Full-Width Cards (Anti-Hyphenation) */
-.murajaah-sesi-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.murajaah-sesi-row {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 12px 14px;
+/* Tab Kapsul Hari Mewah */
+.royal-day-tabs, .mading-day-tabs {
     display: flex;
     justify-content: space-between;
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(212, 175, 55, 0.28);
+    border-radius: 40px;
+    padding: 4px;
+    margin-bottom: 20px;
+    gap: 4px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.royal-day-pill, .mading-day-pill {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 6px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    text-align: center;
+}
+
+.royal-day-pill:hover, .mading-day-pill:hover {
+    color: var(--gold-light);
+    background: rgba(212, 175, 55, 0.08);
+}
+
+.royal-day-pill.active, .mading-day-pill.active {
+    background: linear-gradient(135deg, #ffd700 0%, #d4af37 50%, #aa820a 100%);
+    color: #021a12 !important;
+    font-weight: 800;
+    box-shadow: 0 4px 16px rgba(212, 175, 55, 0.45);
+    transform: translateY(-1px);
+}
+
+/* Transisi Pane Halus & Dinamis */
+.royal-pane, .public-murajaah-pane, .public-imam-pane {
+    animation: royalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes royalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.99);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Hero Profil Ananda / Petugas */
+.royal-hero-card {
+    text-align: center;
+    padding: 4px 0 16px;
+    position: relative;
+}
+
+/* Emblem Bintang 8 Sudut / Rub el Hizb Medallion */
+.royal-badge-emblem {
+    display: inline-flex;
     align-items: center;
-    gap: 12px;
-    transition: all 0.2s ease;
+    justify-content: center;
+    position: relative;
+    margin: 0 auto 12px;
 }
 
-.murajaah-sesi-row:hover {
-    border-color: rgba(212, 175, 55, 0.3);
-}
-
-.murajaah-sesi-label {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--gold);
-    flex-shrink: 0;
+.royal-emblem-star {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3) 0%, rgba(1, 27, 19, 0.95) 100%);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 24px rgba(212, 175, 55, 0.4), inset 0 0 14px rgba(212, 175, 55, 0.25);
     display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.3s ease;
 }
 
-.murajaah-sesi-val {
-    font-size: 14px;
+.royal-emblem-star.imam {
+    border-color: #f59e0b;
+    box-shadow: 0 0 26px rgba(245, 158, 11, 0.45), inset 0 0 14px rgba(245, 158, 11, 0.25);
+}
+
+.royal-emblem-core {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.royal-emblem-icon {
+    font-size: 24px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.royal-emblem-initials {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--gold-light);
+    letter-spacing: 0.5px;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 1px 7px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+/* Pita Gelar Kehormatan */
+.royal-honor-ribbon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.22) 50%, rgba(212, 175, 55, 0.08) 100%);
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    border-radius: 30px;
+    padding: 5px 16px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--gold-light);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    margin-bottom: 8px;
+}
+
+.royal-honor-ribbon.imam {
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #fef08a;
+}
+
+.royal-star {
+    color: var(--gold);
+    font-size: 10px;
+}
+
+/* Nama Ananda Gagah & Elegan */
+.royal-person-name {
+    font-size: 23px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: 'Lora', serif;
+    letter-spacing: 0.3px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    margin: 4px 0 2px;
+}
+
+/* Pembatas Daun / Bintang Emas */
+.royal-flourish {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 55%;
+    margin: 8px auto 18px;
+}
+
+.royal-flourish::before,
+.royal-flourish::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+}
+
+.royal-flourish span {
+    color: var(--gold);
+    font-size: 10px;
+}
+
+/* ========================================================= */
+/* KARTU MURAJA'AH: ATMOSFER FAJAR (PAGI) & SENJA (SORE)     */
+/* ========================================================= */
+.royal-murajaah-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.royal-sesi-card {
+    border-radius: 18px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.royal-sesi-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Kartu Pagi — Atmosfer Fajar Hangat */
+.royal-sesi-card.pagi {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(212, 175, 55, 0.08) 100%);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.1);
+}
+
+/* Kartu Sore — Atmosfer Senja Syahdu */
+.royal-sesi-card.sore {
+    background: linear-gradient(135deg, rgba(30, 58, 138, 0.22) 0%, rgba(13, 148, 136, 0.12) 100%);
+    border: 1px solid rgba(56, 189, 248, 0.32);
+    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.08);
+}
+
+.royal-sesi-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.royal-sesi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.royal-sesi-badge.pagi {
+    background: rgba(245, 158, 11, 0.22);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
+.royal-sesi-badge.sore {
+    background: rgba(56, 189, 248, 0.2);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.royal-sesi-sub {
+    font-size: 11px;
+    color: var(--text-muted);
     font-weight: 600;
-    color: #fff;
-    text-align: right;
+}
+
+.royal-sesi-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.royal-sesi-book-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.royal-sesi-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: 'Lora', serif;
     word-break: normal;
 }
 
-/* Imam Raka'at Sleek Unified List (Anti-Kotak-Kotak) */
-.imam-rakaat-list {
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 4px 14px;
-}
-
-.imam-rakaat-row {
+/* ========================================================= */
+/* KARTU IMAM DHUHA: ALUR RAKA'AT KEHORMATAN                 */
+/* ========================================================= */
+.royal-rakaat-flow {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.royal-rakaat-item {
+    display: flex;
     align-items: center;
-    padding: 11px 2px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    gap: 12px;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    border-radius: 16px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
 }
 
-.imam-rakaat-row:last-child {
-    border-bottom: none;
+.royal-rakaat-item:hover {
+    border-color: rgba(212, 175, 55, 0.45);
+    background: rgba(212, 175, 55, 0.06);
+    transform: translateX(2px);
 }
 
-.rakaat-pill {
+.royal-rakaat-node {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(1, 27, 19, 0.8) 100%);
+    border: 1.5px solid var(--gold);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.royal-rakaat-node .num {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--gold-light);
+    line-height: 1;
+    font-family: 'Lora', serif;
+}
+
+.royal-rakaat-node .lbl {
+    font-size: 8.5px;
+    font-weight: 700;
+    color: var(--gold-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 2px;
+}
+
+.royal-rakaat-detail {
+    flex: 1;
+    min-width: 0;
+}
+
+.royal-rakaat-title {
     font-size: 11px;
     font-weight: 700;
     color: var(--gold);
-    background: rgba(212, 175, 55, 0.12);
-    padding: 4px 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 3px;
 }
 
-.rakaat-surah {
-    font-size: 14px;
-    font-weight: 600;
-    color: #fff;
-    text-align: right;
+.royal-rakaat-surah {
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    font-family: 'Lora', serif;
+    white-space: normal;
     word-break: normal;
 }
 
@@ -1624,48 +1876,77 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
         font-size: 11px !important;
     }
 
-    /* MADING MODAL — Anti-Sesak di Layar HP */
+    /* MADING MODAL — Anti-Sesak di Layar HP (Royal Islamic Badge) */
     #madingModal .modal-content {
-        padding: 26px 16px 20px !important;
+        padding: 24px 14px 22px !important;
         border-radius: 24px !important;
         max-width: 95% !important;
     }
     #madingTitleText {
         font-size: 18px !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 14px !important;
         padding: 0 32px 0 0 !important;
     }
-    .mading-day-tabs {
-        margin-bottom: 12px !important;
-        gap: 3px !important;
-        padding: 4px !important;
+    .royal-day-tabs, .mading-day-tabs {
+        margin-bottom: 14px !important;
+        gap: 2px !important;
+        padding: 3px !important;
     }
-    .mading-day-pill {
+    .royal-day-pill, .mading-day-pill {
         padding: 7px 2px !important;
         font-size: 11.5px !important;
     }
-    .mading-person-hero {
-        padding: 2px 0 10px !important;
+    .royal-hero-card {
+        padding: 2px 0 12px !important;
     }
-    .mading-person-hero .student-picker-avatar.large {
-        width: 48px !important;
-        height: 48px !important;
+    .royal-emblem-star {
+        width: 58px !important;
+        height: 58px !important;
+        border-radius: 16px !important;
+    }
+    .royal-emblem-icon {
+        font-size: 20px !important;
+    }
+    .royal-honor-ribbon {
+        font-size: 9.5px !important;
+        padding: 4px 12px !important;
+        letter-spacing: 1px !important;
+        margin-bottom: 6px !important;
+    }
+    .royal-person-name {
         font-size: 18px !important;
-        margin-bottom: 8px !important;
     }
-    .mading-person-name {
-        font-size: 18px !important;
+    .royal-flourish {
+        margin: 6px auto 14px !important;
+        width: 65% !important;
     }
-    .imam-rakaat-row {
-        padding: 8px 0 !important;
+    .royal-murajaah-cards {
+        gap: 10px !important;
     }
-    .rakaat-surah {
-        font-size: 13px !important;
+    .royal-sesi-card {
+        padding: 12px 14px !important;
+        border-radius: 14px !important;
     }
-    .murajaah-sesi-row {
+    .royal-sesi-val {
+        font-size: 14px !important;
+    }
+    .royal-rakaat-flow {
+        gap: 8px !important;
+    }
+    .royal-rakaat-item {
         padding: 10px 12px !important;
+        gap: 12px !important;
+        border-radius: 14px !important;
     }
-    .murajaah-sesi-val {
-        font-size: 13px !important;
+    .royal-rakaat-node {
+        width: 42px !important;
+        height: 42px !important;
+        border-radius: 12px !important;
+    }
+    .royal-rakaat-node .num {
+        font-size: 15px !important;
+    }
+    .royal-rakaat-surah {
+        font-size: 13.5px !important;
     }
 }
