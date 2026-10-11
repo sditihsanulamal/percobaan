@@ -451,7 +451,6 @@ window.createStudentPickerMarkup = (pickerId, targetInputId, placeholder = 'Pili
         + `<svg class="student-picker-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>`
         + `</div>`
         + `<div class="student-picker-dropdown" id="dropdown-student-${pickerId}">`
-        + `<input type="text" class="student-picker-search" placeholder="🔍 Cari nama murid di kelas ini..." oninput="window.filterStudentPicker('${pickerId}', this.value)">`
         + `<div class="student-picker-list" id="list-student-${pickerId}"></div>`
         + `</div>`
         + `</div>`;
@@ -496,27 +495,10 @@ window.toggleStudentPicker = (pickerId, targetInputId) => {
         window.initStudentPicker(pickerId, targetInputId);
         dropdown.classList.add('show');
         trigger.classList.add('active');
-        const searchInput = dropdown.querySelector('.student-picker-search');
-        if (searchInput) {
-            searchInput.value = '';
-            window.filterStudentPicker(pickerId, '');
-            setTimeout(() => searchInput.focus(), 50);
-        }
     }
 };
 
-window.filterStudentPicker = (pickerId, query) => {
-    const listEl = document.getElementById('list-student-' + pickerId);
-    if (!listEl) return;
-    const q = (query || '').toLowerCase().trim();
-
-    Array.from(listEl.children).forEach((item, idx) => {
-        if (idx === 0) return; // opsi kosongkan selalu tampil
-        const nama = (item.getAttribute('data-nama') || '').toLowerCase();
-        const matches = !q || nama.includes(q);
-        item.style.display = matches ? 'flex' : 'none';
-    });
-};
+window.filterStudentPicker = () => {};
 
 window.selectStudentPicker = (pickerId, targetInputId, namaMurid) => {
     const targetInput = document.getElementById(targetInputId);
@@ -1022,13 +1004,11 @@ window.renderMadingHtml = (id, fields) => {
             const initials = nama !== '-' ? window.getInitials(nama) : '👤';
 
             panesHtml += `<div class="public-murajaah-pane" id="pub-pane-murajaah-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
-                + `<div class="mading-hero-card">`
-                + `<span class="mading-hero-badge">Pemimpin Muraja'ah</span>`
-                + `<div style="display:flex; justify-content:center; align-items:center;">`
+                + `<div class="mading-hero-card" style="padding:18px 14px; margin-bottom:14px;">`
+                + `<div style="display:flex; justify-content:center; align-items:center; margin-bottom:10px;">`
                 + `<div class="student-picker-avatar large">${initials}</div>`
                 + `</div>`
-                + `<div class="mading-hero-name">${nama}</div>`
-                + `<div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Hari ${d.label}</div>`
+                + `<div class="mading-hero-name" style="margin-top:0;">${nama}</div>`
                 + `</div>`
                 + `<div class="mading-sub-grid">`
                 + `<div class="mading-sub-card">`
@@ -1126,13 +1106,11 @@ window.renderMadingHtml = (id, fields) => {
             }
 
             panesHtml += `<div class="public-imam-pane" id="pub-pane-imam-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
-                + `<div class="mading-hero-card">`
-                + `<span class="mading-hero-badge">Imam Sholat Dhuha</span>`
-                + `<div style="display:flex; justify-content:center; align-items:center;">`
+                + `<div class="mading-hero-card" style="padding:18px 14px; margin-bottom:14px;">`
+                + `<div style="display:flex; justify-content:center; align-items:center; margin-bottom:10px;">`
                 + `<div class="student-picker-avatar large">${initials}</div>`
                 + `</div>`
-                + `<div class="mading-hero-name">${nama}</div>`
-                + `<div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Hari ${d.label} • Sholat Dhuha ${jmlRakaat} Raka'at</div>`
+                + `<div class="mading-hero-name" style="margin-top:0;">${nama}</div>`
                 + `</div>`
                 + `<div class="mading-sub-grid">`
                 + rakaatCardsHtml
@@ -1143,41 +1121,31 @@ window.renderMadingHtml = (id, fields) => {
         return tabsHtml + panesHtml;
 
     } else if (id === 'jadwal-tilawah') {
-        let cardsHtml = '<div class="tilawah-stage-list">';
+        let itemsHtml = '<div class="tilawah-timeline">';
         for (let i = 1; i <= 3; i++) {
             const hari = fields['h' + i] || '-';
             const nama = fields['n' + i] || '-';
             const surah = fields['s' + i] || '-';
-            const initials = nama !== '-' ? window.getInitials(nama) : '🎙️';
 
-            cardsHtml += `<div class="tilawah-card">`
-                + `<div class="student-picker-avatar" style="width:44px; height:44px; font-size:15px;">${initials}</div>`
-                + `<div style="flex:1; min-width:0;">`
-                + `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">`
-                + `<span class="tilawah-badge-sesi">SESI ${i}</span>`
-                + `<span style="font-size:11px; color:var(--text-muted); font-weight:600;">📅 ${hari}</span>`
+            itemsHtml += `<div class="tilawah-timeline-item">`
+                + `<div class="tilawah-timeline-node">${i}</div>`
+                + `<div class="tilawah-timeline-content">`
+                + `<div class="tilawah-timeline-meta">`
+                + `<span class="tilawah-timeline-date">📅 ${hari}</span>`
                 + `</div>`
-                + `<div style="font-size:16px; font-weight:800; color:#fff; font-family:'Lora',serif; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${nama}</div>`
-                + `<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--gold-light); background:rgba(212,175,55,0.1); padding:4px 10px; border-radius:8px; border:1px solid rgba(212,175,55,0.25);">`
-                + `📖 <span>${surah}</span>`
-                + `</div>`
+                + `<div class="tilawah-timeline-name">${nama}</div>`
+                + `<div class="tilawah-timeline-surah">📖 ${surah}</div>`
                 + `</div>`
                 + `</div>`;
         }
-        cardsHtml += '</div>';
+        itemsHtml += '</div>';
 
-        const infoBanner = `<div class="tilawah-banner">`
-            + `<div class="tilawah-banner-icon">🎙️</div>`
-            + `<div>`
-            + `<div class="tilawah-banner-title">Ketentuan Tilawah Live</div>`
-            + `<div class="tilawah-banner-desc">`
-            + `• Pembacaan Al-Qur'an menggunakan <b>Langgam / Nada Hijaz</b><br>`
-            + `• Waktu pelaksanaan: <b>12.00 – 12.20 WITA</b> (20 Menit)`
-            + `</div>`
-            + `</div>`
+        const broadcastStrip = `<div class="tilawah-broadcast-strip">`
+            + `<div class="icon">🎙️</div>`
+            + `<div class="text">Disiarkan dengan <b>Langgam Hijaz</b> • Waktu: <b>12.00 – 12.20 WITA</b> (20 Menit)</div>`
             + `</div>`;
 
-        return cardsHtml + infoBanner;
+        return itemsHtml + broadcastStrip;
     }
     return "";
 };
