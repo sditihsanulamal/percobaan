@@ -504,7 +504,6 @@ window.createImamSurahPickerMarkup = (pickerId, targetInputId, placeholder = 'Pi
         + `<svg class="surah-picker-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>`
         + `</div>`
         + `<div class="surah-picker-dropdown" id="dropdown-surah-${pickerId}">`
-        + `<input type="text" class="surah-picker-search" id="search-surah-${pickerId}" placeholder="Cari nama / nomor / juz (1, 2, 28, 29, 30)..." oninput="window.filterImamSurahPicker('${pickerId}', '${targetInputId}')">`
         + `<div class="surah-picker-list" id="list-surah-${pickerId}"></div>`
         + `</div>`
         + `</div>`;
@@ -531,22 +530,10 @@ window.toggleImamSurahPicker = (pickerId, targetInputId) => {
         window.initImamSurahPicker(pickerId, targetInputId);
         dropdown.classList.add('show');
         trigger.classList.add('active');
-        const searchInput = document.getElementById('search-surah-' + pickerId);
-        if (searchInput) {
-            searchInput.value = '';
-            setTimeout(() => searchInput.focus(), 50);
-        }
     }
 };
 
-window.filterImamSurahPicker = (pickerId, targetInputId) => {
-    const searchInput = document.getElementById('search-surah-' + pickerId);
-    const query = searchInput ? searchInput.value : '';
-    const listEl = document.getElementById('list-surah-' + pickerId);
-    if (!listEl) return;
-    const list = window.getImamAllowedSurahs(query);
-    listEl.innerHTML = window.renderImamSurahPickerItems(pickerId, targetInputId, list);
-};
+window.filterImamSurahPicker = () => {};
 
 window.selectImamSurahPicker = (pickerId, targetInputId, namaSurah) => {
     const targetInput = document.getElementById(targetInputId);
