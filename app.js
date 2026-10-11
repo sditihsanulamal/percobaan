@@ -250,14 +250,16 @@ window.initSurahPicker = (day) => {
     if (!listEl || listEl.children.length > 0) return;
 
     let html = '';
-    DATA_114_SURAH.forEach(s => {
+    const allowedSurahs = window.getImamAllowedSurahs();
+    allowedSurahs.forEach(s => {
+        const juzBadge = window.getSurahJuzBadge(s);
         html += `<div class="surah-picker-item" data-no="${s.no}" data-nama="${s.nama}" onclick="window.selectSurahPicker('${day}', ${s.no})">`
-            + `<div>`
+            + `<div style="display:flex; align-items:center; gap:8px;">`
             + `<span style="color:var(--gold); font-weight:700;">${s.no}.</span> `
             + `<span>${s.nama}</span>`
             + `<span class="surah-item-meta">(${s.ayat} ayat)</span>`
             + `</div>`
-            + `<span class="surah-item-arab">${s.arab}</span>`
+            + `<span style="font-size:10px; color:var(--gold); background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.25); padding:1px 6px; border-radius:6px; font-weight:700;">${juzBadge}</span>`
             + `</div>`;
     });
     listEl.innerHTML = html;
@@ -273,14 +275,9 @@ window.toggleSurahPicker = (day) => {
     document.querySelectorAll('.surah-picker-trigger').forEach(t => t.classList.remove('active'));
 
     if (!isShow) {
+        window.initSurahPicker(day);
         dropdown.classList.add('show');
         trigger.classList.add('active');
-        const searchInput = dropdown.querySelector('.surah-picker-search');
-        if (searchInput) {
-            searchInput.value = '';
-            window.filterSurahPicker(day, '');
-            setTimeout(() => searchInput.focus(), 50);
-        }
     }
 };
 
@@ -304,9 +301,12 @@ window.selectSurahPicker = (day, surahNo) => {
     const hiddenInput = document.getElementById('fq-' + day + '-surah');
     if (hiddenInput) hiddenInput.value = s.nama;
 
+    const juzBadge = window.getSurahJuzBadge(s);
     const labelEl = document.getElementById('label-' + day + '-surah');
     if (labelEl) {
-        labelEl.innerHTML = `<b>${s.no}. ${s.nama}</b> <span style="font-family:'Amiri',serif; color:var(--gold-light); margin-left:6px;">(${s.arab})</span> <span style="font-size:11px; color:var(--text-muted); font-weight:500;">- ${s.ayat} Ayat</span>`;
+        labelEl.innerHTML = `<b>${s.no}. ${s.nama}</b>`
+            + (juzBadge ? `<span style="font-size:10px; color:var(--gold); background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.25); padding:1px 6px; border-radius:6px; font-weight:700; margin-left:6px;">${juzBadge}</span>` : '')
+            + ` <span style="font-size:11px; color:var(--text-muted); font-weight:500; margin-left:4px;">- ${s.ayat} Ayat</span>`;
     }
 
     const listEl = document.getElementById('list-' + day + '-surah');
@@ -330,7 +330,7 @@ window.setSurahPickerVal = (day, surahNameOrNo) => {
         const hiddenInput = document.getElementById('fq-' + day + '-surah');
         if (hiddenInput) hiddenInput.value = '';
         const labelEl = document.getElementById('label-' + day + '-surah');
-        if (labelEl) labelEl.innerText = 'Pilih Nama Surah...';
+        if (labelEl) labelEl.innerText = 'Pilih Surah (Juz 1, 2, 28–30)...';
         return;
     }
 
