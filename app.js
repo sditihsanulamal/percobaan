@@ -1001,18 +1001,11 @@ window.renderMadingHtml = (id, fields) => {
             const nama = fields[d.key + '_nama'] || '-';
             const pagi = fields[d.key + '_pagi'] || '-';
             const sore = fields[d.key + '_sore'] || '-';
-            const initials = nama !== '-' ? window.getInitials(nama) : '📖';
+            const initials = nama !== '-' ? window.getInitials(nama) : '—';
 
             panesHtml += `<div class="royal-pane" id="pub-pane-murajaah-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
                 + `<div class="royal-hero-card">`
-                + `  <div class="royal-badge-emblem">`
-                + `    <div class="royal-emblem-star">`
-                + `      <div class="royal-emblem-core">`
-                + `        <span class="royal-emblem-icon">📖</span>`
-                + `        <span class="royal-emblem-initials">${initials}</span>`
-                + `      </div>`
-                + `    </div>`
-                + `  </div>`
+                + `  <div class="royal-avatar-initials">${initials}</div>`
                 + `  <div class="royal-honor-ribbon"><span class="royal-star">✦</span> PEMANDU MURAJA'AH <span class="royal-star">✦</span></div>`
                 + `  <div class="royal-person-name">${nama}</div>`
                 + `  <div class="royal-flourish"><span>✦</span></div>`
@@ -1021,20 +1014,16 @@ window.renderMadingHtml = (id, fields) => {
                 + `  <div class="royal-sesi-card pagi">`
                 + `    <div class="royal-sesi-header">`
                 + `      <span class="royal-sesi-badge pagi">☀️ Sesi Pagi</span>`
-                + `      <span class="royal-sesi-sub">Fajar & Pagi</span>`
                 + `    </div>`
                 + `    <div class="royal-sesi-content">`
-                + `      <div class="royal-sesi-book-icon">📖</div>`
                 + `      <div class="royal-sesi-val">${pagi}</div>`
                 + `    </div>`
                 + `  </div>`
                 + `  <div class="royal-sesi-card sore">`
                 + `    <div class="royal-sesi-header">`
                 + `      <span class="royal-sesi-badge sore">🌙 Sesi Sore</span>`
-                + `      <span class="royal-sesi-sub">Ashar & Senja</span>`
                 + `    </div>`
                 + `    <div class="royal-sesi-content">`
-                + `      <div class="royal-sesi-book-icon">📖</div>`
                 + `      <div class="royal-sesi-val">${sore}</div>`
                 + `    </div>`
                 + `  </div>`
@@ -1113,7 +1102,7 @@ window.renderMadingHtml = (id, fields) => {
         days.forEach(d => {
             const isVisible = (d.key === activeDay);
             const nama = fields[d.key + '_nama'] || '-';
-            const initials = nama !== '-' ? window.getInitials(nama) : '🕌';
+            const initials = nama !== '-' ? window.getInitials(nama) : '—';
 
             let rakaatCardsHtml = '';
             for (let r = 1; r <= jmlRakaat; r++) {
@@ -1124,22 +1113,15 @@ window.renderMadingHtml = (id, fields) => {
                     + `    <span class="lbl">Raka'at</span>`
                     + `  </div>`
                     + `  <div class="royal-rakaat-detail">`
-                    + `    <div class="royal-rakaat-title">Surah Bacaan Raka'at ke-${r}</div>`
-                    + `    <div class="royal-rakaat-surah">📖 ${val}</div>`
+                    + `    <div class="royal-rakaat-title">Raka'at ke-${r}</div>`
+                    + `    <div class="royal-rakaat-surah">${val}</div>`
                     + `  </div>`
                     + `</div>`;
             }
 
             panesHtml += `<div class="royal-pane" id="pub-pane-imam-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
                 + `<div class="royal-hero-card">`
-                + `  <div class="royal-badge-emblem">`
-                + `    <div class="royal-emblem-star imam">`
-                + `      <div class="royal-emblem-core">`
-                + `        <span class="royal-emblem-icon">🕌</span>`
-                + `        <span class="royal-emblem-initials">${initials}</span>`
-                + `      </div>`
-                + `    </div>`
-                + `  </div>`
+                + `  <div class="royal-avatar-initials imam">${initials}</div>`
                 + `  <div class="royal-honor-ribbon imam"><span class="royal-star">✦</span> IMAM SHOLAT DHUHA <span class="royal-star">✦</span></div>`
                 + `  <div class="royal-person-name">${nama}</div>`
                 + `  <div class="royal-flourish"><span>✦</span></div>`
