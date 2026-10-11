@@ -1004,20 +1004,18 @@ window.renderMadingHtml = (id, fields) => {
             const initials = nama !== '-' ? window.getInitials(nama) : '👤';
 
             panesHtml += `<div class="public-murajaah-pane" id="pub-pane-murajaah-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
-                + `<div class="mading-hero-card" style="padding:18px 14px; margin-bottom:14px;">`
-                + `<div style="display:flex; justify-content:center; align-items:center; margin-bottom:10px;">`
+                + `<div class="mading-person-hero">`
                 + `<div class="student-picker-avatar large">${initials}</div>`
+                + `<div class="mading-person-name">${nama}</div>`
                 + `</div>`
-                + `<div class="mading-hero-name" style="margin-top:0;">${nama}</div>`
+                + `<div class="murajaah-sesi-list">`
+                + `<div class="murajaah-sesi-row">`
+                + `<span class="murajaah-sesi-label">☀️ Sesi Pagi</span>`
+                + `<span class="murajaah-sesi-val">${pagi}</span>`
                 + `</div>`
-                + `<div class="mading-sub-grid">`
-                + `<div class="mading-sub-card">`
-                + `<div class="mading-sub-tag">☀️ Sesi Pagi</div>`
-                + `<div class="mading-sub-val">${pagi}</div>`
-                + `</div>`
-                + `<div class="mading-sub-card">`
-                + `<div class="mading-sub-tag">🌙 Sesi Sore</div>`
-                + `<div class="mading-sub-val">${sore}</div>`
+                + `<div class="murajaah-sesi-row">`
+                + `<span class="murajaah-sesi-label">🌙 Sesi Sore</span>`
+                + `<span class="murajaah-sesi-val">${sore}</span>`
                 + `</div>`
                 + `</div>`
                 + `</div>`;
@@ -1096,24 +1094,22 @@ window.renderMadingHtml = (id, fields) => {
             const nama = fields[d.key + '_nama'] || '-';
             const initials = nama !== '-' ? window.getInitials(nama) : '🕌';
 
-            let rakaatCardsHtml = '';
+            let rakaatRowsHtml = '';
             for (let r = 1; r <= jmlRakaat; r++) {
                 const val = fields[d.key + '_r' + r] || '-';
-                rakaatCardsHtml += `<div class="mading-sub-card">`
-                    + `<div class="mading-sub-tag">📖 Raka'at ${r}</div>`
-                    + `<div class="mading-sub-val">${val}</div>`
+                rakaatRowsHtml += `<div class="imam-rakaat-row">`
+                    + `<span class="rakaat-pill">Raka'at ${r}</span>`
+                    + `<span class="rakaat-surah">${val}</span>`
                     + `</div>`;
             }
 
             panesHtml += `<div class="public-imam-pane" id="pub-pane-imam-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
-                + `<div class="mading-hero-card" style="padding:18px 14px; margin-bottom:14px;">`
-                + `<div style="display:flex; justify-content:center; align-items:center; margin-bottom:10px;">`
+                + `<div class="mading-person-hero">`
                 + `<div class="student-picker-avatar large">${initials}</div>`
+                + `<div class="mading-person-name">${nama}</div>`
                 + `</div>`
-                + `<div class="mading-hero-name" style="margin-top:0;">${nama}</div>`
-                + `</div>`
-                + `<div class="mading-sub-grid">`
-                + rakaatCardsHtml
+                + `<div class="imam-rakaat-list">`
+                + rakaatRowsHtml
                 + `</div>`
                 + `</div>`;
         });

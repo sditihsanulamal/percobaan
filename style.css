@@ -1336,81 +1336,109 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 }
 
 /* ========================================================= */
-/* LUXURY MADING HERO CARD & SUB CARDS                       */
+/* MADING MODERN AIRY LAYOUT (ANTI-SESAK UNTUK HP)           */
 /* ========================================================= */
-.mading-hero-card {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
-    border: 1px solid rgba(212, 175, 55, 0.22);
-    border-radius: 20px;
-    padding: 22px 16px;
+.mading-person-hero {
     text-align: center;
-    margin-bottom: 16px;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-    position: relative;
-    overflow: hidden;
+    padding: 6px 0 16px;
 }
 
-.mading-hero-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    color: var(--gold);
-    background: rgba(212, 175, 55, 0.12);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    padding: 4px 14px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    margin-bottom: 14px;
+.mading-person-hero .student-picker-avatar.large {
+    width: 54px;
+    height: 54px;
+    font-size: 20px;
+    margin: 0 auto 10px;
+    box-shadow: 0 4px 18px rgba(212, 175, 55, 0.4);
+    border: 2px solid rgba(212, 175, 55, 0.6);
 }
 
-.mading-hero-name {
-    font-size: 22px;
+.mading-person-name {
+    font-size: 21px;
     font-weight: 800;
     color: #fff;
     font-family: 'Lora', serif;
-    margin-top: 10px;
-    letter-spacing: 0.3px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.2px;
 }
 
-.mading-sub-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 10px;
+/* Sesi Murajaah Full-Width Cards (Anti-Hyphenation) */
+.murajaah-sesi-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.mading-sub-card {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.07);
+.murajaah-sesi-row {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 14px;
-    padding: 14px 12px;
-    text-align: left;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
     transition: all 0.2s ease;
 }
 
-.mading-sub-card:hover {
+.murajaah-sesi-row:hover {
     border-color: rgba(212, 175, 55, 0.3);
-    transform: translateY(-2px);
 }
 
-.mading-sub-tag {
-    font-size: 11px;
+.murajaah-sesi-label {
+    font-size: 12px;
     font-weight: 700;
     color: var(--gold);
-    margin-bottom: 6px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
 }
 
-.mading-sub-val {
+.murajaah-sesi-val {
     font-size: 14px;
     font-weight: 600;
     color: #fff;
-    line-height: 1.4;
-    word-break: break-word;
+    text-align: right;
+    word-break: normal;
+}
+
+/* Imam Raka'at Sleek Unified List (Anti-Kotak-Kotak) */
+.imam-rakaat-list {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 4px 14px;
+}
+
+.imam-rakaat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 2px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 12px;
+}
+
+.imam-rakaat-row:last-child {
+    border-bottom: none;
+}
+
+.rakaat-pill {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(212, 175, 55, 0.12);
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    flex-shrink: 0;
+}
+
+.rakaat-surah {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-align: right;
+    word-break: normal;
 }
 
 /* ========================================================= */
@@ -1592,8 +1620,52 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     #statsChartContainer > div:first-child > div:nth-child(2) {
         font-size: 26px !important;
     }
-    /* Stats text link — compact on mobile */
     .stats-text-link {
         font-size: 11px !important;
+    }
+
+    /* MADING MODAL — Anti-Sesak di Layar HP */
+    #madingModal .modal-content {
+        padding: 26px 16px 20px !important;
+        border-radius: 24px !important;
+        max-width: 95% !important;
+    }
+    #madingTitleText {
+        font-size: 18px !important;
+        margin-bottom: 12px !important;
+        padding: 0 32px 0 0 !important;
+    }
+    .mading-day-tabs {
+        margin-bottom: 12px !important;
+        gap: 3px !important;
+        padding: 4px !important;
+    }
+    .mading-day-pill {
+        padding: 7px 2px !important;
+        font-size: 11.5px !important;
+    }
+    .mading-person-hero {
+        padding: 2px 0 10px !important;
+    }
+    .mading-person-hero .student-picker-avatar.large {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 18px !important;
+        margin-bottom: 8px !important;
+    }
+    .mading-person-name {
+        font-size: 18px !important;
+    }
+    .imam-rakaat-row {
+        padding: 8px 0 !important;
+    }
+    .rakaat-surah {
+        font-size: 13px !important;
+    }
+    .murajaah-sesi-row {
+        padding: 10px 12px !important;
+    }
+    .murajaah-sesi-val {
+        font-size: 13px !important;
     }
 }
