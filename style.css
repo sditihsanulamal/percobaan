@@ -1200,9 +1200,6 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 /* ========================================================= */
 /* FORM SMART SURAH & RENTANG AYAT (ADMIN JADWAL IMAM)       */
 /* ========================================================= */
-/* ========================================================= */
-/* FORM SMART SURAH & RENTANG AYAT (ADMIN JADWAL IMAM)       */
-/* ========================================================= */
 .imam-rakaat-header-row {
     display: flex;
     justify-content: space-between;
@@ -1958,14 +1955,16 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     #madingTitleText {
         font-size: 16px !important;
         margin-bottom: 12px !important;
-        padding: 0 40px 0 8px !important;
+        padding: 0 36px !important; /* Simetris sempurna: penyeimbang tombol close di kanan */
+        text-align: center !important;
     }
     #editMadingTitle {
         font-size: 15px !important;
-        padding: 8px 44px 8px 12px !important;
+        padding: 8px 36px !important; /* Simetris sempurna */
         margin-bottom: 12px !important;
         height: 38px !important;
         border-radius: 10px !important;
+        text-align: center !important;
     }
     .admin-quran-day-pane,
     .admin-imam-day-pane,
