@@ -1198,14 +1198,108 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 }
 
 /* ========================================================= */
-/* SISTEM CUSTOM STUDENT PICKER (DROPDOWN NAMA MURID)        */
+/* FORM SMART SURAH & RENTANG AYAT (ADMIN JADWAL IMAM)       */
 /* ========================================================= */
-.student-picker-wrap {
+.btn-toggle-input-mode {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--gold-light);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.btn-toggle-input-mode:hover {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--gold);
+    color: #fff;
+}
+
+.imam-ayat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.imam-rakaat-card-input {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s ease;
+}
+
+.imam-rakaat-card-input:hover {
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.imam-rakaat-card-input .rakaat-badge-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.imam-range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-input-num {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 8px 6px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transition: all 0.2s ease;
+}
+
+.admin-input-num:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.range-sep {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+    .imam-ayat-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+}
+
+/* ========================================================= */
+/* SISTEM CUSTOM DROPDOWN PICKER (MURID & SURAH)            */
+/* ========================================================= */
+.student-picker-wrap,
+.surah-picker-wrap {
     position: relative;
     width: 100%;
 }
 
-.student-picker-trigger {
+.student-picker-trigger,
+.surah-picker-trigger {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1222,23 +1316,28 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 }
 
 .student-picker-trigger:hover,
-.student-picker-trigger.active {
+.student-picker-trigger.active,
+.surah-picker-trigger:hover,
+.surah-picker-trigger.active {
     border-color: var(--gold);
     background: rgba(0, 0, 0, 0.65);
     box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
-.student-picker-chevron {
+.student-picker-chevron,
+.surah-picker-chevron {
     color: var(--gold);
     transition: transform 0.25s ease;
     flex-shrink: 0;
 }
 
-.student-picker-trigger.active .student-picker-chevron {
+.student-picker-trigger.active .student-picker-chevron,
+.surah-picker-trigger.active .surah-picker-chevron {
     transform: rotate(180deg);
 }
 
-.student-picker-dropdown {
+.student-picker-dropdown,
+.surah-picker-dropdown {
     display: none;
     position: absolute;
     top: calc(100% + 6px);
@@ -1257,11 +1356,13 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     gap: 8px;
 }
 
-.student-picker-dropdown.show {
+.student-picker-dropdown.show,
+.surah-picker-dropdown.show {
     display: flex;
 }
 
-.student-picker-search {
+.student-picker-search,
+.surah-picker-search {
     width: 100%;
     padding: 10px 12px;
     background: rgba(0, 0, 0, 0.5);
@@ -1273,11 +1374,13 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.student-picker-search:focus {
+.student-picker-search:focus,
+.surah-picker-search:focus {
     border-color: var(--gold);
 }
 
-.student-picker-list {
+.student-picker-list,
+.surah-picker-list {
     max-height: 200px;
     overflow-y: auto;
     display: flex;
@@ -1286,7 +1389,8 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     padding-right: 4px;
 }
 
-.student-picker-item {
+.student-picker-item,
+.surah-picker-item {
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 13px;
@@ -1299,10 +1403,26 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
     transition: all 0.15s ease;
 }
 
-.student-picker-item:hover {
+.student-picker-item:hover,
+.surah-picker-item:hover {
     background: rgba(212, 175, 55, 0.18);
     color: var(--gold);
     padding-left: 16px;
+}
+
+.surah-picker-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: var(--gold-light);
+    font-size: 10.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .student-picker-avatar {

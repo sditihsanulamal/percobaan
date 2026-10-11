@@ -441,6 +441,212 @@ window.switchPublicImamDay = (day) => {
 };
 
 // ============================================================
+// SISTEM SMART SURAH PICKER (DROPDOWN SURAH ADMIN JADWAL IMAM)
+// ============================================================
+window.createImamSurahPickerMarkup = (pickerId, targetInputId, placeholder = 'Pilih Surah yang Dibaca...') => {
+    return `<div class="surah-picker-wrap" id="picker-wrap-surah-${pickerId}">`
+        + `<input type="hidden" id="${targetInputId}" value="">`
+        + `<div class="surah-picker-trigger" id="trigger-surah-${pickerId}" onclick="window.toggleImamSurahPicker('${pickerId}', '${targetInputId}')">`
+        + `<span class="surah-picker-label" id="label-surah-${pickerId}">${placeholder}</span>`
+        + `<svg class="surah-picker-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>`
+        + `</div>`
+        + `<div class="surah-picker-dropdown" id="dropdown-surah-${pickerId}">`
+        + `<input type="text" class="surah-picker-search" id="search-surah-${pickerId}" placeholder="Cari nomor / nama surah..." oninput="window.filterImamSurahPicker('${pickerId}', '${targetInputId}')">`
+        + `<div class="surah-picker-list" id="list-surah-${pickerId}"></div>`
+        + `</div>`
+        + `</div>`;
+};
+
+window.initImamSurahPicker = (pickerId, targetInputId) => {
+    const listEl = document.getElementById('list-surah-' + pickerId);
+    if (!listEl) return;
+
+    let html = `<div class="surah-picker-item" onclick="window.selectImamSurahPicker('${pickerId}', '${targetInputId}', '')" style="color:#f87171; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px; margin-bottom:4px;">`
+        + `<span>✕ Kosongkan Pilihan</span>`
+        + `</div>`;
+
+    if (Array.isArray(window.DATA_114_SURAH) && window.DATA_114_SURAH.length > 0) {
+        window.DATA_114_SURAH.forEach(s => {
+            const safeName = (s.nama || '').replace(/'/g, "\\'");
+            html += `<div class="surah-picker-item" data-nama="${s.nama}" data-no="${s.no}" onclick="window.selectImamSurahPicker('${pickerId}', '${targetInputId}', '${safeName}')">`
+                + `<div style="display:flex; align-items:center; gap:10px;">`
+                + `<span class="surah-picker-num">${s.no}</span>`
+                + `<span style="color:#fff; font-weight:600;">${s.nama}</span>`
+                + `</div>`
+                + `<span style="font-size:11px; color:var(--text-muted);">${s.ayat} Ayat</span>`
+                + `</div>`;
+        });
+    }
+    listEl.innerHTML = html;
+};
+
+window.toggleImamSurahPicker = (pickerId, targetInputId) => {
+    const dropdown = document.getElementById('dropdown-surah-' + pickerId);
+    const trigger = document.getElementById('trigger-surah-' + pickerId);
+    if (!dropdown || !trigger) return;
+    const isShow = dropdown.classList.contains('show');
+
+    // Tutup semua dropdown lain
+    document.querySelectorAll('.surah-picker-dropdown, .student-picker-dropdown').forEach(d => d.classList.remove('show'));
+    document.querySelectorAll('.surah-picker-trigger, .student-picker-trigger').forEach(t => t.classList.remove('active'));
+
+    if (!isShow) {
+        window.initImamSurahPicker(pickerId, targetInputId);
+        dropdown.classList.add('show');
+        trigger.classList.add('active');
+        const searchInput = document.getElementById('search-surah-' + pickerId);
+        if (searchInput) {
+            searchInput.value = '';
+            setTimeout(() => searchInput.focus(), 50);
+        }
+    }
+};
+
+window.filterImamSurahPicker = (pickerId, targetInputId) => {
+    const searchInput = document.getElementById('search-surah-' + pickerId);
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const listEl = document.getElementById('list-surah-' + pickerId);
+    if (!listEl) return;
+
+    let html = `<div class="surah-picker-item" onclick="window.selectImamSurahPicker('${pickerId}', '${targetInputId}', '')" style="color:#f87171; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px; margin-bottom:4px;">`
+        + `<span>✕ Kosongkan Pilihan</span>`
+        + `</div>`;
+
+    const filtered = (window.DATA_114_SURAH || []).filter(s => {
+        return s.nama.toLowerCase().includes(query) || String(s.no).includes(query);
+    });
+
+    if (filtered.length === 0) {
+        html += `<div style="padding:14px; text-align:center; color:var(--text-muted); font-size:12px;">Surah tidak ditemukan</div>`;
+    } else {
+        filtered.forEach(s => {
+            const safeName = (s.nama || '').replace(/'/g, "\\'");
+            html += `<div class="surah-picker-item" data-nama="${s.nama}" data-no="${s.no}" onclick="window.selectImamSurahPicker('${pickerId}', '${targetInputId}', '${safeName}')">`
+                + `<div style="display:flex; align-items:center; gap:10px;">`
+                + `<span class="surah-picker-num">${s.no}</span>`
+                + `<span style="color:#fff; font-weight:600;">${s.nama}</span>`
+                + `</div>`
+                + `<span style="font-size:11px; color:var(--text-muted);">${s.ayat} Ayat</span>`
+                + `</div>`;
+        });
+    }
+    listEl.innerHTML = html;
+};
+
+window.selectImamSurahPicker = (pickerId, targetInputId, namaSurah) => {
+    const targetInput = document.getElementById(targetInputId);
+    if (targetInput) targetInput.value = namaSurah || '';
+
+    const labelEl = document.getElementById('label-surah-' + pickerId);
+    if (labelEl) {
+        if (namaSurah) {
+            const surahObj = (window.DATA_114_SURAH || []).find(s => s.nama.toLowerCase() === namaSurah.toLowerCase());
+            const noSurah = surahObj ? surahObj.no : '✦';
+            labelEl.innerHTML = `<span style="display:inline-flex; align-items:center; gap:8px;"><span class="surah-picker-num">${noSurah}</span><b style="color:var(--gold-light);">${namaSurah}</b></span>`;
+        } else {
+            labelEl.innerText = 'Pilih Surah yang Dibaca...';
+        }
+    }
+
+    const dropdown = document.getElementById('dropdown-surah-' + pickerId);
+    const trigger = document.getElementById('trigger-surah-' + pickerId);
+    if (dropdown) dropdown.classList.remove('show');
+    if (trigger) trigger.classList.remove('active');
+
+    const m = targetInputId.match(/^fi-([a-z]+)-surah$/);
+    if (m) {
+        window.syncImamSmartInputs(m[1]);
+    }
+};
+
+window.setImamSurahPickerVal = (pickerId, targetInputId, namaSurah) => {
+    const targetInput = document.getElementById(targetInputId);
+    if (targetInput) targetInput.value = namaSurah || '';
+
+    const labelEl = document.getElementById('label-surah-' + pickerId);
+    if (labelEl) {
+        if (namaSurah) {
+            const surahObj = (window.DATA_114_SURAH || []).find(s => s.nama.toLowerCase() === namaSurah.toLowerCase());
+            const noSurah = surahObj ? surahObj.no : '✦';
+            labelEl.innerHTML = `<span style="display:inline-flex; align-items:center; gap:8px;"><span class="surah-picker-num">${noSurah}</span><b style="color:var(--gold-light);">${namaSurah}</b></span>`;
+        } else {
+            labelEl.innerText = 'Pilih Surah yang Dibaca...';
+        }
+    }
+};
+
+window.toggleImamInputMode = (day) => {
+    const smartContainer = document.getElementById('mode-smart-' + day);
+    const manualContainer = document.getElementById('mode-manual-' + day);
+    const btn = document.getElementById('btn-toggle-mode-' + day);
+    if (!smartContainer || !manualContainer || !btn) return;
+
+    const isSmartActive = (smartContainer.style.display !== 'none');
+    if (isSmartActive) {
+        smartContainer.style.display = 'none';
+        manualContainer.style.display = 'grid';
+        btn.innerHTML = '⚡ Mode Cepat (Surah + Ayat)';
+    } else {
+        window.syncImamSmartInputs(day);
+        manualContainer.style.display = 'none';
+        smartContainer.style.display = 'block';
+        btn.innerHTML = '✏️ Mode Ketik Manual';
+    }
+};
+
+window.syncImamSmartInputs = (day) => {
+    const surahInput = document.getElementById('fi-' + day + '-surah');
+    const surah = surahInput ? surahInput.value.trim() : '';
+    const jmlRakaat = window.getJumlahRakaat();
+
+    for (let r = 1; r <= jmlRakaat; r++) {
+        const startEl = document.getElementById('fi-' + day + '-r' + r + '-start');
+        const endEl = document.getElementById('fi-' + day + '-r' + r + '-end');
+        const rawEl = document.getElementById('fi-' + day + '-r' + r);
+        if (!rawEl) continue;
+
+        const start = startEl ? startEl.value.trim() : '';
+        const end = endEl ? endEl.value.trim() : '';
+
+        if (!surah && !start && !end) {
+            rawEl.value = '';
+        } else if (surah) {
+            if (start && end) {
+                rawEl.value = (start === end) ? `${surah} ayat ${start}` : `${surah} ayat ${start}–${end}`;
+            } else if (start) {
+                rawEl.value = `${surah} ayat ${start}`;
+            } else {
+                rawEl.value = surah;
+            }
+        } else {
+            if (start && end) {
+                rawEl.value = (start === end) ? `Ayat ${start}` : `Ayat ${start}–${end}`;
+            } else if (start) {
+                rawEl.value = `Ayat ${start}`;
+            } else {
+                rawEl.value = '';
+            }
+        }
+    }
+};
+
+window.parseRakaatString = (str) => {
+    if (!str || typeof str !== 'string') return { surah: '', start: '', end: '' };
+    const cleaned = str.trim();
+    if (!cleaned) return { surah: '', start: '', end: '' };
+
+    const regex = /^(?:surah\s+)?(.*?)(?:\s+ayat\s+(\d+)(?:\s*[\u2013\u2014\-]\s*(\d+))?)?$/i;
+    const match = cleaned.match(regex);
+    if (match) {
+        const surah = (match[1] || '').trim();
+        const start = match[2] || '';
+        const end = match[3] || (match[2] ? match[2] : '');
+        return { surah, start, end };
+    }
+    return { surah: cleaned, start: '', end: '' };
+};
+
+// ============================================================
 // SISTEM CUSTOM STUDENT PICKER (DROPDOWN NAMA MURID)
 // ============================================================
 window.createStudentPickerMarkup = (pickerId, targetInputId, placeholder = 'Pilih Nama Ananda / Santri...') => {
@@ -1204,9 +1410,19 @@ window.openMading = (id) => {
         let panesHtml = '';
         days.forEach(d => {
             const D = d.charAt(0).toUpperCase() + d.slice(1);
-            let rakaatInputs = '';
+            let rakaatSmartCards = '';
+            let rakaatManualInputs = '';
             for (let r = 1; r <= jmlRakaat; r++) {
-                rakaatInputs += `<div>`
+                rakaatSmartCards += `<div class="imam-rakaat-card-input">`
+                    + `<div class="rakaat-badge-label">Raka'at ${r}</div>`
+                    + `<div class="imam-range-inputs">`
+                    + `<input type="number" min="1" id="fi-${d}-r${r}-start" class="admin-input-num" placeholder="Ayat dr" oninput="window.syncImamSmartInputs('${d}')">`
+                    + `<span class="range-sep">sampai</span>`
+                    + `<input type="number" min="1" id="fi-${d}-r${r}-end" class="admin-input-num" placeholder="Ayat ke" oninput="window.syncImamSmartInputs('${d}')">`
+                    + `</div>`
+                    + `</div>`;
+
+                rakaatManualInputs += `<div>`
                     + `<div style="font-size:11px; color:var(--gold); margin-bottom:4px; font-weight:700;">Raka'at ${r}</div>`
                     + `<input type="text" id="fi-${d}-r${r}" class="admin-input" placeholder="Contoh: An-Nazi'at ayat 1–12" style="font-size:13px;">`
                     + `</div>`;
@@ -1216,9 +1432,21 @@ window.openMading = (id) => {
                 + `<div style="margin-bottom:14px;"><span class="hari-badge" style="margin:0;">Jadwal Imam Hari ${D}</span></div>`
                 + `<div class="detail-label" style="margin-bottom:8px;">Pilih Imam Sholat Dhuha</div>`
                 + window.createStudentPickerMarkup('imam-' + d, 'fi-' + d + '-nama', 'Pilih Imam Sholat...')
-                + `<div class="detail-label" style="margin-top:16px; margin-bottom:10px;">Bacaan Surah Tiap Raka'at (${jmlRakaat} Raka'at)</div>`
-                + `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">`
-                + rakaatInputs
+                + `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:10px;">`
+                + `<div class="detail-label" style="margin:0;">Bacaan Surah & Ayat (${jmlRakaat} Raka'at)</div>`
+                + `<button type="button" class="btn-toggle-input-mode" id="btn-toggle-mode-${d}" onclick="window.toggleImamInputMode('${d}')">✏️ Mode Ketik Manual</button>`
+                + `</div>`
+                + `<div id="mode-smart-${d}">`
+                + `<div style="margin-bottom:10px;">`
+                + `<div style="font-size:11px; color:var(--text-muted); margin-bottom:5px; font-weight:600;">Pilih Surah untuk Hari ${D}</div>`
+                + window.createImamSurahPickerMarkup('imam-' + d, 'fi-' + d + '-surah', 'Pilih Surah yang Dibaca...')
+                + `</div>`
+                + `<div class="imam-ayat-grid">`
+                + rakaatSmartCards
+                + `</div>`
+                + `</div>`
+                + `<div id="mode-manual-${d}" style="display:none; grid-template-columns:1fr 1fr; gap:10px;">`
+                + rakaatManualInputs
                 + `</div>`
                 + `</div>`;
         });
@@ -1303,9 +1531,45 @@ window.openMading = (id) => {
             const jmlRakaat = window.getJumlahRakaat();
             ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
                 window.setStudentPickerVal('imam-' + day, 'fi-' + day + '-nama', f[day + '_nama'] || '');
+
+                let detectedSurah = '';
+                let isAllSmartCompatible = true;
+                let anyValuePresent = false;
+
                 for (let r = 1; r <= jmlRakaat; r++) {
-                    const inputEl = document.getElementById('fi-' + day + '-r' + r);
-                    if (inputEl) inputEl.value = f[day + '_r' + r] || '';
+                    const rawVal = f[day + '_r' + r] || '';
+                    const rawInput = document.getElementById('fi-' + day + '-r' + r);
+                    if (rawInput) rawInput.value = rawVal;
+
+                    if (rawVal) anyValuePresent = true;
+
+                    const parsed = window.parseRakaatString(rawVal);
+                    const startInput = document.getElementById('fi-' + day + '-r' + r + '-start');
+                    const endInput = document.getElementById('fi-' + day + '-r' + r + '-end');
+                    if (startInput) startInput.value = parsed.start || '';
+                    if (endInput) endInput.value = parsed.end || '';
+
+                    if (parsed.surah) {
+                        const found = (window.DATA_114_SURAH || []).find(s =>
+                            s.nama.toLowerCase() === parsed.surah.toLowerCase() ||
+                            s.nama.toLowerCase().replace(/['-]/g, '') === parsed.surah.toLowerCase().replace(/['-]/g, '')
+                        );
+                        if (found) {
+                            if (!detectedSurah) detectedSurah = found.nama;
+                        } else {
+                            isAllSmartCompatible = false;
+                        }
+                    }
+                }
+
+                if (detectedSurah) {
+                    window.setImamSurahPickerVal('imam-' + day, 'fi-' + day + '-surah', detectedSurah);
+                } else {
+                    window.setImamSurahPickerVal('imam-' + day, 'fi-' + day + '-surah', '');
+                }
+
+                if (anyValuePresent && !isAllSmartCompatible && !detectedSurah) {
+                    window.toggleImamInputMode(day);
                 }
             });
             window.switchAdminImamDay(window.getHariSekolahAktif());
@@ -1439,6 +1703,10 @@ window.simpanDataMading = async () => {
     } else if (id === 'jadwal-imam') {
         const jmlRakaat = window.getJumlahRakaat();
         ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
+            const smartContainer = document.getElementById('mode-smart-' + day);
+            if (smartContainer && smartContainer.style.display !== 'none') {
+                window.syncImamSmartInputs(day);
+            }
             newFields[day + '_nama'] = document.getElementById('fi-' + day + '-nama').value;
             for (let r = 1; r <= jmlRakaat; r++) {
                 const inputEl = document.getElementById('fi-' + day + '-r' + r);
