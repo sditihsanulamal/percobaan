@@ -1497,161 +1497,119 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
 /* ========================================================= */
 /* KARTU MURAJA'AH: ATMOSFER FAJAR (PAGI) & SENJA (SORE)     */
 /* ========================================================= */
-.royal-murajaah-cards {
+/* ========================================================= */
+/* SATU KANVAS HARMONIS (MURAJA'AH & IMAM STEPPER)           */
+/* ========================================================= */
+.royal-unified-canvas {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    border-radius: 18px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s ease;
+}
+
+/* Sesi Muraja'ah dalam Satu Kanvas */
+.royal-canvas-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
 }
 
-.royal-sesi-card {
-    border-radius: 18px;
-    padding: 16px 18px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.royal-sesi-card:hover {
-    transform: translateY(-2px);
-}
-
-/* Kartu Pagi — Atmosfer Fajar Hangat */
-.royal-sesi-card.pagi {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(212, 175, 55, 0.08) 100%);
-    border: 1px solid rgba(245, 158, 11, 0.35);
-    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.1);
-}
-
-/* Kartu Sore — Atmosfer Senja Syahdu */
-.royal-sesi-card.sore {
-    background: linear-gradient(135deg, rgba(30, 58, 138, 0.22) 0%, rgba(13, 148, 136, 0.12) 100%);
-    border: 1px solid rgba(56, 189, 248, 0.32);
-    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.08);
-}
-
-.royal-sesi-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.royal-sesi-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+.royal-canvas-label {
     font-size: 11.5px;
     font-weight: 800;
-    padding: 4px 12px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
+    color: var(--gold);
     text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.royal-sesi-badge.pagi {
-    background: rgba(245, 158, 11, 0.22);
-    color: #fbbf24;
-    border: 1px solid rgba(245, 158, 11, 0.45);
-}
-
-.royal-sesi-badge.sore {
-    background: rgba(56, 189, 248, 0.2);
-    color: #7dd3fc;
-    border: 1px solid rgba(56, 189, 248, 0.4);
-}
-
-.royal-sesi-content {
-    background: rgba(0, 0, 0, 0.25);
-    border-radius: 12px;
-    padding: 10px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.royal-sesi-val {
+.royal-canvas-value {
     font-size: 15px;
     font-weight: 700;
     color: #ffffff;
     font-family: 'Lora', serif;
+    padding-left: 2px;
     word-break: normal;
 }
 
-/* ========================================================= */
-/* KARTU IMAM DHUHA: ALUR RAKA'AT KEHORMATAN                 */
-/* ========================================================= */
-.royal-rakaat-flow {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.royal-canvas-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.25), transparent);
+    margin: 12px 0;
 }
 
-.royal-rakaat-item {
+/* Alur Stepper Minimalis untuk Jadwal Imam */
+.royal-stepper-canvas {
+    position: relative;
+    padding: 16px 20px;
+}
+
+.royal-stepper-item {
+    position: relative;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 14px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(212, 175, 55, 0.22);
-    border-radius: 16px;
-    padding: 12px 14px;
-    transition: all 0.2s ease;
+    padding-bottom: 14px;
 }
 
-.royal-rakaat-item:hover {
-    border-color: rgba(212, 175, 55, 0.45);
-    background: rgba(212, 175, 55, 0.06);
-    transform: translateX(2px);
+.royal-stepper-item:last-child {
+    padding-bottom: 0;
 }
 
-.royal-rakaat-node {
-    width: 48px;
-    height: 48px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(1, 27, 19, 0.8) 100%);
+/* Garis Alur Vertikal Emas */
+.royal-stepper-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 28px;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--gold) 0%, rgba(212, 175, 55, 0.2) 100%);
+    border-radius: 2px;
+}
+
+/* Node / Titik Nomor Raka'at */
+.royal-stepper-node {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, #011b13 100%);
     border: 1.5px solid var(--gold);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.royal-rakaat-node .num {
-    font-size: 17px;
+    font-size: 13px;
     font-weight: 800;
     color: var(--gold-light);
-    line-height: 1;
     font-family: 'Lora', serif;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.35);
+    z-index: 1;
 }
 
-.royal-rakaat-node .lbl {
-    font-size: 8.5px;
-    font-weight: 700;
-    color: var(--gold-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    margin-top: 2px;
-}
-
-.royal-rakaat-detail {
+.royal-stepper-content {
     flex: 1;
     min-width: 0;
 }
 
-.royal-rakaat-title {
+.royal-stepper-label {
     font-size: 11px;
     font-weight: 700;
-    color: var(--gold);
+    color: var(--gold-muted);
     text-transform: uppercase;
     letter-spacing: 0.8px;
-    margin-bottom: 3px;
+    margin-bottom: 2px;
 }
 
-.royal-rakaat-surah {
-    font-size: 15px;
+.royal-stepper-value {
+    font-size: 14.5px;
     font-weight: 700;
     color: #ffffff;
     font-family: 'Lora', serif;
-    white-space: normal;
     word-break: normal;
 }
 
@@ -1881,48 +1839,39 @@ header p { color: var(--gold); font-size: 13px; font-weight: 600; letter-spacing
         margin: 4px auto 10px !important;
         width: 50% !important;
     }
-    .royal-murajaah-cards {
-        gap: 8px !important;
+    .royal-unified-canvas {
+        padding: 12px 14px !important;
+        border-radius: 14px !important;
     }
-    .royal-sesi-card {
-        padding: 10px 12px !important;
-        border-radius: 12px !important;
+    .royal-canvas-label {
+        font-size: 11px !important;
     }
-    .royal-sesi-badge {
-        font-size: 10.5px !important;
-        padding: 3px 8px !important;
+    .royal-canvas-value {
+        font-size: 13.5px !important;
     }
-    .royal-sesi-content {
-        padding: 7px 10px !important;
-        border-radius: 10px !important;
+    .royal-canvas-divider {
+        margin: 10px 0 !important;
     }
-    .royal-sesi-val {
-        font-size: 13px !important;
+    .royal-stepper-canvas {
+        padding: 12px 12px !important;
     }
-    .royal-rakaat-flow {
-        gap: 7px !important;
+    .royal-stepper-item {
+        gap: 12px !important;
+        padding-bottom: 12px !important;
     }
-    .royal-rakaat-item {
-        padding: 8px 10px !important;
-        gap: 10px !important;
-        border-radius: 12px !important;
+    .royal-stepper-item:not(:last-child)::before {
+        left: 11px !important;
+        top: 24px !important;
     }
-    .royal-rakaat-node {
-        width: 36px !important;
-        height: 36px !important;
-        border-radius: 10px !important;
+    .royal-stepper-node {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 11.5px !important;
     }
-    .royal-rakaat-node .num {
-        font-size: 13px !important;
-    }
-    .royal-rakaat-node .lbl {
-        font-size: 7.5px !important;
-    }
-    .royal-rakaat-title {
+    .royal-stepper-label {
         font-size: 9.5px !important;
-        margin-bottom: 2px !important;
     }
-    .royal-rakaat-surah {
-        font-size: 12.5px !important;
+    .royal-stepper-value {
+        font-size: 13px !important;
     }
 }

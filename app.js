@@ -1010,22 +1010,15 @@ window.renderMadingHtml = (id, fields) => {
                 + `  <div class="royal-person-name">${nama}</div>`
                 + `  <div class="royal-flourish"><span>✦</span></div>`
                 + `</div>`
-                + `<div class="royal-murajaah-cards">`
-                + `  <div class="royal-sesi-card pagi">`
-                + `    <div class="royal-sesi-header">`
-                + `      <span class="royal-sesi-badge pagi">☀️ Sesi Pagi</span>`
-                + `    </div>`
-                + `    <div class="royal-sesi-content">`
-                + `      <div class="royal-sesi-val">${pagi}</div>`
-                + `    </div>`
+                + `<div class="royal-unified-canvas">`
+                + `  <div class="royal-canvas-section">`
+                + `    <div class="royal-canvas-label">☀️ Sesi Pagi</div>`
+                + `    <div class="royal-canvas-value">${pagi}</div>`
                 + `  </div>`
-                + `  <div class="royal-sesi-card sore">`
-                + `    <div class="royal-sesi-header">`
-                + `      <span class="royal-sesi-badge sore">🌙 Sesi Sore</span>`
-                + `    </div>`
-                + `    <div class="royal-sesi-content">`
-                + `      <div class="royal-sesi-val">${sore}</div>`
-                + `    </div>`
+                + `  <div class="royal-canvas-divider"></div>`
+                + `  <div class="royal-canvas-section">`
+                + `    <div class="royal-canvas-label">🌙 Sesi Sore</div>`
+                + `    <div class="royal-canvas-value">${sore}</div>`
                 + `  </div>`
                 + `</div>`
                 + `</div>`;
@@ -1104,17 +1097,14 @@ window.renderMadingHtml = (id, fields) => {
             const nama = fields[d.key + '_nama'] || '-';
             const initials = nama !== '-' ? window.getInitials(nama) : '—';
 
-            let rakaatCardsHtml = '';
+            let stepperItemsHtml = '';
             for (let r = 1; r <= jmlRakaat; r++) {
                 const val = fields[d.key + '_r' + r] || '-';
-                rakaatCardsHtml += `<div class="royal-rakaat-item">`
-                    + `  <div class="royal-rakaat-node">`
-                    + `    <span class="num">${r}</span>`
-                    + `    <span class="lbl">Raka'at</span>`
-                    + `  </div>`
-                    + `  <div class="royal-rakaat-detail">`
-                    + `    <div class="royal-rakaat-title">Raka'at ke-${r}</div>`
-                    + `    <div class="royal-rakaat-surah">${val}</div>`
+                stepperItemsHtml += `<div class="royal-stepper-item">`
+                    + `  <div class="royal-stepper-node">${r}</div>`
+                    + `  <div class="royal-stepper-content">`
+                    + `    <div class="royal-stepper-label">Raka'at ke-${r}</div>`
+                    + `    <div class="royal-stepper-value">${val}</div>`
                     + `  </div>`
                     + `</div>`;
             }
@@ -1126,8 +1116,8 @@ window.renderMadingHtml = (id, fields) => {
                 + `  <div class="royal-person-name">${nama}</div>`
                 + `  <div class="royal-flourish"><span>✦</span></div>`
                 + `</div>`
-                + `<div class="royal-rakaat-flow">`
-                + rakaatCardsHtml
+                + `<div class="royal-unified-canvas royal-stepper-canvas">`
+                + stepperItemsHtml
                 + `</div>`
                 + `</div>`;
         });
