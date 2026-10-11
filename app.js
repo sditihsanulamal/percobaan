@@ -304,9 +304,11 @@ window.selectSurahPicker = (day, surahNo) => {
     const juzBadge = window.getSurahJuzBadge(s);
     const labelEl = document.getElementById('label-' + day + '-surah');
     if (labelEl) {
-        labelEl.innerHTML = `<b>${s.no}. ${s.nama}</b>`
-            + (juzBadge ? `<span style="font-size:10px; color:var(--gold); background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.25); padding:1px 6px; border-radius:6px; font-weight:700; margin-left:6px;">${juzBadge}</span>` : '')
-            + ` <span style="font-size:11px; color:var(--text-muted); font-weight:500; margin-left:4px;">- ${s.ayat} Ayat</span>`;
+        labelEl.innerHTML = `<span style="display:inline-flex; align-items:center; gap:8px;">`
+            + `<span class="surah-picker-num">${s.no}</span>`
+            + `<b style="color:var(--gold-light);">${s.nama}</b>`
+            + (juzBadge ? `<span style="font-size:10px; color:var(--gold); background:rgba(212,175,55,0.12); border:1px solid rgba(212,175,55,0.25); padding:1px 6px; border-radius:6px; font-weight:700;">${juzBadge}</span>` : '')
+            + `</span>`;
     }
 
     const listEl = document.getElementById('list-' + day + '-surah');
@@ -365,7 +367,7 @@ window.validasiBatasAyat = (day) => {
         if (val > s.ayat) {
             hintEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">⚠️ Melebihi batas! Surah ${s.nama} hanya memiliki ${s.ayat} ayat.</span>`;
         } else {
-            hintEl.innerText = `Batas total surah ini: ${s.ayat} ayat (Juz ${s.juz})`;
+            hintEl.innerText = `Total: ${s.ayat} ayat`;
         }
     } else {
         hintEl.innerText = '';
@@ -607,13 +609,13 @@ window.toggleImamInputMode = (day) => {
     const isSmartActive = (smartContainer.style.display !== 'none');
     if (isSmartActive) {
         smartContainer.style.display = 'none';
-        manualContainer.style.display = 'grid';
-        btn.innerHTML = '⚡ Mode Cepat (Surah + Ayat)';
+        manualContainer.style.display = 'flex';
+        btn.innerHTML = '⚡ Mode Cepat';
     } else {
         window.syncImamSmartInputs(day);
         manualContainer.style.display = 'none';
         smartContainer.style.display = 'block';
-        btn.innerHTML = '✏️ Mode Ketik Manual';
+        btn.innerHTML = '✏️ Ketik Manual';
     }
 };
 
@@ -1406,14 +1408,12 @@ window.openMading = (id) => {
 
         let panesHtml = '';
         days.forEach(d => {
-            const D = d.charAt(0).toUpperCase() + d.slice(1);
             panesHtml += `<div class="admin-murajaah-day-pane" id="pane-admin-murajaah-${d}" style="display:none;">`
-                + `<div style="margin-bottom:14px;"><span class="hari-badge" style="margin:0;">Jadwal Muraja'ah Hari ${D}</span></div>`
-                + `<div class="detail-label" style="margin-bottom:8px;">Pilih Pemimpin Muraja'ah</div>`
+                + `<div class="detail-label" style="margin-bottom:6px;">Pemimpin Muraja'ah</div>`
                 + window.createStudentPickerMarkup('murajaah-' + d, 'fm-' + d + '-nama', 'Pilih Pemimpin Muraja\'ah...')
-                + `<div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Materi Muraja'ah Pagi ☀️</div>`
+                + `<div class="detail-label" style="margin-top:12px; margin-bottom:6px;">Materi Muraja'ah Pagi ☀️</div>`
                 + `<input type="text" id="fm-${d}-pagi" class="admin-input" placeholder="Contoh: An-Naba – At-Thariq">`
-                + `<div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Materi Muraja'ah Sore 🌙</div>`
+                + `<div class="detail-label" style="margin-top:12px; margin-bottom:6px;">Materi Muraja'ah Sore 🌙</div>`
                 + `<input type="text" id="fm-${d}-sore" class="admin-input" placeholder="Contoh: Al-A'la – An-Nas">`
                 + `</div>`;
         });
@@ -1432,43 +1432,40 @@ window.openMading = (id) => {
 
         let panesHtml = '';
         days.forEach(d => {
-            const D = d.charAt(0).toUpperCase() + d.slice(1);
             let rakaatSmartCards = '';
             let rakaatManualInputs = '';
             for (let r = 1; r <= jmlRakaat; r++) {
-                rakaatSmartCards += `<div class="imam-rakaat-card-input">`
-                    + `<div class="rakaat-badge-label">Raka'at ${r}</div>`
+                rakaatSmartCards += `<div class="imam-rakaat-strip">`
+                    + `<span class="rakaat-strip-tag">Raka'at ${r}</span>`
                     + `<div class="imam-range-inputs">`
-                    + `<input type="number" min="1" id="fi-${d}-r${r}-start" class="admin-input-num" placeholder="Ayat dr" oninput="window.syncImamSmartInputs('${d}')">`
-                    + `<span class="range-sep">sampai</span>`
-                    + `<input type="number" min="1" id="fi-${d}-r${r}-end" class="admin-input-num" placeholder="Ayat ke" oninput="window.syncImamSmartInputs('${d}')">`
+                    + `<input type="number" min="1" id="fi-${d}-r${r}-start" class="admin-input-num" placeholder="Mulai" oninput="window.syncImamSmartInputs('${d}')">`
+                    + `<span class="range-dash">–</span>`
+                    + `<input type="number" min="1" id="fi-${d}-r${r}-end" class="admin-input-num" placeholder="Sampai" oninput="window.syncImamSmartInputs('${d}')">`
                     + `</div>`
                     + `</div>`;
 
-                rakaatManualInputs += `<div>`
-                    + `<div style="font-size:11px; color:var(--gold); margin-bottom:4px; font-weight:700;">Raka'at ${r}</div>`
-                    + `<input type="text" id="fi-${d}-r${r}" class="admin-input" placeholder="Contoh: An-Nazi'at ayat 1–12" style="font-size:13px;">`
+                rakaatManualInputs += `<div class="imam-rakaat-strip">`
+                    + `<span class="rakaat-strip-tag">Raka'at ${r}</span>`
+                    + `<input type="text" id="fi-${d}-r${r}" class="admin-input" placeholder="Contoh: An-Nazi'at ayat 1–12" style="font-size:12px; padding:6px 10px; flex:1;">`
                     + `</div>`;
             }
 
             panesHtml += `<div class="admin-imam-day-pane" id="pane-admin-imam-${d}" style="display:none;">`
-                + `<div style="margin-bottom:14px;"><span class="hari-badge" style="margin:0;">Jadwal Imam Hari ${D}</span></div>`
-                + `<div class="detail-label" style="margin-bottom:8px;">Pilih Imam Sholat Dhuha</div>`
+                + `<div class="detail-label" style="margin-bottom:6px;">Imam Sholat</div>`
                 + window.createStudentPickerMarkup('imam-' + d, 'fi-' + d + '-nama', 'Pilih Imam Sholat...')
-                + `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; margin-bottom:10px;">`
-                + `<div class="detail-label" style="margin:0;">Bacaan Surah & Ayat (${jmlRakaat} Raka'at)</div>`
-                + `<button type="button" class="btn-toggle-input-mode" id="btn-toggle-mode-${d}" onclick="window.toggleImamInputMode('${d}')">✏️ Mode Ketik Manual</button>`
+                + `<div class="imam-rakaat-header-row">`
+                + `<div class="detail-label" style="margin:0;">Bacaan Surah & Ayat</div>`
+                + `<button type="button" class="btn-toggle-input-mode" id="btn-toggle-mode-${d}" onclick="window.toggleImamInputMode('${d}')">✏️ Ketik Manual</button>`
                 + `</div>`
                 + `<div id="mode-smart-${d}">`
-                + `<div style="margin-bottom:10px;">`
-                + `<div style="font-size:11px; color:var(--text-muted); margin-bottom:5px; font-weight:600;">Pilih Surah untuk Hari ${D}</div>`
+                + `<div style="margin-bottom:8px;">`
                 + window.createImamSurahPickerMarkup('imam-' + d, 'fi-' + d + '-surah', 'Pilih Surah (Juz 1, 2, 28–30)...')
                 + `</div>`
-                + `<div class="imam-ayat-grid">`
+                + `<div class="imam-rakaat-strips-list">`
                 + rakaatSmartCards
                 + `</div>`
                 + `</div>`
-                + `<div id="mode-manual-${d}" style="display:none; grid-template-columns:1fr 1fr; gap:10px;">`
+                + `<div id="mode-manual-${d}" class="imam-rakaat-strips-list" style="display:none;">`
                 + rakaatManualInputs
                 + `</div>`
                 + `</div>`;

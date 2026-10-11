@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=22">
+    <link rel="stylesheet" href="style.css?v=23">
 </head>
 
 <body>
@@ -412,10 +412,6 @@
 
                 <!-- Form Target Quran (Mingguan: Senin s/d Kamis) -->
                 <div id="form-target-quran" class="admin-form-mading" style="display:none;">
-                    <div style="font-size:12px; color:var(--text-muted); margin-bottom:14px; text-align:center; line-height: 1.4;">
-                        Atur target hafalan Al-Qur'an 1 kali untuk 1 pekan (Senin – Kamis).
-                    </div>
-
                     <!-- Tab Hari Admin Target Quran -->
                     <div class="quran-day-nav" id="adminQuranDayNav">
                         <button type="button" class="quran-day-pill active" data-day="senin" onclick="window.switchAdminQuranDay('senin')">Senin</button>
@@ -426,11 +422,10 @@
 
                     <!-- Pane Senin -->
                     <div class="admin-quran-day-pane" id="pane-quran-senin">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <span class="hari-badge" style="margin:0;">Target Hari Senin</span>
-                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('senin')">📋 Salin Surah ke Hari Lain</button>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div class="detail-label" style="margin:0;">Pilih Surah</div>
+                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('senin')">📋 Salin ke Hari Lain</button>
                         </div>
-                        <div class="detail-label" style="margin-bottom:8px;">Pilih Surah Al-Qur'an</div>
                         <div class="surah-picker-wrap" id="picker-wrap-senin">
                             <input type="hidden" id="fq-senin-surah" value="">
                             <div class="surah-picker-trigger" id="trigger-senin-surah" onclick="window.toggleSurahPicker('senin')">
@@ -441,14 +436,14 @@
                                 <div class="surah-picker-list" id="list-senin-surah"></div>
                             </div>
                         </div>
-                        <div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Nomor Ayat</div>
+                        <div class="detail-label" style="margin-top:12px; margin-bottom:6px;">Nomor Ayat</div>
                         <input type="number" id="fq-senin-ayat" class="admin-input" placeholder="Contoh: 62" min="1" oninput="window.validasiBatasAyat('senin')">
                         <div class="ayat-limit-hint" id="hint-senin-ayat" style="font-size:11px; color:var(--gold-muted); margin-top:4px;"></div>
-                        <div class="audio-url-section" style="margin-top:16px;">
-                            <span class="audio-url-label">🎙️ URL Audio Rekaman Hari Senin (Opsional)</span>
+                        <div class="audio-url-section" style="margin-top:14px; padding-top:10px;">
+                            <span class="audio-url-label" style="margin-bottom:6px;">🎙️ URL Audio Rekaman (Opsional)</span>
                             <input type="text" id="fq-senin-audio" class="admin-input" placeholder="https://voca.ro/... (tempel URL audio)">
                             <a href="https://vocaroo.com" target="_blank"
-                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:8px; background:rgba(212,175,55,0.1); padding:6px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.3);">
                                 🎙️ Rekam Suara di Vocaroo
                             </a>
                         </div>
@@ -456,11 +451,10 @@
 
                     <!-- Pane Selasa -->
                     <div class="admin-quran-day-pane" id="pane-quran-selasa" style="display:none;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <span class="hari-badge" style="margin:0;">Target Hari Selasa</span>
-                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('selasa')">📋 Salin Surah ke Hari Lain</button>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div class="detail-label" style="margin:0;">Pilih Surah</div>
+                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('selasa')">📋 Salin ke Hari Lain</button>
                         </div>
-                        <div class="detail-label" style="margin-bottom:8px;">Pilih Surah Al-Qur'an</div>
                         <div class="surah-picker-wrap" id="picker-wrap-selasa">
                             <input type="hidden" id="fq-selasa-surah" value="">
                             <div class="surah-picker-trigger" id="trigger-selasa-surah" onclick="window.toggleSurahPicker('selasa')">
@@ -471,14 +465,14 @@
                                 <div class="surah-picker-list" id="list-selasa-surah"></div>
                             </div>
                         </div>
-                        <div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Nomor Ayat</div>
+                        <div class="detail-label" style="margin-top:12px; margin-bottom:6px;">Nomor Ayat</div>
                         <input type="number" id="fq-selasa-ayat" class="admin-input" placeholder="Contoh: 63" min="1" oninput="window.validasiBatasAyat('selasa')">
                         <div class="ayat-limit-hint" id="hint-selasa-ayat" style="font-size:11px; color:var(--gold-muted); margin-top:4px;"></div>
-                        <div class="audio-url-section" style="margin-top:16px;">
-                            <span class="audio-url-label">🎙️ URL Audio Rekaman Hari Selasa (Opsional)</span>
+                        <div class="audio-url-section" style="margin-top:14px; padding-top:10px;">
+                            <span class="audio-url-label" style="margin-bottom:6px;">🎙️ URL Audio Rekaman (Opsional)</span>
                             <input type="text" id="fq-selasa-audio" class="admin-input" placeholder="https://voca.ro/... (tempel URL audio)">
                             <a href="https://vocaroo.com" target="_blank"
-                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:8px; background:rgba(212,175,55,0.1); padding:6px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.3);">
                                 🎙️ Rekam Suara di Vocaroo
                             </a>
                         </div>
@@ -486,11 +480,10 @@
 
                     <!-- Pane Rabu -->
                     <div class="admin-quran-day-pane" id="pane-quran-rabu" style="display:none;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <span class="hari-badge" style="margin:0;">Target Hari Rabu</span>
-                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('rabu')">📋 Salin Surah ke Hari Lain</button>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div class="detail-label" style="margin:0;">Pilih Surah</div>
+                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('rabu')">📋 Salin ke Hari Lain</button>
                         </div>
-                        <div class="detail-label" style="margin-bottom:8px;">Pilih Surah Al-Qur'an</div>
                         <div class="surah-picker-wrap" id="picker-wrap-rabu">
                             <input type="hidden" id="fq-rabu-surah" value="">
                             <div class="surah-picker-trigger" id="trigger-rabu-surah" onclick="window.toggleSurahPicker('rabu')">
@@ -501,14 +494,14 @@
                                 <div class="surah-picker-list" id="list-rabu-surah"></div>
                             </div>
                         </div>
-                        <div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Nomor Ayat</div>
+                        <div class="detail-label" style="margin-top:12px; margin-bottom:6px;">Nomor Ayat</div>
                         <input type="number" id="fq-rabu-ayat" class="admin-input" placeholder="Contoh: 64" min="1" oninput="window.validasiBatasAyat('rabu')">
                         <div class="ayat-limit-hint" id="hint-rabu-ayat" style="font-size:11px; color:var(--gold-muted); margin-top:4px;"></div>
-                        <div class="audio-url-section" style="margin-top:16px;">
-                            <span class="audio-url-label">🎙️ URL Audio Rekaman Hari Rabu (Opsional)</span>
+                        <div class="audio-url-section" style="margin-top:14px; padding-top:10px;">
+                            <span class="audio-url-label" style="margin-bottom:6px;">🎙️ URL Audio Rekaman (Opsional)</span>
                             <input type="text" id="fq-rabu-audio" class="admin-input" placeholder="https://voca.ro/... (tempel URL audio)">
                             <a href="https://vocaroo.com" target="_blank"
-                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:8px; background:rgba(212,175,55,0.1); padding:6px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.3);">
                                 🎙️ Rekam Suara di Vocaroo
                             </a>
                         </div>
@@ -516,11 +509,10 @@
 
                     <!-- Pane Kamis -->
                     <div class="admin-quran-day-pane" id="pane-quran-kamis" style="display:none;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <span class="hari-badge" style="margin:0;">Target Hari Kamis</span>
-                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('kamis')">📋 Salin Surah ke Hari Lain</button>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div class="detail-label" style="margin:0;">Pilih Surah</div>
+                            <button type="button" class="btn-copy-surah" onclick="window.salinSurahKeSemuaHari('kamis')">📋 Salin ke Hari Lain</button>
                         </div>
-                        <div class="detail-label" style="margin-bottom:8px;">Pilih Surah Al-Qur'an</div>
                         <div class="surah-picker-wrap" id="picker-wrap-kamis">
                             <input type="hidden" id="fq-kamis-surah" value="">
                             <div class="surah-picker-trigger" id="trigger-kamis-surah" onclick="window.toggleSurahPicker('kamis')">
@@ -531,14 +523,14 @@
                                 <div class="surah-picker-list" id="list-kamis-surah"></div>
                             </div>
                         </div>
-                        <div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Nomor Ayat</div>
+                        <div class="detail-label" style="margin-top:12px; margin-bottom:6px;">Nomor Ayat</div>
                         <input type="number" id="fq-kamis-ayat" class="admin-input" placeholder="Contoh: 65" min="1" oninput="window.validasiBatasAyat('kamis')">
                         <div class="ayat-limit-hint" id="hint-kamis-ayat" style="font-size:11px; color:var(--gold-muted); margin-top:4px;"></div>
-                        <div class="audio-url-section" style="margin-top:16px;">
-                            <span class="audio-url-label">🎙️ URL Audio Rekaman Hari Kamis (Opsional)</span>
+                        <div class="audio-url-section" style="margin-top:14px; padding-top:10px;">
+                            <span class="audio-url-label" style="margin-bottom:6px;">🎙️ URL Audio Rekaman (Opsional)</span>
                             <input type="text" id="fq-kamis-audio" class="admin-input" placeholder="https://voca.ro/... (tempel URL audio)">
                             <a href="https://vocaroo.com" target="_blank"
-                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:10px; background:rgba(212,175,55,0.1); padding:8px 14px; border-radius:12px; border:1px solid rgba(212,175,55,0.3);">
+                                style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--gold); text-decoration:none; margin-top:8px; background:rgba(212,175,55,0.1); padding:6px 12px; border-radius:10px; border:1px solid rgba(212,175,55,0.3);">
                                 🎙️ Rekam Suara di Vocaroo
                             </a>
                         </div>
@@ -683,7 +675,7 @@
     </div>
 
     <!-- Panggil File JS Eksternal (Menggunakan type="module" dan Cache Busting) -->
-    <script type="module" src="app.js?v=22"></script>
+    <script type="module" src="app.js?v=23"></script>
 </body>
 
 </html>
