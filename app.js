@@ -230,6 +230,18 @@ window.getHariQuranAktif = () => {
     return 'kamis'; // default Jumat, Sabtu, Minggu ke Kamis
 };
 
+// Helper: Hari aktif sekolah (Senin - Jumat) untuk Muraja'ah & Imam Sholat
+window.getHariSekolahAktif = () => {
+    const d = new Date();
+    const day = d.getDay();
+    if (day === 1) return 'senin';
+    if (day === 2) return 'selasa';
+    if (day === 3) return 'rabu';
+    if (day === 4) return 'kamis';
+    if (day === 5) return 'jumat';
+    return 'senin'; // default Sabtu, Minggu ke Senin (persiapan pekan baru)
+};
+
 // ============================================================
 // SISTEM SURAH PICKER & FORM TARGET MINGGUAN
 // ============================================================
@@ -387,11 +399,169 @@ window.switchAdminQuranDay = (day) => {
 
 window.switchPublicQuranDay = () => {};
 
-// Tutup dropdown surah jika klik di luar
+// Switcher Admin & Public untuk Muraja'ah dan Imam
+window.switchAdminMurajaahDay = (day) => {
+    document.querySelectorAll('#adminMurajaahDayNav .quran-day-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-day') === day);
+    });
+    ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
+        const pane = document.getElementById('pane-admin-murajaah-' + d);
+        if (pane) pane.style.display = (d === day) ? 'block' : 'none';
+    });
+};
+
+window.switchAdminImamDay = (day) => {
+    document.querySelectorAll('#adminImamDayNav .quran-day-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-day') === day);
+    });
+    ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
+        const pane = document.getElementById('pane-admin-imam-' + d);
+        if (pane) pane.style.display = (d === day) ? 'block' : 'none';
+    });
+};
+
+window.switchPublicMurajaahDay = (day) => {
+    document.querySelectorAll('#publicMurajaahDayTabs .mading-day-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-day') === day);
+    });
+    ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
+        const pane = document.getElementById('pub-pane-murajaah-' + d);
+        if (pane) pane.style.display = (d === day) ? 'block' : 'none';
+    });
+};
+
+window.switchPublicImamDay = (day) => {
+    document.querySelectorAll('#publicImamDayTabs .mading-day-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-day') === day);
+    });
+    ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
+        const pane = document.getElementById('pub-pane-imam-' + d);
+        if (pane) pane.style.display = (d === day) ? 'block' : 'none';
+    });
+};
+
+// ============================================================
+// SISTEM CUSTOM STUDENT PICKER (DROPDOWN NAMA MURID)
+// ============================================================
+window.createStudentPickerMarkup = (pickerId, targetInputId, placeholder = 'Pilih Nama Ananda / Santri...') => {
+    return `<div class="student-picker-wrap" id="picker-wrap-student-${pickerId}">`
+        + `<input type="hidden" id="${targetInputId}" value="">`
+        + `<div class="student-picker-trigger" id="trigger-student-${pickerId}" onclick="window.toggleStudentPicker('${pickerId}', '${targetInputId}')">`
+        + `<span class="student-picker-label" id="label-student-${pickerId}">${placeholder}</span>`
+        + `<svg class="student-picker-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>`
+        + `</div>`
+        + `<div class="student-picker-dropdown" id="dropdown-student-${pickerId}">`
+        + `<input type="text" class="student-picker-search" placeholder="🔍 Cari nama murid di kelas ini..." oninput="window.filterStudentPicker('${pickerId}', this.value)">`
+        + `<div class="student-picker-list" id="list-student-${pickerId}"></div>`
+        + `</div>`
+        + `</div>`;
+};
+
+window.initStudentPicker = (pickerId, targetInputId) => {
+    const listEl = document.getElementById('list-student-' + pickerId);
+    if (!listEl) return;
+
+    let html = `<div class="student-picker-item" onclick="window.selectStudentPicker('${pickerId}', '${targetInputId}', '')" style="color:#f87171; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px; margin-bottom:4px;">`
+        + `<span>✕ Kosongkan Pilihan</span>`
+        + `</div>`;
+
+    if (Array.isArray(dataMuridDinamis) && dataMuridDinamis.length > 0) {
+        dataMuridDinamis.forEach(m => {
+            const initials = window.getInitials(m.nama || '');
+            const safeName = (m.nama || '').replace(/'/g, "\\'");
+            html += `<div class="student-picker-item" data-nama="${m.nama}" onclick="window.selectStudentPicker('${pickerId}', '${targetInputId}', '${safeName}')">`
+                + `<div style="display:flex; align-items:center; gap:10px;">`
+                + `<div class="student-picker-avatar">${initials}</div>`
+                + `<span style="color:#fff; font-weight:600;">${m.nama}</span>`
+                + `</div>`
+                + `</div>`;
+        });
+    } else {
+        html += `<div style="padding:14px; text-align:center; color:var(--text-muted); font-size:12px;">Belum ada data murid di kelas ${window.kelasTarget}</div>`;
+    }
+    listEl.innerHTML = html;
+};
+
+window.toggleStudentPicker = (pickerId, targetInputId) => {
+    const dropdown = document.getElementById('dropdown-student-' + pickerId);
+    const trigger = document.getElementById('trigger-student-' + pickerId);
+    if (!dropdown || !trigger) return;
+    const isShow = dropdown.classList.contains('show');
+
+    // Tutup semua dropdown lain
+    document.querySelectorAll('.surah-picker-dropdown, .student-picker-dropdown').forEach(d => d.classList.remove('show'));
+    document.querySelectorAll('.surah-picker-trigger, .student-picker-trigger').forEach(t => t.classList.remove('active'));
+
+    if (!isShow) {
+        window.initStudentPicker(pickerId, targetInputId);
+        dropdown.classList.add('show');
+        trigger.classList.add('active');
+        const searchInput = dropdown.querySelector('.student-picker-search');
+        if (searchInput) {
+            searchInput.value = '';
+            window.filterStudentPicker(pickerId, '');
+            setTimeout(() => searchInput.focus(), 50);
+        }
+    }
+};
+
+window.filterStudentPicker = (pickerId, query) => {
+    const listEl = document.getElementById('list-student-' + pickerId);
+    if (!listEl) return;
+    const q = (query || '').toLowerCase().trim();
+
+    Array.from(listEl.children).forEach((item, idx) => {
+        if (idx === 0) return; // opsi kosongkan selalu tampil
+        const nama = (item.getAttribute('data-nama') || '').toLowerCase();
+        const matches = !q || nama.includes(q);
+        item.style.display = matches ? 'flex' : 'none';
+    });
+};
+
+window.selectStudentPicker = (pickerId, targetInputId, namaMurid) => {
+    const targetInput = document.getElementById(targetInputId);
+    if (targetInput) targetInput.value = namaMurid || '';
+
+    const labelEl = document.getElementById('label-student-' + pickerId);
+    if (labelEl) {
+        if (namaMurid) {
+            const initials = window.getInitials(namaMurid);
+            labelEl.innerHTML = `<span style="display:inline-flex; align-items:center; gap:8px;"><span class="student-picker-avatar mini">${initials}</span><b>${namaMurid}</b></span>`;
+        } else {
+            labelEl.innerText = 'Pilih Nama Ananda / Santri...';
+        }
+    }
+
+    const dropdown = document.getElementById('dropdown-student-' + pickerId);
+    const trigger = document.getElementById('trigger-student-' + pickerId);
+    if (dropdown) dropdown.classList.remove('show');
+    if (trigger) trigger.classList.remove('active');
+};
+
+window.setStudentPickerVal = (pickerId, targetInputId, namaMurid) => {
+    const targetInput = document.getElementById(targetInputId);
+    if (targetInput) targetInput.value = namaMurid || '';
+
+    const labelEl = document.getElementById('label-student-' + pickerId);
+    if (labelEl) {
+        if (namaMurid) {
+            const initials = window.getInitials(namaMurid);
+            labelEl.innerHTML = `<span style="display:inline-flex; align-items:center; gap:8px;"><span class="student-picker-avatar mini">${initials}</span><b>${namaMurid}</b></span>`;
+        } else {
+            labelEl.innerText = 'Pilih Nama Ananda / Santri...';
+        }
+    }
+};
+
+// Tutup dropdown surah & student jika klik di luar
 document.addEventListener('click', (e) => {
     if (!e.target.closest('.surah-picker-wrap')) {
         document.querySelectorAll('.surah-picker-dropdown').forEach(d => d.classList.remove('show'));
         document.querySelectorAll('.surah-picker-trigger').forEach(t => t.classList.remove('active'));
+    }
+    if (!e.target.closest('.student-picker-wrap')) {
+        document.querySelectorAll('.student-picker-dropdown').forEach(d => d.classList.remove('show'));
+        document.querySelectorAll('.student-picker-trigger').forEach(t => t.classList.remove('active'));
     }
 });
 
@@ -827,18 +997,53 @@ window.renderMadingHtml = (id, fields) => {
     };
 
     if (id === 'jadwal-murajaah') {
-        let html = '<div style="display:flex; flex-direction:column; gap:16px;">';
-        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
-            const D = d.charAt(0).toUpperCase() + d.slice(1);
-            html += '<div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:16px;">'
-                + '<div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:15px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px;">'
-                + D + ' - <span style="color:#fff;">' + (fields[d + '_nama'] || '-') + '</span></div>'
-                + '<div style="display:flex;flex-direction:column;gap:10px;">'
-                + '<div><div style="font-size:11px;color:var(--text-muted);">☀️ Pagi</div><div style="font-size:14px;font-weight:600;color:#fff;">' + (fields[d + '_pagi'] || '-') + '</div></div>'
-                + '<div><div style="font-size:11px;color:var(--text-muted);">🌙 Sore</div><div style="font-size:14px;font-weight:600;color:#fff;">' + (fields[d + '_sore'] || '-') + '</div></div>'
-                + '</div></div>';
+        const days = [
+            { key: 'senin', label: 'Senin' },
+            { key: 'selasa', label: 'Selasa' },
+            { key: 'rabu', label: 'Rabu' },
+            { key: 'kamis', label: 'Kamis' },
+            { key: 'jumat', label: 'Jumat' }
+        ];
+        const activeDay = window.getHariSekolahAktif();
+
+        let tabsHtml = '<div class="mading-day-tabs" id="publicMurajaahDayTabs">';
+        days.forEach(d => {
+            const isActive = (d.key === activeDay);
+            tabsHtml += `<button type="button" class="mading-day-pill ${isActive ? 'active' : ''}" data-day="${d.key}" onclick="window.switchPublicMurajaahDay('${d.key}')">${d.label}</button>`;
         });
-        return html + '</div>';
+        tabsHtml += '</div>';
+
+        let panesHtml = '<div id="publicMurajaahDayPanes">';
+        days.forEach(d => {
+            const isVisible = (d.key === activeDay);
+            const nama = fields[d.key + '_nama'] || '-';
+            const pagi = fields[d.key + '_pagi'] || '-';
+            const sore = fields[d.key + '_sore'] || '-';
+            const initials = nama !== '-' ? window.getInitials(nama) : '👤';
+
+            panesHtml += `<div class="public-murajaah-pane" id="pub-pane-murajaah-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
+                + `<div class="mading-hero-card">`
+                + `<span class="mading-hero-badge">Pemimpin Muraja'ah</span>`
+                + `<div style="display:flex; justify-content:center; align-items:center;">`
+                + `<div class="student-picker-avatar large">${initials}</div>`
+                + `</div>`
+                + `<div class="mading-hero-name">${nama}</div>`
+                + `<div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Hari ${d.label}</div>`
+                + `</div>`
+                + `<div class="mading-sub-grid">`
+                + `<div class="mading-sub-card">`
+                + `<div class="mading-sub-tag">☀️ Sesi Pagi</div>`
+                + `<div class="mading-sub-val">${pagi}</div>`
+                + `</div>`
+                + `<div class="mading-sub-card">`
+                + `<div class="mading-sub-tag">🌙 Sesi Sore</div>`
+                + `<div class="mading-sub-val">${sore}</div>`
+                + `</div>`
+                + `</div>`
+                + `</div>`;
+        });
+        panesHtml += '</div>';
+        return tabsHtml + panesHtml;
 
     } else if (id === 'target-quran') {
         const activeDay = window.getHariQuranAktif();
@@ -888,36 +1093,91 @@ window.renderMadingHtml = (id, fields) => {
         return (htmlHadits || '') + divider + (htmlDoa || '');
 
     } else if (id === 'jadwal-imam') {
+        const days = [
+            { key: 'senin', label: 'Senin' },
+            { key: 'selasa', label: 'Selasa' },
+            { key: 'rabu', label: 'Rabu' },
+            { key: 'kamis', label: 'Kamis' },
+            { key: 'jumat', label: 'Jumat' }
+        ];
+        const activeDay = window.getHariSekolahAktif();
         const jmlRakaat = window.getJumlahRakaat();
-        let html = '<div style="display:flex;flex-direction:column;gap:16px;">';
-        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(d => {
-            const D = d.charAt(0).toUpperCase() + d.slice(1);
-            html += '<div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:16px;">'
-                + '<div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:15px;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px;">'
-                + D + ' - <span style="color:#fff;">' + (fields[d + '_nama'] || '-') + '</span></div>'
-                + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
 
+        let tabsHtml = '<div class="mading-day-tabs" id="publicImamDayTabs">';
+        days.forEach(d => {
+            const isActive = (d.key === activeDay);
+            tabsHtml += `<button type="button" class="mading-day-pill ${isActive ? 'active' : ''}" data-day="${d.key}" onclick="window.switchPublicImamDay('${d.key}')">${d.label}</button>`;
+        });
+        tabsHtml += '</div>';
+
+        let panesHtml = '<div id="publicImamDayPanes">';
+        days.forEach(d => {
+            const isVisible = (d.key === activeDay);
+            const nama = fields[d.key + '_nama'] || '-';
+            const initials = nama !== '-' ? window.getInitials(nama) : '🕌';
+
+            let rakaatCardsHtml = '';
             for (let r = 1; r <= jmlRakaat; r++) {
-                html += '<div><div style="font-size:11px;color:var(--text-muted);">Raka\'at ' + r + '</div><div style="font-size:13px;font-weight:600;">' + (fields[d + '_r' + r] || '-') + '</div></div>';
+                const val = fields[d.key + '_r' + r] || '-';
+                rakaatCardsHtml += `<div class="mading-sub-card">`
+                    + `<div class="mading-sub-tag">📖 Raka'at ${r}</div>`
+                    + `<div class="mading-sub-val">${val}</div>`
+                    + `</div>`;
             }
 
-            html += '</div></div>';
+            panesHtml += `<div class="public-imam-pane" id="pub-pane-imam-${d.key}" style="${isVisible ? '' : 'display:none;'}">`
+                + `<div class="mading-hero-card">`
+                + `<span class="mading-hero-badge">Imam Sholat Dhuha</span>`
+                + `<div style="display:flex; justify-content:center; align-items:center;">`
+                + `<div class="student-picker-avatar large">${initials}</div>`
+                + `</div>`
+                + `<div class="mading-hero-name">${nama}</div>`
+                + `<div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Hari ${d.label} • Sholat Dhuha ${jmlRakaat} Raka'at</div>`
+                + `</div>`
+                + `<div class="mading-sub-grid">`
+                + rakaatCardsHtml
+                + `</div>`
+                + `</div>`;
         });
-        return html + '</div>';
+        panesHtml += '</div>';
+        return tabsHtml + panesHtml;
+
     } else if (id === 'jadwal-tilawah') {
-        let html = '<div style="display:flex;flex-direction:column;gap:16px;">';
+        let cardsHtml = '<div class="tilawah-stage-list">';
         for (let i = 1; i <= 3; i++) {
-            html += '<div style="background:rgba(255,255,255,0.05);padding:16px;border-radius:16px;border-left:4px solid var(--gold);">'
-                + '<div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:4px;">' + (fields['h' + i] || '') + '</div>'
-                + '<div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:2px;">' + (fields['n' + i] || '') + '</div>'
-                + '<div style="font-size:14px;color:var(--text-muted);">' + (fields['s' + i] || '') + '</div></div>';
+            const hari = fields['h' + i] || '-';
+            const nama = fields['n' + i] || '-';
+            const surah = fields['s' + i] || '-';
+            const initials = nama !== '-' ? window.getInitials(nama) : '🎙️';
+
+            cardsHtml += `<div class="tilawah-card">`
+                + `<div class="student-picker-avatar" style="width:44px; height:44px; font-size:15px;">${initials}</div>`
+                + `<div style="flex:1; min-width:0;">`
+                + `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">`
+                + `<span class="tilawah-badge-sesi">SESI ${i}</span>`
+                + `<span style="font-size:11px; color:var(--text-muted); font-weight:600;">📅 ${hari}</span>`
+                + `</div>`
+                + `<div style="font-size:16px; font-weight:800; color:#fff; font-family:'Lora',serif; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${nama}</div>`
+                + `<div style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--gold-light); background:rgba(212,175,55,0.1); padding:4px 10px; border-radius:8px; border:1px solid rgba(212,175,55,0.25);">`
+                + `📖 <span>${surah}</span>`
+                + `</div>`
+                + `</div>`
+                + `</div>`;
         }
-        return html + '<div style="margin-top:10px;padding:16px;background:rgba(253,224,71,0.1);border-radius:16px;">'
-            + '<div style="color:var(--gold);font-weight:700;margin-bottom:8px;font-size:13px;">📝 Catatan:</div>'
-            + '<ul style="color:#fff;font-size:13px;margin-left:20px;line-height:1.6;opacity:0.9;">'
-            + '<li>Pembacaan Al-Qur\'an dengan nada Hijaz.</li>'
-            + '<li>Waktu: 12.00 - 12.20 (20 menit).</li>'
-            + '</ul></div></div>';
+        cardsHtml += '</div>';
+
+        const infoBanner = `<div class="tilawah-banner">`
+            + `<div class="tilawah-banner-icon">🎙️</div>`
+            + `<div>`
+            + `<div class="tilawah-banner-title">Ketentuan Tilawah Live</div>`
+            + `<div class="tilawah-banner-desc">`
+            + `• Pembacaan Al-Qur'an menggunakan <b>Langgam / Nada Hijaz</b><br>`
+            + `• Waktu pelaksanaan: <b>12.00 – 12.20 WITA</b> (20 Menit)`
+            + `</div>`
+            + `</div>`
+            + `</div>`;
+
+        return cardsHtml + infoBanner;
     }
     return "";
 };
@@ -934,49 +1194,82 @@ window.openMading = (id) => {
 
     document.querySelectorAll('.admin-form-mading').forEach(el => el.style.display = 'none');
 
-    if (id === 'jadwal-murajaah' && document.getElementById('murajaah-fields-container').innerHTML === '') {
-        let h = '';
-        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
-            const Day = day.charAt(0).toUpperCase() + day.slice(1);
-            h += '<div style="background:rgba(0,0,0,0.2);padding:16px;border-radius:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.05);">'
-                + '<div class="detail-label" style="margin-bottom:12px;color:white;">Hari ' + Day + '</div>'
-                + '<input type="text" id="fm-' + day + '-nama" class="admin-input" placeholder="Nama Pemimpin" style="margin-bottom:10px;">'
-                + '<input type="text" id="fm-' + day + '-pagi" class="admin-input" placeholder="Muraja\'ah Pagi" style="margin-bottom:10px;">'
-                + '<input type="text" id="fm-' + day + '-sore" class="admin-input" placeholder="Muraja\'ah Sore">'
-                + '</div>';
+    if (id === 'jadwal-murajaah') {
+        const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat'];
+        let navHtml = '<div class="quran-day-nav" id="adminMurajaahDayNav">';
+        days.forEach(d => {
+            const D = d.charAt(0).toUpperCase() + d.slice(1);
+            navHtml += `<button type="button" class="quran-day-pill" data-day="${d}" onclick="window.switchAdminMurajaahDay('${d}')">${D}</button>`;
         });
-        document.getElementById('murajaah-fields-container').innerHTML = h;
+        navHtml += '</div>';
+
+        let panesHtml = '';
+        days.forEach(d => {
+            const D = d.charAt(0).toUpperCase() + d.slice(1);
+            panesHtml += `<div class="admin-murajaah-day-pane" id="pane-admin-murajaah-${d}" style="display:none;">`
+                + `<div style="margin-bottom:14px;"><span class="hari-badge" style="margin:0;">Jadwal Muraja'ah Hari ${D}</span></div>`
+                + `<div class="detail-label" style="margin-bottom:8px;">Pilih Pemimpin Muraja'ah</div>`
+                + window.createStudentPickerMarkup('murajaah-' + d, 'fm-' + d + '-nama', 'Pilih Pemimpin Muraja\'ah...')
+                + `<div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Materi Muraja'ah Pagi ☀️</div>`
+                + `<input type="text" id="fm-${d}-pagi" class="admin-input" placeholder="Contoh: An-Naba – At-Thariq">`
+                + `<div class="detail-label" style="margin-top:14px; margin-bottom:8px;">Materi Muraja'ah Sore 🌙</div>`
+                + `<input type="text" id="fm-${d}-sore" class="admin-input" placeholder="Contoh: Al-A'la – An-Nas">`
+                + `</div>`;
+        });
+        document.getElementById('murajaah-fields-container').innerHTML = navHtml + panesHtml;
     }
 
-    if (id === 'jadwal-imam' && document.getElementById('imam-fields-container').innerHTML === '') {
+    if (id === 'jadwal-imam') {
+        const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat'];
         const jmlRakaat = window.getJumlahRakaat();
-        let h = '';
-        ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
-            const Day = day.charAt(0).toUpperCase() + day.slice(1);
-            h += '<div style="background:rgba(0,0,0,0.2);padding:16px;border-radius:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.05);">'
-                + '<div class="detail-label" style="margin-bottom:12px;color:white;">Hari ' + Day + '</div>'
-                + '<input type="text" id="fi-' + day + '-nama" class="admin-input" placeholder="Nama Imam" style="margin-bottom:10px;">'
-                + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+        let navHtml = '<div class="quran-day-nav" id="adminImamDayNav">';
+        days.forEach(d => {
+            const D = d.charAt(0).toUpperCase() + d.slice(1);
+            navHtml += `<button type="button" class="quran-day-pill" data-day="${d}" onclick="window.switchAdminImamDay('${d}')">${D}</button>`;
+        });
+        navHtml += '</div>';
 
+        let panesHtml = '';
+        days.forEach(d => {
+            const D = d.charAt(0).toUpperCase() + d.slice(1);
+            let rakaatInputs = '';
             for (let r = 1; r <= jmlRakaat; r++) {
-                h += '<input type="text" id="fi-' + day + '-r' + r + '" class="admin-input" placeholder="Rakaat ' + r + '" style="font-size:13px;">';
+                rakaatInputs += `<div>`
+                    + `<div style="font-size:11px; color:var(--gold); margin-bottom:4px; font-weight:700;">Raka'at ${r}</div>`
+                    + `<input type="text" id="fi-${d}-r${r}" class="admin-input" placeholder="Contoh: An-Nazi'at ayat 1–12" style="font-size:13px;">`
+                    + `</div>`;
             }
 
-            h += '</div></div>';
+            panesHtml += `<div class="admin-imam-day-pane" id="pane-admin-imam-${d}" style="display:none;">`
+                + `<div style="margin-bottom:14px;"><span class="hari-badge" style="margin:0;">Jadwal Imam Hari ${D}</span></div>`
+                + `<div class="detail-label" style="margin-bottom:8px;">Pilih Imam Sholat Dhuha</div>`
+                + window.createStudentPickerMarkup('imam-' + d, 'fi-' + d + '-nama', 'Pilih Imam Sholat...')
+                + `<div class="detail-label" style="margin-top:16px; margin-bottom:10px;">Bacaan Surah Tiap Raka'at (${jmlRakaat} Raka'at)</div>`
+                + `<div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">`
+                + rakaatInputs
+                + `</div>`
+                + `</div>`;
         });
-        document.getElementById('imam-fields-container').innerHTML = h;
+        document.getElementById('imam-fields-container').innerHTML = navHtml + panesHtml;
     }
 
-    if (id === 'jadwal-tilawah' && document.getElementById('form-jadwal-tilawah').innerHTML === '') {
-        let h = '';
+    if (id === 'jadwal-tilawah') {
+        let h = '<div style="display:flex; flex-direction:column; gap:14px;">';
         for (let i = 1; i <= 3; i++) {
-            h += '<div style="background:rgba(0,0,0,0.2);padding:16px;border-radius:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.05);">'
-                + '<div class="detail-label" style="margin-bottom:8px;">Jadwal ' + i + '</div>'
-                + '<input type="text" id="ft-h' + i + '" class="admin-input" placeholder="Hari/Tgl" style="margin-bottom:8px;">'
-                + '<input type="text" id="ft-n' + i + '" class="admin-input" placeholder="Nama Santri" style="margin-bottom:8px;">'
-                + '<input type="text" id="ft-s' + i + '" class="admin-input" placeholder="Surah">'
+            h += '<div style="background:rgba(0,0,0,0.25); padding:16px; border-radius:16px; border:1px solid rgba(212,175,55,0.2);">'
+                + `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">`
+                + `<span class="tilawah-badge-sesi">SESI ${i}</span>`
+                + `<span style="font-size:11px; color:var(--text-muted);">Tilawah Live</span>`
+                + `</div>`
+                + '<div class="detail-label" style="margin-bottom:6px;">Hari & Tanggal</div>'
+                + `<input type="text" id="ft-h${i}" class="admin-input" placeholder="Contoh: Senin, 12 Okt" style="margin-bottom:12px;">`
+                + '<div class="detail-label" style="margin-bottom:6px;">Pilih Santri Penampil</div>'
+                + window.createStudentPickerMarkup('tilawah-' + i, 'ft-n' + i, 'Pilih Santri Penampil...')
+                + '<div class="detail-label" style="margin-top:12px; margin-bottom:6px;">Surah & Ayat yang Dibawakan</div>'
+                + `<input type="text" id="ft-s${i}" class="admin-input" placeholder="Contoh: Surah Al-Mulk ayat 1-15">`
                 + '</div>';
         }
+        h += '</div>';
         document.getElementById('form-jadwal-tilawah').innerHTML = h;
     }
 
@@ -993,10 +1286,13 @@ window.openMading = (id) => {
 
         if (id === 'jadwal-murajaah') {
             ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
-                document.getElementById('fm-' + day + '-nama').value = f[day + '_nama'] || '';
-                document.getElementById('fm-' + day + '-pagi').value = f[day + '_pagi'] || '';
-                document.getElementById('fm-' + day + '-sore').value = f[day + '_sore'] || '';
+                window.setStudentPickerVal('murajaah-' + day, 'fm-' + day + '-nama', f[day + '_nama'] || '');
+                const pEl = document.getElementById('fm-' + day + '-pagi');
+                if (pEl) pEl.value = f[day + '_pagi'] || '';
+                const sEl = document.getElementById('fm-' + day + '-sore');
+                if (sEl) sEl.value = f[day + '_sore'] || '';
             });
+            window.switchAdminMurajaahDay(window.getHariSekolahAktif());
         } else if (id === 'target-quran') {
             ['senin', 'selasa', 'rabu', 'kamis'].forEach(day => {
                 window.initSurahPicker(day);
@@ -1025,19 +1321,22 @@ window.openMading = (id) => {
             listD.forEach(d => window.tambahItemMading('doa', d));
         } else if (id === 'jadwal-tilawah') {
             for (let i = 1; i <= 3; i++) {
-                document.getElementById('ft-h' + i).value = f['h' + i] || '';
-                document.getElementById('ft-n' + i).value = f['n' + i] || '';
-                document.getElementById('ft-s' + i).value = f['s' + i] || '';
+                const hEl = document.getElementById('ft-h' + i);
+                if (hEl) hEl.value = f['h' + i] || '';
+                window.setStudentPickerVal('tilawah-' + i, 'ft-n' + i, f['n' + i] || '');
+                const sEl = document.getElementById('ft-s' + i);
+                if (sEl) sEl.value = f['s' + i] || '';
             }
         } else if (id === 'jadwal-imam') {
             const jmlRakaat = window.getJumlahRakaat();
             ['senin', 'selasa', 'rabu', 'kamis', 'jumat'].forEach(day => {
-                document.getElementById('fi-' + day + '-nama').value = f[day + '_nama'] || '';
+                window.setStudentPickerVal('imam-' + day, 'fi-' + day + '-nama', f[day + '_nama'] || '');
                 for (let r = 1; r <= jmlRakaat; r++) {
                     const inputEl = document.getElementById('fi-' + day + '-r' + r);
                     if (inputEl) inputEl.value = f[day + '_r' + r] || '';
                 }
             });
+            window.switchAdminImamDay(window.getHariSekolahAktif());
         } else if (id === 'info-dokumentasi') {
             // Bangun daftar item: prioritaskan format array baru, fallback ke lama
             let existingItems = [];
