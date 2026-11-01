@@ -219,15 +219,31 @@ export const DATA_114_SURAH = [
 ];
 window.DATA_114_SURAH = DATA_114_SURAH;
 
-// Helper: Hari aktif hafalan Qur'an (Senin - Kamis)
+// Helper: Hari aktif hafalan Qur'an dengan Cutoff Pukul 16.00 (Sore)
 window.getHariQuranAktif = () => {
     const d = new Date();
-    const day = d.getDay(); // 0=Min, 1=Sen, 2=Sel, 3=Rab, 4=Kam, 5=Jum, 6=Sab
-    if (day === 1) return 'senin';
-    if (day === 2) return 'selasa';
-    if (day === 3) return 'rabu';
-    if (day === 4) return 'kamis';
-    return 'kamis'; // default Jumat, Sabtu, Minggu ke Kamis
+    const day = d.getDay(); // 0=Ahad, 1=Senin, 2=Selasa, 3=Rabu, 4=Kamis, 5=Jumat, 6=Sabtu
+    const isAfterCutoff = d.getHours() >= 16; // Pukul 16.00 ke atas beralih ke persiapan hari berikutnya
+
+    if (day === 0) {
+        // Ahad: Sebelum 16.00 masih Kamis, Pukul 16.00 ke atas berganti ke persiapan Senin
+        return isAfterCutoff ? 'senin' : 'kamis';
+    }
+    if (day === 1) {
+        // Senin: Sebelum 16.00 setoran Senin, Pukul 16.00 ke atas persiapan Selasa
+        return isAfterCutoff ? 'selasa' : 'senin';
+    }
+    if (day === 2) {
+        // Selasa: Sebelum 16.00 setoran Selasa, Pukul 16.00 ke atas persiapan Rabu
+        return isAfterCutoff ? 'rabu' : 'selasa';
+    }
+    if (day === 3) {
+        // Rabu: Sebelum 16.00 setoran Rabu, Pukul 16.00 ke atas persiapan Kamis
+        return isAfterCutoff ? 'kamis' : 'rabu';
+    }
+    // Kamis, Jumat, Sabtu:
+    // Kamis s/d Ahad sebelum 16.00 tetap menampilkan Kamis (Opsi A)
+    return 'kamis';
 };
 
 // Helper: Hari aktif sekolah (Senin - Jumat) untuk Muraja'ah & Imam Sholat
@@ -240,6 +256,27 @@ window.getHariSekolahAktif = () => {
     if (day === 4) return 'kamis';
     if (day === 5) return 'jumat';
     return 'senin'; // default Sabtu, Minggu ke Senin (persiapan pekan baru)
+};
+
+// Helper: Dapatkan string target Qur'an aktif dari Mading (berjalan otomatis sesuai hari & jam cut-off 16.00)
+window.getTargetQuranMadingAktif = () => {
+    if (!dataMadingDinamis || !dataMadingDinamis['target-quran']?.fields) return '';
+    const fields = dataMadingDinamis['target-quran'].fields;
+    const curDay = window.getHariQuranAktif();
+    const hasNewFormat = !!(fields.senin_surah || fields.selasa_surah || fields.rabu_surah || fields.kamis_surah);
+
+    const rawSurah = fields[curDay + '_surah'] || (!hasNewFormat ? (fields.surah || '') : '');
+    const rawAyat = fields[curDay + '_ayat'] || (!hasNewFormat ? (fields.ayat ? fields.ayat.replace(/^ayat\s*/i, '').trim() : '') : '');
+
+    const cleanSurah = (rawSurah || '').replace(/^surah\s*/i, '').trim();
+    const cleanAyat = (rawAyat || '').replace(/^ayat\s*/i, '').trim();
+
+    if (!cleanSurah) return '';
+    const surahText = 'Surah ' + cleanSurah;
+    if (cleanAyat) {
+        return `${surahText} Ayat ${cleanAyat}`;
+    }
+    return surahText;
 };
 
 // ============================================================
@@ -362,10 +399,15 @@ window.validasiBatasAyat = (day) => {
 
     const s = DATA_114_SURAH.find(item => item.nama.toLowerCase() === surahVal.toLowerCase());
     if (s) {
-        ayatInput.max = s.ayat;
-        const val = parseInt(ayatInput.value, 10);
-        if (val > s.ayat) {
-            hintEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">⚠️ Melebihi batas! Surah ${s.nama} hanya memiliki ${s.ayat} ayat.</span>`;
+        const valStr = ayatInput.value || '';
+        const nums = valStr.match(/\d+/g);
+        if (nums && nums.length > 0) {
+            const maxNum = Math.max(...nums.map(n => parseInt(n, 10)));
+            if (maxNum > s.ayat) {
+                hintEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">⚠️ Melebihi batas! Surah ${s.nama} hanya memiliki ${s.ayat} ayat (ayat ${maxNum} tidak ada).</span>`;
+            } else {
+                hintEl.innerText = `Total: ${s.ayat} ayat`;
+            }
         } else {
             hintEl.innerText = `Total: ${s.ayat} ayat`;
         }
@@ -904,6 +946,27 @@ function handleMadingSnapshot(snapshot) {
         lastGaleriSig = sig;
         renderGaleri(f);
     }
+
+    // ✅ Jika modal detail ananda sedang terbuka, pastikan Target Qur'an langsung sinkron
+    const modalMurid = document.getElementById('progressModal');
+    if (modalMurid && modalMurid.classList.contains('open')) {
+        const targetEl = document.getElementById('editQuranTarget');
+        if (targetEl) {
+            const madingTarget = window.getTargetQuranMadingAktif();
+            if (madingTarget) {
+                targetEl.value = madingTarget;
+                const dispEl = document.getElementById('displayQuranTarget');
+                if (dispEl && typeof ekstrakSurahDanAyatModal === 'function') {
+                    const parsed = ekstrakSurahDanAyatModal(madingTarget);
+                    if (parsed) {
+                        dispEl.innerHTML = 'Surah ' + parsed.namaSurah + ' <span class="target-ayat-accent">: Ayat ' + parsed.ayat + '</span>';
+                    } else {
+                        dispEl.innerHTML = madingTarget;
+                    }
+                }
+            }
+        }
+    }
 }
 
 function handleMuridSnapshot(snapshot) {
@@ -1060,25 +1123,166 @@ const setBadge = (elementId, status, nilaiAngka) => {
     }
 };
 
+
+/* ==========================================================================
+   MAJESTIC MUTABA'AH HELPER STATE & CONTROLS (SDIT IHSANUL AMAL)
+   ========================================================================== */
+let activeModalSurahIndex = 0;
+let activeModalSurahName = "Al-Baqarah";
+let activeModalCurrentAyat = 1;
+let activeModalTargetAyat = 1;
+let activeModalIsMurajaah = false;
+
+function ekstrakSurahDanAyatModal(str) {
+    if (!str || str === '-') return null;
+    let teksBersih = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    teksBersih = teksBersih.replace('mujadalah', 'mujadilah')
+        .replace('baqaroh', 'baqarah')
+        .replace('fatehah', 'fatihah')
+        .replace('imron', 'imran')
+        .replace('maidoh', 'maidah')
+        .replace('dhuha', 'duha')
+        .replace('thariq', 'tariq')
+        .replace('thaahaa', 'taha').replace('thaha', 'taha')
+        .replace('sajadah', 'sajdah');
+
+    let indexSurah = -1;
+    let panjangKecocokan = 0;
+    for (let i = 0; i < DATA_114_SURAH.length; i++) {
+        let namaNormal = DATA_114_SURAH[i].nama.toLowerCase().replace(/[^a-z]/g, '');
+        if (teksBersih.includes(namaNormal) && namaNormal.length > panjangKecocokan) {
+            indexSurah = i;
+            panjangKecocokan = namaNormal.length;
+        }
+    }
+
+    let angkaMatch = str.match(/(\d+)(?!.*\d)/);
+    let ayatSekarang = angkaMatch ? parseInt(angkaMatch[0], 10) : 0;
+
+    if (indexSurah !== -1 && ayatSekarang > 0) {
+        return { indexSurah, ayat: ayatSekarang, namaSurah: DATA_114_SURAH[indexSurah].nama };
+    }
+    return null;
+}
+
+function updateQuranGaugeAndDisplay() {
+    const dialLabel = document.getElementById('dialSurahLabel');
+    if (dialLabel) dialLabel.innerText = 'Surah ' + activeModalSurahName;
+    const dispAyat = document.getElementById('displayAyatNum');
+    if (dispAyat) dispAyat.innerText = activeModalCurrentAyat;
+
+    const realisasiStr = 'Surah ' + activeModalSurahName + ' ayat ' + activeModalCurrentAyat + (activeModalIsMurajaah ? " (Muraja'ah)" : "");
+    const qRealisasiInput = document.getElementById('editQuranRealisasi');
+    if (qRealisasiInput) qRealisasiInput.value = realisasiStr;
+    const txtWali = document.getElementById('txtWaliQuranSetor');
+    if (txtWali) txtWali.innerText = realisasiStr;
+
+    let pct = 0;
+    let selisih = 0;
+    if (activeModalTargetAyat > 0) {
+        pct = Math.min(100, Math.round((activeModalCurrentAyat / activeModalTargetAyat) * 100));
+        selisih = activeModalTargetAyat - activeModalCurrentAyat;
+    }
+    const bar = document.getElementById('quranProgressBar');
+    if (bar) bar.style.width = pct + '%';
+    const lblPct = document.getElementById('lblProgressPct');
+    if (lblPct) lblPct.innerHTML = pct + '% <span>Tercapai</span>';
+    const lblStatus = document.getElementById('lblProgressStatus');
+    if (lblStatus) {
+        if (selisih > 0) {
+            lblStatus.innerHTML = 'Selisih <strong style="color:#ffffff;">' + selisih + ' Ayat</strong> Menuju Target';
+        } else if (selisih === 0) {
+            lblStatus.innerHTML = '<strong style="color:#fef08a;">Tepat Sesuai Target Kelas! 🎯</strong>';
+        } else {
+            lblStatus.innerHTML = '<strong style="color:#34d399;">Melampaui Target (+ ' + Math.abs(selisih) + ' Ayat) 🌟</strong>';
+        }
+    }
+}
+
+window.stepAyat = (delta) => {
+    activeModalCurrentAyat = Math.max(1, activeModalCurrentAyat + delta);
+    updateQuranGaugeAndDisplay();
+};
+
+window.toggleMurajaahModal = () => {
+    activeModalIsMurajaah = !activeModalIsMurajaah;
+    const btnMur = document.getElementById('btnMurajaah');
+    if (btnMur) btnMur.classList.toggle('murajaah-active', activeModalIsMurajaah);
+    updateQuranGaugeAndDisplay();
+};
+
+window.switchSubject = (subject, btn) => {
+    ['quran', 'hadits', 'doa'].forEach(s => {
+        const deck = document.getElementById('deck' + s.charAt(0).toUpperCase() + s.slice(1));
+        const tab = document.getElementById('tabBtn-' + s);
+        if (deck) deck.style.display = (s === subject) ? 'block' : 'none';
+        if (tab) {
+            if (s === subject) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        }
+    });
+};
+
+window.syncHaditsManual = (val) => {
+    const el = document.getElementById('txtWaliHaditsSetor');
+    if (el) el.innerText = val || '-';
+};
+
+window.syncDoaManual = (val) => {
+    const el = document.getElementById('txtWaliDoaSetor');
+    if (el) el.innerText = val || '-';
+};
+
+window.openModalDoa = () => {
+    const m = document.getElementById('modalDoa');
+    if (m) m.classList.remove('hidden');
+};
+
+window.closeModalDoa = () => {
+    const m = document.getElementById('modalDoa');
+    if (m) m.classList.add('hidden');
+};
+
+window.kirimDoaOrangTua = () => {
+    window.closeModalDoa();
+    const idMurid = document.getElementById('editId').value;
+    const hariIni = window.getTanggalHariIni();
+    if (idMurid) {
+        localStorage.setItem('doa_ananda_' + idMurid + '_' + hariIni, '1');
+    }
+    const tRow = document.getElementById('tandaDidoakanRow');
+    if (tRow) tRow.style.display = 'block';
+    alert("Jazakumullah Khairan! ✨\nDoa Anda telah teriring untuk ananda hari ini. Semoga Allah subhanahu wa ta'ala senantiasa memberkahi, melancarkan lisan, dan mengokohkan hafalan Al-Qur'an ananda. Aamiin.");
+};
+
 window.openModal = (index) => {
     const murid = dataMuridDinamis[index];
     document.getElementById('modalNama').innerText = murid.nama;
     document.getElementById('modalInitials').innerText = window.getInitials(murid.nama);
     document.getElementById('editId').value = murid.id;
 
+    // Reset Deck ke Al-Qur'an
+    window.switchSubject('quran');
+
     const hariIni = window.getTanggalHariIni();
 
-    // ✅ SETIAP mata pelajaran punya tanggal setor sendiri.
-    // Qur'an bisa reset setiap hari, Hadits/Doa hanya reset di hari Jumat.
-    // Ini mencegah nilai lama terhapus hanya karena mata pelajaran lain diisi.
+    // Check status doa orang tua hari ini
+    const tRow = document.getElementById('tandaDidoakanRow');
+    if (tRow) {
+        const didoakan = localStorage.getItem('doa_ananda_' + murid.id + '_' + hariIni) === '1';
+        tRow.style.display = didoakan ? 'block' : 'none';
+    }
+
+    // Tanggal setor per mapel
     const sudahSetorQuranHariIni  = (murid.tanggalSetorQuran  || murid.tanggalSetor || '') === hariIni;
     const sudahSetorHaditsHariIni = (murid.tanggalSetorHadits || murid.tanggalSetor || '') === hariIni;
     const sudahSetorDoaHariIni    = (murid.tanggalSetorDoa    || murid.tanggalSetor || '') === hariIni;
-
-    // Master flag untuk badge setoranHarian (sesuai tanggalSetor utama)
     const sudahDinilaiHariIni = (murid.tanggalSetor === hariIni);
 
-    // Mode admin: nilai per subjek hanya tampil jika tanggal subjek tersebut = hari ini
     const qStatus    = isAdmin ? (sudahSetorQuranHariIni  ? (murid.quranStatus  || 'belum') : 'belum') : (murid.quranStatus  || 'belum');
     const qNilaiAngka= isAdmin ? (sudahSetorQuranHariIni  ? (murid.quranNilaiAngka  || '') : '') : (murid.quranNilaiAngka  || '');
     const hStatus    = isAdmin ? (sudahSetorHaditsHariIni ? (murid.haditsStatus || 'belum') : 'belum') : (murid.haditsStatus || 'belum');
@@ -1086,7 +1290,6 @@ window.openModal = (index) => {
     const dStatus    = isAdmin ? (sudahSetorDoaHariIni    ? (murid.doaStatus    || 'belum') : 'belum') : (murid.doaStatus    || 'belum');
     const dNilaiAngka= isAdmin ? (sudahSetorDoaHariIni    ? (murid.doaNilaiAngka    || '') : '') : (murid.doaNilaiAngka    || '');
 
-    // Alias untuk mode publik (wali murid) — sama dengan nilai di DB
     const qStatusPublik = murid.quranStatus || 'belum';
     const qNilaiAngkaPublik = murid.quranNilaiAngka || '';
     const hStatusPublik = murid.haditsStatus || 'belum';
@@ -1095,12 +1298,54 @@ window.openModal = (index) => {
     const dNilaiAngkaPublik = murid.doaNilaiAngka || '';
 
     const statusHarian = sudahDinilaiHariIni ? (murid.setoranHarian || 'belum') : 'belum';
-
     window.pilihSetoranHarian(statusHarian);
-    document.getElementById('editQuranTarget').value = murid.quranTarget || "";
-    document.getElementById('editQuranRealisasi').value = murid.quranRealisasi || "-";
+
+    // ==========================================
+    // 1. DATA AL-QUR'AN (MASTHEAD, GAUGE & DIAL)
+    // ==========================================
+    const targetMadingAktif = window.getTargetQuranMadingAktif();
+    const targetQuranVal = targetMadingAktif || murid.quranTarget || "";
+    document.getElementById('editQuranTarget').value = targetQuranVal;
+
+    const realisasiVal = murid.quranRealisasi || "";
+    document.getElementById('editQuranRealisasi').value = realisasiVal || "-";
     document.getElementById('editStatusQuran').value = qStatus;
 
+    // Parsing Target
+    const parsedTarget = ekstrakSurahDanAyatModal(targetQuranVal);
+    const dispQuranTarget = document.getElementById('displayQuranTarget');
+    if (parsedTarget) {
+        activeModalTargetAyat = parsedTarget.ayat;
+        dispQuranTarget.innerHTML = 'Surah ' + parsedTarget.namaSurah + ' <span class="target-ayat-accent">: Ayat ' + parsedTarget.ayat + '</span>';
+    } else {
+        activeModalTargetAyat = 1;
+        dispQuranTarget.innerHTML = targetQuranVal || "-";
+    }
+
+    // Parsing Realisasi
+    activeModalIsMurajaah = realisasiVal.includes("(Muraja'ah)");
+    const btnMur = document.getElementById('btnMurajaah');
+    if (btnMur) btnMur.classList.toggle('murajaah-active', activeModalIsMurajaah);
+
+    const parsedRealisasi = ekstrakSurahDanAyatModal(realisasiVal);
+    if (parsedRealisasi) {
+        activeModalSurahIndex = parsedRealisasi.indexSurah;
+        activeModalSurahName = parsedRealisasi.namaSurah;
+        activeModalCurrentAyat = parsedRealisasi.ayat;
+    } else if (parsedTarget) {
+        activeModalSurahIndex = parsedTarget.indexSurah;
+        activeModalSurahName = parsedTarget.namaSurah;
+        activeModalCurrentAyat = Math.max(1, parsedTarget.ayat - 1);
+    } else {
+        activeModalSurahIndex = 0;
+        activeModalSurahName = DATA_114_SURAH[0].nama;
+        activeModalCurrentAyat = 1;
+    }
+
+    // Update Tampilan Stepper & Gauge
+    updateQuranGaugeAndDisplay();
+
+    // Grade Al-Qur'an (Admin)
     if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(qStatus) && qStatus !== 'belum') {
         if (qStatus === 'tidakSetor') {
             window.pilihTidakSetor('quran');
@@ -1109,9 +1354,25 @@ window.openModal = (index) => {
             if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
         }
     } else if (isAdmin) {
-        document.querySelectorAll('.grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('customDropdownContainer').style.display = 'none';
+        document.querySelectorAll('.grade-pill-quran').forEach(btn => btn.classList.remove('active'));
+        const custBtnText = document.getElementById('customDropdownText');
+        if (custBtnText) custBtnText.innerText = '--';
     }
+
+    // ==========================================
+    // 2. DATA HADITS
+    // ==========================================
+    const madingHadits = (dataMadingDinamis['target-hadits']?.fields?.listHadits || []).map(h => h.judul).filter(Boolean).join(" & ").trim();
+    const targetHaditsVal = murid.haditsTarget || madingHadits || "";
+    document.getElementById('editHaditsTarget').value = targetHaditsVal;
+    const dispHaditsTarget = document.getElementById('displayHaditsTarget');
+    if (dispHaditsTarget) dispHaditsTarget.innerText = targetHaditsVal || "-";
+
+    const realisasiHaditsVal = murid.haditsRealisasi || "";
+    document.getElementById('editHaditsRealisasi').value = realisasiHaditsVal;
+    const txtWaliHadits = document.getElementById('txtWaliHaditsSetor');
+    if (txtWaliHadits) txtWaliHadits.innerText = realisasiHaditsVal || "-";
+    document.getElementById('editStatusHadits').value = hStatus;
 
     if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(hStatus) && hStatus !== 'belum') {
         if (hStatus === 'tidakSetor') {
@@ -1122,8 +1383,24 @@ window.openModal = (index) => {
         }
     } else if (isAdmin) {
         document.querySelectorAll('.hadits-pill-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('haditsDropdownContainer').style.display = 'none';
+        const hBtnText = document.getElementById('haditsDropdownText');
+        if (hBtnText) hBtnText.innerText = '--';
     }
+
+    // ==========================================
+    // 3. DATA DOA
+    // ==========================================
+    const madingDoa = (dataMadingDinamis['target-hadits']?.fields?.listDoa || []).map(d => d.judul).filter(Boolean).join(" & ").trim();
+    const targetDoaVal = murid.doaTarget || madingDoa || "";
+    document.getElementById('editDoaTarget').value = targetDoaVal;
+    const dispDoaTarget = document.getElementById('displayDoaTarget');
+    if (dispDoaTarget) dispDoaTarget.innerText = targetDoaVal || "-";
+
+    const realisasiDoaVal = murid.doaRealisasi || "";
+    document.getElementById('editDoaRealisasi').value = realisasiDoaVal;
+    const txtWaliDoa = document.getElementById('txtWaliDoaSetor');
+    if (txtWaliDoa) txtWaliDoa.innerText = realisasiDoaVal || "-";
+    document.getElementById('editStatusDoa').value = dStatus;
 
     if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(dStatus) && dStatus !== 'belum') {
         if (dStatus === 'tidakSetor') {
@@ -1134,40 +1411,89 @@ window.openModal = (index) => {
         }
     } else if (isAdmin) {
         document.querySelectorAll('.doa-pill-btn').forEach(btn => btn.classList.remove('active'));
-        document.getElementById('doaDropdownContainer').style.display = 'none';
+        const dBtnText = document.getElementById('doaDropdownText');
+        if (dBtnText) dBtnText.innerText = '--';
     }
 
-    // Badge: admin pakai nilai hari ini (bisa kosong), publik pakai nilai permanen
-    setBadge('badgeQuran', isAdmin ? qStatus : qStatusPublik, isAdmin ? qNilaiAngka : qNilaiAngkaPublik);
-    document.getElementById('editHaditsTarget').value = murid.haditsTarget || "";
-    document.getElementById('editHaditsRealisasi').value = murid.haditsRealisasi || "-";
-    document.getElementById('editStatusHadits').value = hStatus;
-    setBadge('badgeHadits', isAdmin ? hStatus : hStatusPublik, isAdmin ? hNilaiAngka : hNilaiAngkaPublik);
-    document.getElementById('editDoaTarget').value = murid.doaTarget || "";
-    document.getElementById('editDoaRealisasi').value = murid.doaRealisasi || "-";
-    document.getElementById('editStatusDoa').value = dStatus;
-    setBadge('badgeDoa', isAdmin ? dStatus : dStatusPublik, isAdmin ? dNilaiAngka : dNilaiAngkaPublik);
-    document.getElementById('progressModal').classList.add('open');
+    // ==========================================
+    // 4. STEMPEL PREDIKAT KELANCARAN WALI SANTRI
+    // ==========================================
+    const predikatSDIT = {
+        A: { text: "Sangat Lancar (Mumtaz)", color: "#34d399" },
+        B: { text: "Lancar (Jayyid Jiddan)", color: "#6ee7b7" },
+        C: { text: "Cukup Lancar (Jayyid)", color: "#fcd34d" },
+        D: { text: "Perlu Bimbingan (Muraja'ah)", color: "#f87171" }
+    };
 
-    const inputs = document.querySelectorAll('#progressModal textarea.admin-input');
-    const selects = document.querySelectorAll('#progressModal .admin-select-status');
-    const badges = document.querySelectorAll('#progressModal .status-badge, #progressModal .dot');
+    function setWaliPredikat(status, elmId) {
+        const el = document.getElementById(elmId);
+        if (!el) return;
+        if (status === 'tidakSetor') {
+            el.innerText = "Belum Setor";
+            el.style.color = "#f87171";
+        } else if (predikatSDIT[status]) {
+            el.innerText = predikatSDIT[status].text;
+            el.style.color = predikatSDIT[status].color;
+        } else {
+            el.innerText = "Belum Dinilai";
+            el.style.color = "#94a3b8";
+        }
+    }
+
+    setWaliPredikat(qStatusPublik, 'lblPredikatNama');
+    setWaliPredikat(hStatusPublik, 'lblPredikatHaditsNama');
+    setWaliPredikat(dStatusPublik, 'lblPredikatDoaNama');
+
+    // ==========================================
+    // 5. TATA LETAK MODE GURU VS WALI SANTRI
+    // ==========================================
+    const adminRows = [
+        document.getElementById('quranAdminGradesRow'),
+        document.getElementById('haditsAdminGradesRow'),
+        document.getElementById('doaAdminGradesRow'),
+        document.getElementById('adminSetoranHarianContainer')
+    ];
+    const noteEl = document.getElementById('spreadsheetNote');
+    const saveBtn = document.getElementById('btnSaveMurid');
+    const doaBtn = document.getElementById('btnDoaWali');
+    const actionGuru = document.getElementById('actionAreaGuru');
+    const actionWali = document.getElementById('actionAreaWali');
 
     if (isAdmin) {
-        inputs.forEach(i => { i.disabled = false; i.style.height = "auto"; });
-        selects.forEach(s => { s.style.display = (s.id === 'quranGradeContainer' || s.id === 'haditsChips' || s.id === 'doaChips') ? 'flex' : 'block'; });
-        badges.forEach(b => b.style.display = 'none');
-        document.getElementById('btnSaveMurid').style.display = 'block';
-        document.getElementById('quranChips').style.display = 'flex';
-        document.getElementById('adminSetoranHarianContainer').style.display = 'flex';
+        adminRows.forEach(r => { if (r) r.style.display = 'flex'; });
+        if (noteEl) noteEl.style.display = 'block';
+        if (actionGuru) actionGuru.style.display = 'block';
+        if (saveBtn) saveBtn.style.display = 'flex';
+        if (actionWali) actionWali.style.display = 'none';
+        if (doaBtn) doaBtn.style.display = 'none';
+
+        document.getElementById('quranGuruInputArea').style.display = 'block';
+        document.getElementById('quranWaliSlateArea').style.display = 'none';
+
+        document.getElementById('haditsGuruInputArea').style.display = 'block';
+        document.getElementById('haditsWaliSlateArea').style.display = 'none';
+
+        document.getElementById('doaGuruInputArea').style.display = 'block';
+        document.getElementById('doaWaliSlateArea').style.display = 'none';
     } else {
-        inputs.forEach(i => { i.disabled = true; i.style.height = 'auto'; setTimeout(() => { i.style.height = (i.scrollHeight + 2) + 'px'; }, 50); });
-        selects.forEach(s => s.style.display = 'none');
-        badges.forEach(b => b.style.display = 'block');
-        document.getElementById('btnSaveMurid').style.display = 'none';
-        document.getElementById('quranChips').style.display = 'none';
-        document.getElementById('adminSetoranHarianContainer').style.display = 'none';
+        adminRows.forEach(r => { if (r) r.style.display = 'none'; });
+        if (noteEl) noteEl.style.display = 'none';
+        if (actionGuru) actionGuru.style.display = 'none';
+        if (saveBtn) saveBtn.style.display = 'none';
+        if (actionWali) actionWali.style.display = 'block';
+        if (doaBtn) doaBtn.style.display = 'flex';
+
+        document.getElementById('quranGuruInputArea').style.display = 'none';
+        document.getElementById('quranWaliSlateArea').style.display = 'block';
+
+        document.getElementById('haditsGuruInputArea').style.display = 'none';
+        document.getElementById('haditsWaliSlateArea').style.display = 'block';
+
+        document.getElementById('doaGuruInputArea').style.display = 'none';
+        document.getElementById('doaWaliSlateArea').style.display = 'block';
     }
+
+    document.getElementById('progressModal').classList.add('open');
 };
 
 window.renderMadingHtml = (id, fields) => {
@@ -1248,8 +1574,14 @@ window.renderMadingHtml = (id, fields) => {
         const activeDay = window.getHariQuranAktif();
         const hasNewFormat = !!(fields.senin_surah || fields.selasa_surah || fields.rabu_surah || fields.kamis_surah);
         const surah = fields[activeDay + '_surah'] || (!hasNewFormat ? (fields.surah || '') : '');
-        const rawAyat = fields[activeDay + '_ayat'] || (!hasNewFormat ? (fields.ayat ? fields.ayat.replace(/[^0-9]/g, '') : '') : '');
-        const ayatStr = rawAyat ? ('Ayat ' + rawAyat) : (!hasNewFormat && fields.ayat ? fields.ayat : '-');
+        const rawAyat = fields[activeDay + '_ayat'] || (!hasNewFormat ? (fields.ayat ? fields.ayat.replace(/^ayat\s*/i, '').trim() : '') : '');
+        let ayatStr = '-';
+        if (rawAyat) {
+            const cleanAyat = rawAyat.replace(/^ayat\s*/i, '').trim();
+            ayatStr = cleanAyat ? ('Ayat ' + cleanAyat) : '-';
+        } else if (!hasNewFormat && fields.ayat) {
+            ayatStr = fields.ayat;
+        }
         const audio = fields[activeDay + '_audio'] || (!hasNewFormat ? (fields.audio || '') : '');
 
         const cleanSurahName = surah.replace(/^surah\s+/i, '').trim();
@@ -1504,7 +1836,7 @@ window.openMading = (id) => {
             ['senin', 'selasa', 'rabu', 'kamis'].forEach(day => {
                 window.initSurahPicker(day);
                 const surahVal = f[day + '_surah'] || (day === 'senin' ? (f.surah || '') : '');
-                const rawAyat = f[day + '_ayat'] || (day === 'senin' ? (f.ayat ? f.ayat.replace(/[^0-9]/g, '') : '') : '');
+                const rawAyat = f[day + '_ayat'] || (day === 'senin' ? (f.ayat ? f.ayat.replace(/^ayat\s*/i, '').trim() : '') : '');
                 const audioVal = f[day + '_audio'] || (day === 'senin' ? (f.audio || '') : '');
 
                 window.setSurahPickerVal(day, surahVal);
@@ -1683,8 +2015,9 @@ window.simpanDataMading = async () => {
         const activeAyat = newFields[hariIni + '_ayat'] || newFields.senin_ayat || '';
         const activeAudio = newFields[hariIni + '_audio'] || newFields.senin_audio || '';
 
+        const cleanAyat = activeAyat.replace(/^ayat\s*/i, '').trim();
         newFields.surah = activeSurah;
-        newFields.ayat = activeAyat ? ('Ayat ' + activeAyat) : '';
+        newFields.ayat = cleanAyat ? ('Ayat ' + cleanAyat) : '';
         newFields.audio = activeAudio;
     } else if (id === 'target-hadits') {
         const hItems = Array.from(document.getElementById('container-hadits').children).map(item => ({
@@ -1738,10 +2071,13 @@ window.simpanDataMading = async () => {
 
         if (id === 'target-quran') {
             const batch = writeBatch(db);
-            const targetGabungan = newFields.surah && newFields.ayat 
-                ? ('Surah ' + newFields.surah + ' ' + newFields.ayat) 
-                : (newFields.surah ? ('Surah ' + newFields.surah) : '');
+            const cleanSurah = (newFields.surah || '').replace(/^surah\s*/i, '').trim();
+            const cleanAyat = (newFields.ayat || '').replace(/^ayat\s*/i, '').trim();
+            const targetGabungan = cleanSurah 
+                ? ('Surah ' + cleanSurah + (cleanAyat ? ' Ayat ' + cleanAyat : '')) 
+                : '';
             dataMuridDinamis.forEach((murid) => {
+                murid.quranTarget = targetGabungan;
                 batch.update(doc(db, koleksiMurid, murid.id), { quranTarget: targetGabungan });
             });
             await batch.commit();
@@ -1905,14 +2241,13 @@ window.pilihGradeHadits = (grade) => {
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectHaditsNilai(${num})">${num}</div>`;
     });
-    // Tambahkan opsi "Tidak Setor Sama Sekali" di paling bawah dropdown D
     if (grade === 'D') {
         html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('hadits')">❌ Tidak Setor Sama Sekali</div>`;
     }
     document.getElementById('haditsDropdownList').innerHTML = html;
 
-    const midIndex = Math.floor(arr.length / 2);
-    window.updateHaditsNilai(arr[midIndex]);
+    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || arr[0];
+    window.updateHaditsNilai(defaultScore);
 };
 
 window.pilihGradeDoa = (grade) => {
@@ -1943,19 +2278,18 @@ window.pilihGradeDoa = (grade) => {
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectDoaNilai(${num})">${num}</div>`;
     });
-    // Tambahkan opsi "Tidak Setor Sama Sekali" di paling bawah dropdown D
     if (grade === 'D') {
         html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('doa')">❌ Tidak Setor Sama Sekali</div>`;
     }
     document.getElementById('doaDropdownList').innerHTML = html;
 
-    const midIndex = Math.floor(arr.length / 2);
-    window.updateDoaNilai(arr[midIndex]);
+    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || arr[0];
+    window.updateDoaNilai(defaultScore);
 };
 
 window.pilihGradeQuran = (grade) => {
     document.getElementById('editStatusQuran').value = grade;
-    document.querySelectorAll('.grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => {
+    document.querySelectorAll('.grade-pill-quran, .grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => {
         if (btn.getAttribute('data-grade') === grade) {
             btn.classList.add('active');
         } else {
@@ -1981,16 +2315,16 @@ window.pilihGradeQuran = (grade) => {
     arr.forEach(num => {
         html += `<div class="custom-dropdown-item" onclick="window.selectCustomNilai(${num})">${num}</div>`;
     });
-    // Tambahkan opsi "Tidak Setor Sama Sekali" di paling bawah dropdown D
     if (grade === 'D') {
         html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('quran')">❌ Tidak Setor Sama Sekali</div>`;
     }
 
     document.getElementById('customDropdownList').innerHTML = html;
 
-    const midIndex = Math.floor(arr.length / 2);
-    window.updateNilaiManual(arr[midIndex]);
+    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || arr[0];
+    window.updateNilaiManual(defaultScore);
 };
+
 
 // Handler untuk status "Tidak Setor Sama Sekali"
 window.pilihTidakSetor = (subject) => {
@@ -2495,4 +2829,4 @@ function renderStatsChart() {
     }, 80);
 }
 
-
+
