@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=29">
+    <link rel="stylesheet" href="style.css?v=30">
 </head>
 
 <body>
@@ -206,9 +206,6 @@
                     <button type="button" class="setoran-btn" data-val="izin" onclick="pilihSetoranHarian('izin')">🏥 Izin/Sakit</button>
                     <button type="button" class="setoran-btn" data-val="belum" onclick="pilihSetoranHarian('belum')">❌ Belum Setor</button>
                 </div>
-                <p id="spreadsheetNote" style="font-size:10px; color:rgba(52,211,153,0.85); margin-top:6px; margin-bottom:0;">
-                    ℹ️ Hanya status <b>"Sudah Setor"</b> yang mengirimkan data hafalan ke Spreadsheet sekolah.
-                </p>
                 <input type="hidden" id="valSetoranHarian" value="belum">
             </div>
 
@@ -309,7 +306,7 @@
                             <button type="button" class="grade-pill-btn-luxury grade-pill-quran" data-grade="D" onclick="window.pilihGradeQuran('D')">D</button>
                         </div>
                         <div id="customDropdownContainer" class="custom-dropdown-container">
-                            <button type="button" id="customDropdownBtn" class="btn-score-dropup" onclick="window.toggleCustomDropdown()">
+                            <button type="button" id="customDropdownBtn" class="btn-score-dropup" onclick="window.toggleCustomDropdown(event)">
                                 <span id="customDropdownText">95</span>
                                 <span style="font-size:9px; opacity:0.7;">▲</span>
                             </button>
@@ -384,7 +381,7 @@
                             <button type="button" class="grade-pill-btn-luxury hadits-pill-btn" data-grade="D" onclick="window.pilihGradeHadits('D')">D</button>
                         </div>
                         <div id="haditsDropdownContainer" class="custom-dropdown-container">
-                            <button type="button" id="haditsDropdownBtn" class="btn-score-dropup" onclick="window.toggleHaditsDropdown()">
+                            <button type="button" id="haditsDropdownBtn" class="btn-score-dropup" onclick="window.toggleHaditsDropdown(event)">
                                 <span id="haditsDropdownText">88</span>
                                 <span style="font-size:9px; opacity:0.7;">▲</span>
                             </button>
@@ -458,7 +455,7 @@
                             <button type="button" class="grade-pill-btn-luxury doa-pill-btn" data-grade="D" onclick="window.pilihGradeDoa('D')">D</button>
                         </div>
                         <div id="doaDropdownContainer" class="custom-dropdown-container">
-                            <button type="button" id="doaDropdownBtn" class="btn-score-dropup" onclick="window.toggleDoaDropdown()">
+                            <button type="button" id="doaDropdownBtn" class="btn-score-dropup" onclick="window.toggleDoaDropdown(event)">
                                 <span id="doaDropdownText">95</span>
                                 <span style="font-size:9px; opacity:0.7;">▲</span>
                             </button>
@@ -915,7 +912,7 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=29"></script>
+    <script type="module" src="app.js?v=30"></script>
 </body>
 
 </html>

@@ -1259,6 +1259,50 @@ window.kirimDoaOrangTua = () => {
     alert("Jazakumullah Khairan! ✨\nDoa Anda telah teriring untuk ananda hari ini. Semoga Allah subhanahu wa ta'ala senantiasa memberkahi, melancarkan lisan, dan mengokohkan hafalan Al-Qur'an ananda. Aamiin.");
 };
 
+
+function getGradeFromScore(num) {
+    num = parseInt(num, 10);
+    if (isNaN(num)) return 'A';
+    if (num >= 93) return 'A';
+    if (num >= 84) return 'B';
+    if (num >= 75) return 'C';
+    return 'D';
+}
+
+window.populateGradeDropdown = (subject, grade) => {
+    let arr = [];
+    if (grade === 'A') {
+        for (let i = 100; i >= 93; i--) arr.push(i);
+    } else if (grade === 'B') {
+        for (let i = 92; i >= 84; i--) arr.push(i);
+    } else if (grade === 'C') {
+        for (let i = 83; i >= 75; i--) arr.push(i);
+    } else if (grade === 'D') {
+        for (let i = 74; i >= 60; i--) arr.push(i);
+    }
+
+    let listId = 'customDropdownList';
+    let selectFn = 'window.selectCustomNilai';
+    if (subject === 'hadits') {
+        listId = 'haditsDropdownList';
+        selectFn = 'window.selectHaditsNilai';
+    } else if (subject === 'doa') {
+        listId = 'doaDropdownList';
+        selectFn = 'window.selectDoaNilai';
+    }
+
+    let html = '';
+    arr.forEach(num => {
+        html += `<div class="custom-dropdown-item" onclick="${selectFn}(${num})">${num}</div>`;
+    });
+    if (grade === 'D') {
+        html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('${subject}')">❌ Tidak Setor Sama Sekali</div>`;
+    }
+
+    const listEl = document.getElementById(listId);
+    if (listEl) listEl.innerHTML = html;
+};
+
 window.openModal = (index) => {
     const murid = dataMuridDinamis[index];
     document.getElementById('modalNama').innerText = murid.nama;
@@ -1346,14 +1390,19 @@ window.openModal = (index) => {
     updateQuranGaugeAndDisplay();
 
     // Grade Al-Qur'an (Admin)
-    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(qStatus) && qStatus !== 'belum') {
-        if (qStatus === 'tidakSetor') {
+    let effQStatus = qStatus;
+    if ((!effQStatus || effQStatus === 'belum') && qNilaiAngka) {
+        effQStatus = getGradeFromScore(qNilaiAngka);
+    }
+    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(effQStatus) && effQStatus !== 'belum') {
+        if (effQStatus === 'tidakSetor') {
             window.pilihTidakSetor('quran');
         } else {
-            window.pilihGradeQuran(qStatus);
+            window.pilihGradeQuran(effQStatus);
             if (qNilaiAngka) window.updateNilaiManual(qNilaiAngka);
         }
     } else if (isAdmin) {
+        window.populateGradeDropdown('quran', 'A');
         document.querySelectorAll('.grade-pill-quran').forEach(btn => btn.classList.remove('active'));
         const custBtnText = document.getElementById('customDropdownText');
         if (custBtnText) custBtnText.innerText = '--';
@@ -1374,14 +1423,19 @@ window.openModal = (index) => {
     if (txtWaliHadits) txtWaliHadits.innerText = realisasiHaditsVal || "-";
     document.getElementById('editStatusHadits').value = hStatus;
 
-    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(hStatus) && hStatus !== 'belum') {
-        if (hStatus === 'tidakSetor') {
+    let effHStatus = hStatus;
+    if ((!effHStatus || effHStatus === 'belum') && hNilaiAngka) {
+        effHStatus = getGradeFromScore(hNilaiAngka);
+    }
+    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(effHStatus) && effHStatus !== 'belum') {
+        if (effHStatus === 'tidakSetor') {
             window.pilihTidakSetor('hadits');
         } else {
-            window.pilihGradeHadits(hStatus);
+            window.pilihGradeHadits(effHStatus);
             if (hNilaiAngka) window.updateHaditsNilai(hNilaiAngka);
         }
     } else if (isAdmin) {
+        window.populateGradeDropdown('hadits', 'A');
         document.querySelectorAll('.hadits-pill-btn').forEach(btn => btn.classList.remove('active'));
         const hBtnText = document.getElementById('haditsDropdownText');
         if (hBtnText) hBtnText.innerText = '--';
@@ -1402,14 +1456,19 @@ window.openModal = (index) => {
     if (txtWaliDoa) txtWaliDoa.innerText = realisasiDoaVal || "-";
     document.getElementById('editStatusDoa').value = dStatus;
 
-    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(dStatus) && dStatus !== 'belum') {
-        if (dStatus === 'tidakSetor') {
+    let effDStatus = dStatus;
+    if ((!effDStatus || effDStatus === 'belum') && dNilaiAngka) {
+        effDStatus = getGradeFromScore(dNilaiAngka);
+    }
+    if (isAdmin && ['A', 'B', 'C', 'D', 'tidakSetor'].includes(effDStatus) && effDStatus !== 'belum') {
+        if (effDStatus === 'tidakSetor') {
             window.pilihTidakSetor('doa');
         } else {
-            window.pilihGradeDoa(dStatus);
+            window.pilihGradeDoa(effDStatus);
             if (dNilaiAngka) window.updateDoaNilai(dNilaiAngka);
         }
     } else if (isAdmin) {
+        window.populateGradeDropdown('doa', 'A');
         document.querySelectorAll('.doa-pill-btn').forEach(btn => btn.classList.remove('active'));
         const dBtnText = document.getElementById('doaDropdownText');
         if (dBtnText) dBtnText.innerText = '--';
@@ -2224,29 +2283,11 @@ window.pilihGradeHadits = (grade) => {
     });
 
     const container = document.getElementById('haditsDropdownContainer');
-    container.style.display = 'block';
+    if (container) container.style.display = 'block';
 
-    let html = '';
-    let arr = [];
-    if (grade === 'A') {
-        for (let i = 100; i >= 93; i--) arr.push(i);
-    } else if (grade === 'B') {
-        for (let i = 92; i >= 84; i--) arr.push(i);
-    } else if (grade === 'C') {
-        for (let i = 83; i >= 75; i--) arr.push(i);
-    } else if (grade === 'D') {
-        for (let i = 74; i >= 60; i--) arr.push(i);
-    }
+    window.populateGradeDropdown('hadits', grade);
 
-    arr.forEach(num => {
-        html += `<div class="custom-dropdown-item" onclick="window.selectHaditsNilai(${num})">${num}</div>`;
-    });
-    if (grade === 'D') {
-        html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('hadits')">❌ Tidak Setor Sama Sekali</div>`;
-    }
-    document.getElementById('haditsDropdownList').innerHTML = html;
-
-    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || arr[0];
+    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || 88;
     window.updateHaditsNilai(defaultScore);
 };
 
@@ -2261,29 +2302,11 @@ window.pilihGradeDoa = (grade) => {
     });
 
     const container = document.getElementById('doaDropdownContainer');
-    container.style.display = 'block';
+    if (container) container.style.display = 'block';
 
-    let html = '';
-    let arr = [];
-    if (grade === 'A') {
-        for (let i = 100; i >= 93; i--) arr.push(i);
-    } else if (grade === 'B') {
-        for (let i = 92; i >= 84; i--) arr.push(i);
-    } else if (grade === 'C') {
-        for (let i = 83; i >= 75; i--) arr.push(i);
-    } else if (grade === 'D') {
-        for (let i = 74; i >= 60; i--) arr.push(i);
-    }
+    window.populateGradeDropdown('doa', grade);
 
-    arr.forEach(num => {
-        html += `<div class="custom-dropdown-item" onclick="window.selectDoaNilai(${num})">${num}</div>`;
-    });
-    if (grade === 'D') {
-        html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('doa')">❌ Tidak Setor Sama Sekali</div>`;
-    }
-    document.getElementById('doaDropdownList').innerHTML = html;
-
-    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || arr[0];
+    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || 95;
     window.updateDoaNilai(defaultScore);
 };
 
@@ -2298,33 +2321,13 @@ window.pilihGradeQuran = (grade) => {
     });
 
     const container = document.getElementById('customDropdownContainer');
-    container.style.display = 'block';
+    if (container) container.style.display = 'block';
 
-    let html = '';
-    let arr = [];
-    if (grade === 'A') {
-        for (let i = 100; i >= 93; i--) arr.push(i);
-    } else if (grade === 'B') {
-        for (let i = 92; i >= 84; i--) arr.push(i);
-    } else if (grade === 'C') {
-        for (let i = 83; i >= 75; i--) arr.push(i);
-    } else if (grade === 'D') {
-        for (let i = 74; i >= 60; i--) arr.push(i);
-    }
+    window.populateGradeDropdown('quran', grade);
 
-    arr.forEach(num => {
-        html += `<div class="custom-dropdown-item" onclick="window.selectCustomNilai(${num})">${num}</div>`;
-    });
-    if (grade === 'D') {
-        html += `<div class="custom-dropdown-item tidak-setor-item" onclick="window.pilihTidakSetor('quran')">❌ Tidak Setor Sama Sekali</div>`;
-    }
-
-    document.getElementById('customDropdownList').innerHTML = html;
-
-    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || arr[0];
+    const defaultScore = { A: 95, B: 88, C: 78, D: 70 }[grade] || 95;
     window.updateNilaiManual(defaultScore);
 };
-
 
 // Handler untuk status "Tidak Setor Sama Sekali"
 window.pilihTidakSetor = (subject) => {
@@ -2332,19 +2335,21 @@ window.pilihTidakSetor = (subject) => {
         document.getElementById('editStatusQuran').value = 'tidakSetor';
         document.getElementById('editQuranNilaiAngka').value = '';
         document.getElementById('customDropdownText').innerText = '❌ Tidak Setor';
-        // Tutup dropdown
-        document.getElementById('customDropdownContainer').classList.remove('open');
-        document.getElementById('customDropdownList').classList.remove('show');
-        // Aktifkan pill D agar terlihat konteksnya
-        document.querySelectorAll('.grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => {
+        const container = document.getElementById('customDropdownContainer');
+        const list = document.getElementById('customDropdownList');
+        if (container) container.classList.remove('open');
+        if (list) list.classList.remove('show');
+        document.querySelectorAll('.grade-pill-quran, .grade-pill-btn:not(.hadits-pill-btn):not(.doa-pill-btn)').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-grade') === 'D');
         });
     } else if (subject === 'hadits') {
         document.getElementById('editStatusHadits').value = 'tidakSetor';
         document.getElementById('editHaditsNilaiAngka').value = '';
         document.getElementById('haditsDropdownText').innerText = '❌ Tidak Setor';
-        document.getElementById('haditsDropdownContainer').classList.remove('open');
-        document.getElementById('haditsDropdownList').classList.remove('show');
+        const container = document.getElementById('haditsDropdownContainer');
+        const list = document.getElementById('haditsDropdownList');
+        if (container) container.classList.remove('open');
+        if (list) list.classList.remove('show');
         document.querySelectorAll('.hadits-pill-btn').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-grade') === 'D');
         });
@@ -2352,24 +2357,33 @@ window.pilihTidakSetor = (subject) => {
         document.getElementById('editStatusDoa').value = 'tidakSetor';
         document.getElementById('editDoaNilaiAngka').value = '';
         document.getElementById('doaDropdownText').innerText = '❌ Tidak Setor';
-        document.getElementById('doaDropdownContainer').classList.remove('open');
-        document.getElementById('doaDropdownList').classList.remove('show');
+        const container = document.getElementById('doaDropdownContainer');
+        const list = document.getElementById('doaDropdownList');
+        if (container) container.classList.remove('open');
+        if (list) list.classList.remove('show');
         document.querySelectorAll('.doa-pill-btn').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-grade') === 'D');
         });
     }
-    // Otomatis set setoranHarian = 'sudah' agar masuk statistik hari ini
     window.pilihSetoranHarian('sudah');
 };
 
 window.updateHaditsNilai = (val) => {
     document.getElementById('editHaditsNilaiAngka').value = val;
-    document.getElementById('haditsDropdownText').innerText = val;
+    const el = document.getElementById('haditsDropdownText');
+    if (el) el.innerText = val;
+    document.getElementById('haditsDropdownList').querySelectorAll('.custom-dropdown-item').forEach(item => {
+        item.classList.toggle('selected', item.innerText == val);
+    });
 };
 
 window.updateDoaNilai = (val) => {
     document.getElementById('editDoaNilaiAngka').value = val;
-    document.getElementById('doaDropdownText').innerText = val;
+    const el = document.getElementById('doaDropdownText');
+    if (el) el.innerText = val;
+    document.getElementById('doaDropdownList').querySelectorAll('.custom-dropdown-item').forEach(item => {
+        item.classList.toggle('selected', item.innerText == val);
+    });
 };
 
 window.updateNilaiManual = (val) => {
@@ -2378,49 +2392,77 @@ window.updateNilaiManual = (val) => {
     if (textSpan) textSpan.innerText = val;
 
     document.getElementById('customDropdownList').querySelectorAll('.custom-dropdown-item').forEach(item => {
-        if (item.innerText == val) {
-            item.classList.add('selected');
-        } else {
-            item.classList.remove('selected');
-        }
+        item.classList.toggle('selected', item.innerText == val);
     });
 };
 
-window.toggleCustomDropdown = () => {
-    const container = document.getElementById('customDropdownContainer');
+window.toggleCustomDropdown = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
     const list = document.getElementById('customDropdownList');
-    container.classList.toggle('open');
-    list.classList.toggle('show');
+    if (list && !list.children.length) {
+        const activePill = document.querySelector('.grade-pill-quran.active');
+        const g = activePill ? activePill.getAttribute('data-grade') : 'A';
+        const curScore = document.getElementById('editQuranNilaiAngka')?.value;
+        window.populateGradeDropdown('quran', g);
+        if (curScore) window.updateNilaiManual(curScore);
+    }
+    const container = document.getElementById('customDropdownContainer');
+    if (container) container.classList.toggle('open');
+    if (list) list.classList.toggle('show');
 };
 
 window.selectCustomNilai = (val) => {
     window.updateNilaiManual(val);
     const container = document.getElementById('customDropdownContainer');
     const list = document.getElementById('customDropdownList');
-    container.classList.remove('open');
-    list.classList.remove('show');
+    if (container) container.classList.remove('open');
+    if (list) list.classList.remove('show');
 };
 
-window.toggleHaditsDropdown = () => {
-    const container = document.getElementById('haditsDropdownContainer');
+window.toggleHaditsDropdown = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
     const list = document.getElementById('haditsDropdownList');
-    container.classList.toggle('open');
-    list.classList.toggle('show');
+    if (list && !list.children.length) {
+        const activePill = document.querySelector('.hadits-pill-btn.active');
+        const g = activePill ? activePill.getAttribute('data-grade') : 'A';
+        const curScore = document.getElementById('editHaditsNilaiAngka')?.value;
+        window.populateGradeDropdown('hadits', g);
+        if (curScore) window.updateHaditsNilai(curScore);
+    }
+    const container = document.getElementById('haditsDropdownContainer');
+    if (container) container.classList.toggle('open');
+    if (list) list.classList.toggle('show');
 };
 
 window.selectHaditsNilai = (val) => {
     window.updateHaditsNilai(val);
     const container = document.getElementById('haditsDropdownContainer');
     const list = document.getElementById('haditsDropdownList');
-    container.classList.remove('open');
-    list.classList.remove('show');
+    if (container) container.classList.remove('open');
+    if (list) list.classList.remove('show');
 };
 
-window.toggleDoaDropdown = () => {
+window.toggleDoaDropdown = (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    const list = document.getElementById('doaDropdownList');
+    if (list && !list.children.length) {
+        const activePill = document.querySelector('.doa-pill-btn.active');
+        const g = activePill ? activePill.getAttribute('data-grade') : 'A';
+        const curScore = document.getElementById('editDoaNilaiAngka')?.value;
+        window.populateGradeDropdown('doa', g);
+        if (curScore) window.updateDoaNilai(curScore);
+    }
+    const container = document.getElementById('doaDropdownContainer');
+    if (container) container.classList.toggle('open');
+    if (list) list.classList.toggle('show');
+};
+
+window.selectDoaNilai = (val) => {
+    window.updateDoaNilai(val);
     const container = document.getElementById('doaDropdownContainer');
     const list = document.getElementById('doaDropdownList');
-    container.classList.toggle('open');
-    list.classList.toggle('show');
+    if (container) container.classList.remove('open');
+    if (list) list.classList.remove('show');
 };
 
 window.selectDoaNilai = (val) => {
