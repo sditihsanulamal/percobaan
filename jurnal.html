@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=30">
+    <link rel="stylesheet" href="style.css?v=31">
 </head>
 
 <body>
@@ -252,22 +252,14 @@
                 <div class="slate-blackboard-luxury">
                     <!-- Mode Guru: Stepper & Dial -->
                     <div id="quranGuruInputArea">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <label style="font-size:11.5px; font-weight:700; color:#fef08a; display:flex; align-items:center; gap:5px;">
-                                <span>🎙️ Yang Disetorkan Ananda</span>
-                            </label>
-                            <span style="font-size:10px; color:#94a3b8;">Tekan stepper untuk menambah ayat</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Materi yang Disetorkan:</span>
+                            <span style="font-size:10px; color:#fef08a; font-weight:600;">Klik ayat / tombol cepat</span>
                         </div>
-                        <div class="quran-dial-wrap">
-                            <button type="button" onclick="window.stepAyat(-1)" class="btn-tactile quran-dial-btn">–</button>
-                            <div class="quran-dial-display">
-                                <div class="quran-dial-surah-label" id="dialSurahLabel">Surah Al-Baqarah</div>
-                                <div class="quran-dial-ayat-val">
-                                    <span style="font-size:12px; color:#d4af37; margin-right:4px;">Ayat</span>
-                                    <span id="displayAyatNum">61</span>
-                                </div>
-                            </div>
-                            <button type="button" onclick="window.stepAyat(1)" class="btn-tactile quran-dial-btn plus-btn">+</button>
+                        <div style="margin-bottom:12px; display:flex; align-items:baseline; gap:8px;">
+                            <span id="dialSurahLabel" style="font-size:17px; font-weight:800; color:#ffffff; letter-spacing:-0.2px;">Surah Al-Baqarah</span>
+                            <span style="font-size:13.5px; font-weight:700; color:#d4af37;">Ayat</span>
+                            <span id="displayAyatNum" onclick="window.editAyatManual()" title="Klik untuk ubah nomor ayat" style="font-size:22px; font-weight:900; color:#fef08a; letter-spacing:-0.5px; cursor:pointer; text-decoration:underline dotted rgba(212,175,55,0.6);">61</span>
                         </div>
                         <div class="quick-chips-grid">
                             <button type="button" onclick="window.stepAyat(1)" class="btn-tactile quick-chip">+1 Ayat</button>
@@ -276,8 +268,7 @@
                             <button type="button" onclick="window.toggleMurajaahModal()" id="btnMurajaah" class="btn-tactile quick-chip">🔄 Muraja'ah</button>
                         </div>
                     </div>
-
-                    <!-- Mode Wali Santri: Papan Tulis Stempel Predikat -->
+<!-- Mode Wali Santri: Papan Tulis Stempel Predikat -->
                     <div id="quranWaliSlateArea" style="display:none;">
                         <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8; display:block; margin-bottom:4px;">Materi yang Disetorkan:</span>
                         <div style="font-size:17px; font-weight:800; color:#ffffff; line-height:1.35;" id="txtWaliQuranSetor">
@@ -297,7 +288,7 @@
 
                 <!-- Grade & Drop-up Skor Guru -->
                 <div id="quranAdminGradesRow" class="admin-grade-row">
-                    <span class="admin-grade-label">Grade & Skor Guru</span>
+                    <span class="admin-grade-label">Nilai</span>
                     <div class="admin-grade-controls">
                         <div class="grade-pill-group-luxury">
                             <button type="button" class="grade-pill-btn-luxury grade-pill-quran" data-grade="A" onclick="window.pilihGradeQuran('A')">A</button>
@@ -343,13 +334,11 @@
                 <div class="slate-blackboard-luxury">
                     <!-- Mode Guru: Textarea Mewah -->
                     <div id="haditsGuruInputArea">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <label style="font-size:11.5px; font-weight:700; color:#fef08a; display:flex; align-items:center; gap:5px;">
-                                <span>🎙️ Yang Disetorkan Ananda</span>
-                            </label>
-                            <span style="font-size:10px; color:#94a3b8;">Tulis/edit materi yang disetorkan</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Materi yang Disetorkan:</span>
+                            <span style="font-size:10px; color:#fef08a; font-weight:600;">Ketik/edit judul materi</span>
                         </div>
-                        <textarea id="editHaditsRealisasi" class="slate-textarea-luxury" rows="3" oninput="window.syncHaditsManual(this.value)" placeholder="Tuliskan judul hadits yang disetorkan ananda hari ini..."></textarea>
+                        <textarea id="editHaditsRealisasi" class="slate-textarea-luxury" rows="2" oninput="window.syncHaditsManual(this.value)" placeholder="Tuliskan judul hadits yang disetorkan ananda hari ini..."></textarea>
                     </div>
 
                     <!-- Mode Wali: Tampilan Papan Tulis & Stempel Predikat -->
@@ -372,7 +361,7 @@
 
                 <!-- Grade & Drop-up Skor Hadits -->
                 <div id="haditsAdminGradesRow" class="admin-grade-row">
-                    <span class="admin-grade-label">Grade & Skor Hadits</span>
+                    <span class="admin-grade-label">Nilai</span>
                     <div class="admin-grade-controls">
                         <div class="grade-pill-group-luxury">
                             <button type="button" class="grade-pill-btn-luxury hadits-pill-btn" data-grade="A" onclick="window.pilihGradeHadits('A')">A</button>
@@ -404,26 +393,24 @@
                 <!-- Target Masthead Borderless -->
                 <div class="target-masthead">
                     <div class="target-micro-label">
-                        <span class="target-dot-pulse" style="background:#34d399; box-shadow:0 0 10px #34d399;"></span>
-                        <span class="target-micro-text" style="color:#a7f3d0;">TARGET HAFALAN DOA</span>
+                        <span class="target-dot-pulse"></span>
+                        <span class="target-micro-text">TARGET HAFALAN DOA</span>
                     </div>
                     <div id="displayDoaTarget" class="target-fluid-title">
                         43. Doa Ketika Mendapat Musibah
                     </div>
-                    <div class="luminous-hairline" style="background:linear-gradient(90deg, rgba(52, 211, 153, 0.6) 0%, rgba(254, 240, 138, 0.35) 40%, transparent 100%);"></div>
+                    <div class="luminous-hairline"></div>
                 </div>
 
                 <!-- Papan Tulis Setoran Doa -->
                 <div class="slate-blackboard-luxury">
                     <!-- Mode Guru: Textarea Mewah -->
                     <div id="doaGuruInputArea">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <label style="font-size:11.5px; font-weight:700; color:#fef08a; display:flex; align-items:center; gap:5px;">
-                                <span>🎙️ Yang Disetorkan Ananda</span>
-                            </label>
-                            <span style="font-size:10px; color:#94a3b8;">Tulis/edit doa yang disetorkan</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Materi yang Disetorkan:</span>
+                            <span style="font-size:10px; color:#fef08a; font-weight:600;">Ketik/edit doa materi</span>
                         </div>
-                        <textarea id="editDoaRealisasi" class="slate-textarea-luxury" rows="3" oninput="window.syncDoaManual(this.value)" placeholder="Tuliskan judul doa yang disetorkan ananda hari ini..."></textarea>
+                        <textarea id="editDoaRealisasi" class="slate-textarea-luxury" rows="2" oninput="window.syncDoaManual(this.value)" placeholder="Tuliskan judul doa yang disetorkan ananda hari ini..."></textarea>
                     </div>
 
                     <!-- Mode Wali: Tampilan Papan Tulis & Stempel Predikat -->
@@ -446,7 +433,7 @@
 
                 <!-- Grade & Drop-up Skor Doa -->
                 <div id="doaAdminGradesRow" class="admin-grade-row">
-                    <span class="admin-grade-label">Grade & Skor Doa</span>
+                    <span class="admin-grade-label">Nilai</span>
                     <div class="admin-grade-controls">
                         <div class="grade-pill-group-luxury">
                             <button type="button" class="grade-pill-btn-luxury doa-pill-btn" data-grade="A" onclick="window.pilihGradeDoa('A')">A</button>
@@ -912,7 +899,7 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=30"></script>
+    <script type="module" src="app.js?v=31"></script>
 </body>
 
 </html>

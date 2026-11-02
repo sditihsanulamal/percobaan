@@ -1200,6 +1200,19 @@ function updateQuranGaugeAndDisplay() {
     }
 }
 
+
+window.editAyatManual = () => {
+    const cur = activeModalCurrentAyat || 1;
+    const input = prompt("Masukkan nomor ayat yang disetorkan ananda:", cur);
+    if (input !== null && input.trim() !== "") {
+        const num = parseInt(input.trim(), 10);
+        if (!isNaN(num) && num > 0) {
+            activeModalCurrentAyat = num;
+            updateQuranGaugeAndDisplay();
+        }
+    }
+};
+
 window.stepAyat = (delta) => {
     activeModalCurrentAyat = Math.max(1, activeModalCurrentAyat + delta);
     updateQuranGaugeAndDisplay();
