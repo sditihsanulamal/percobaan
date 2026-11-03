@@ -4128,3 +4128,37 @@ header p {
         gap: 6px !important;
     }
 }
+/* Glowing Chips for Statistics Sub-Breakdown */
+.stat-name-chip.stat-chip-a {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.45);
+    color: #bfdbfe;
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+.stat-name-chip.stat-chip-b {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.45);
+    color: #a7f3d0;
+    text-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+.stat-name-chip.stat-chip-c {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.45);
+    color: #fef08a;
+    text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+.stat-name-chip.stat-chip-d {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #fca5a5;
+    text-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+.stat-name-chip.stat-chip-x {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #ff8787;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+}
+.sub-grade-names.stat-color-x {
+    border-left-color: #ef4444;
+}

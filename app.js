@@ -2661,22 +2661,23 @@ window.switchSubBreakdown = (subj, btn) => {
     if (!data) return;
 
     const gradeConfig = [
-        { g: 'A', icon: '🌟', label: 'Mumtaz (Sangat Lancar)', color: '#34d399', cls: 'a' },
-        { g: 'B', icon: '✨', label: 'Jayyid Jiddan (Lancar)', color: '#6ee7b7', cls: 'b' },
-        { g: 'C', icon: '📖', label: 'Jayyid (Cukup Lancar)', color: '#fcd34d', cls: 'c' },
-        { g: 'D', icon: '🔄', label: "Muraja'ah (Perlu Bimbingan)", color: '#f87171', cls: 'd' },
+        { g: 'A', icon: '🌟', label: 'Mumtaz (Sangat Lancar)', color: '#93c5fd', glow: 'rgba(59, 130, 246, 0.7)', cls: 'a' },
+        { g: 'B', icon: '✨', label: 'Jayyid Jiddan (Lancar)', color: '#6ee7b7', glow: 'rgba(16, 185, 129, 0.7)', cls: 'b' },
+        { g: 'C', icon: '📖', label: 'Jayyid (Cukup Lancar)', color: '#fcd34d', glow: 'rgba(245, 158, 11, 0.7)', cls: 'c' },
+        { g: 'D', icon: '🔄', label: "Muraja'ah (Perlu Bimbingan)", color: '#fca5a5', glow: 'rgba(239, 68, 68, 0.6)', cls: 'd' },
+        { g: 'tidakSetor', icon: '🚫', label: 'Tidak Setor Sama Sekali', color: '#ff6b6b', glow: 'rgba(239, 68, 68, 0.8)', cls: 'x' },
     ];
 
     const html = gradeConfig.map(gc => {
-        const names = data[subj][gc.g];
+        const names = (data[subj] && data[subj][gc.g]) ? data[subj][gc.g] : [];
         const chipsHtml = names.length > 0
-            ? names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
+            ? names.map(n => `<span class="stat-name-chip stat-chip-${gc.cls}">${n}</span>`).join('')
             : `<span style="opacity:0.35; font-size:10px;">Tidak ada murid di kategori ini.</span>`;
         const listId = `subgrade-${subj}-${gc.g}`;
         return `
             <div class="sub-grade-row" onclick="window.toggleSubGrade('${listId}')">
-                <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} ${gc.label}</span>
-                <span class="sub-grade-count" style="color:${gc.color};">${names.length} anak</span>
+                <span class="sub-grade-label" style="color:${gc.color}; text-shadow: 0 0 10px ${gc.glow}; font-weight:800;">${gc.icon} ${gc.label}</span>
+                <span class="sub-grade-count" style="color:${gc.color}; text-shadow: 0 0 8px ${gc.glow}; font-weight:800;">${names.length} anak</span>
                 <span class="sub-grade-arrow">▼</span>
             </div>
             <div class="sub-grade-names stat-color-${gc.cls}" id="${listId}">${chipsHtml}</div>
@@ -2702,17 +2703,9 @@ function renderStatsChart() {
         izin:         { names: [] },
         berhalangan:  { names: [] },
         belumHariIni: { names: [] },
-        tidakSetor:   { names: [] },
     };
 
     dataMuridDinamis.forEach(murid => {
-        // Status permanen "Tidak Setor Sama Sekali"
-        const adaTidakSetor = (murid.quranStatus === 'tidakSetor' || murid.haditsStatus === 'tidakSetor' || murid.doaStatus === 'tidakSetor');
-        if (adaTidakSetor) {
-            stats.tidakSetor.names.push(murid.nama);
-            return;
-        }
-
         const sudahDinilaiHariIni = (murid.tanggalSetor === hariIni);
         const setoranHarian = murid.setoranHarian || 'belum';
 
@@ -2731,22 +2724,25 @@ function renderStatsChart() {
     // Bangun data per-mata-pelajaran untuk sub-breakdown (disimpan global agar switchSubBreakdown bisa akses)
     const buildSubjectData = (muridList) => {
         const subjectMap = {
-            quran:  { Q: 'quranStatus',  A: [], B: [], C: [], D: [] },
-            hadits: { Q: 'haditsStatus', A: [], B: [], C: [], D: [] },
-            doa:    { Q: 'doaStatus',    A: [], B: [], C: [], D: [] },
+            quran:  { Q: 'quranStatus',  A: [], B: [], C: [], D: [], tidakSetor: [] },
+            hadits: { Q: 'haditsStatus', A: [], B: [], C: [], D: [], tidakSetor: [] },
+            doa:    { Q: 'doaStatus',    A: [], B: [], C: [], D: [], tidakSetor: [] },
         };
         muridList.forEach(murid => {
             ['quran', 'hadits', 'doa'].forEach(subj => {
                 const statusRaw = murid[subjectMap[subj].Q] || '';
-                const grade = ['A', 'B', 'C', 'D'].includes(statusRaw) ? statusRaw : 'D';
-                subjectMap[subj][grade].push(murid.nama);
+                if (statusRaw === 'tidakSetor') {
+                    subjectMap[subj].tidakSetor.push(murid.nama);
+                } else {
+                    const grade = ['A', 'B', 'C', 'D'].includes(statusRaw) ? statusRaw : 'D';
+                    subjectMap[subj][grade].push(murid.nama);
+                }
             });
         });
-        // Kembalikan hanya A/B/C/D per subjek
         return {
-            quran:  { A: subjectMap.quran.A,  B: subjectMap.quran.B,  C: subjectMap.quran.C,  D: subjectMap.quran.D  },
-            hadits: { A: subjectMap.hadits.A, B: subjectMap.hadits.B, C: subjectMap.hadits.C, D: subjectMap.hadits.D },
-            doa:    { A: subjectMap.doa.A,    B: subjectMap.doa.B,    C: subjectMap.doa.C,    D: subjectMap.doa.D    },
+            quran:  subjectMap.quran,
+            hadits: subjectMap.hadits,
+            doa:    subjectMap.doa,
         };
     };
     window._subjectBreakdownData = buildSubjectData(stats.sudahSetor.muridList);
@@ -2872,7 +2868,6 @@ function renderStatsChart() {
     html += renderBar('izin', '🏥', 'Izin / Sakit', 'izin', stats.izin.names);
     html += renderBar('berhalangan', '🛑', 'Berhalangan / Uzur', 'berhalangan', stats.berhalangan.names);
     html += renderBar('belum', '⏳', 'Belum Setor Hari Ini', 'd', stats.belumHariIni.names);
-    html += renderBar('tidaksetor', '🚫', 'Tidak Setor Sama Sekali', 'e', stats.tidakSetor.names);
 
     container.innerHTML = html;
 
