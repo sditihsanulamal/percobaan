@@ -2661,10 +2661,10 @@ window.switchSubBreakdown = (subj, btn) => {
     if (!data) return;
 
     const gradeConfig = [
-        { g: 'A', icon: '👑', color: '#93c5fd', cls: 'a' },
-        { g: 'B', icon: '🌟', color: '#6ee7b7', cls: 'b' },
-        { g: 'C', icon: '⚡', color: '#fcd34d', cls: 'c' },
-        { g: 'D', icon: '⏳', color: '#94a3b8', cls: 'd' },
+        { g: 'A', icon: '🌟', label: 'Mumtaz (Sangat Lancar)', color: '#34d399', cls: 'a' },
+        { g: 'B', icon: '✨', label: 'Jayyid Jiddan (Lancar)', color: '#6ee7b7', cls: 'b' },
+        { g: 'C', icon: '📖', label: 'Jayyid (Cukup Lancar)', color: '#fcd34d', cls: 'c' },
+        { g: 'D', icon: '🔄', label: "Muraja'ah (Perlu Bimbingan)", color: '#f87171', cls: 'd' },
     ];
 
     const html = gradeConfig.map(gc => {
@@ -2675,7 +2675,7 @@ window.switchSubBreakdown = (subj, btn) => {
         const listId = `subgrade-${subj}-${gc.g}`;
         return `
             <div class="sub-grade-row" onclick="window.toggleSubGrade('${listId}')">
-                <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} Nilai ${gc.g}</span>
+                <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} ${gc.label}</span>
                 <span class="sub-grade-count" style="color:${gc.color};">${names.length} anak</span>
                 <span class="sub-grade-arrow">▼</span>
             </div>
@@ -2803,10 +2803,10 @@ function renderStatsChart() {
     const buildSubBreakdownHtml = (subj) => {
         const data = window._subjectBreakdownData[subj];
         const gradeConfig = [
-            { g: 'A', icon: '👑', color: '#93c5fd', cls: 'a' },
-            { g: 'B', icon: '🌟', color: '#6ee7b7', cls: 'b' },
-            { g: 'C', icon: '⚡', color: '#fcd34d', cls: 'c' },
-            { g: 'D', icon: '⏳', color: '#94a3b8', cls: 'd' },
+            { g: 'A', icon: '🌟', label: 'Mumtaz (Sangat Lancar)', color: '#34d399', cls: 'a' },
+            { g: 'B', icon: '✨', label: 'Jayyid Jiddan (Lancar)', color: '#6ee7b7', cls: 'b' },
+            { g: 'C', icon: '📖', label: 'Jayyid (Cukup Lancar)', color: '#fcd34d', cls: 'c' },
+            { g: 'D', icon: '🔄', label: "Muraja'ah (Perlu Bimbingan)", color: '#f87171', cls: 'd' },
         ];
         return gradeConfig.map(gc => {
             const names = data[gc.g];
@@ -2816,7 +2816,7 @@ function renderStatsChart() {
             const listId = `subgrade-${subj}-${gc.g}`;
             return `
                 <div class="sub-grade-row" onclick="window.toggleSubGrade('${listId}')">
-                    <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} Nilai ${gc.g}</span>
+                    <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} ${gc.label}</span>
                     <span class="sub-grade-count" style="color:${gc.color};">${names.length} anak</span>
                     <span class="sub-grade-arrow">▼</span>
                 </div>
@@ -2858,7 +2858,7 @@ function renderStatsChart() {
                 </div>
                 <div id="${hintId}" class="stat-bar-hint" onclick="window.toggleStatList('${listId}')">
                     <span class="stat-bar-hint-arrow">▼</span>
-                    <span class="hint-text">Ketuk untuk lihat rincian nilai</span>
+                    <span class="hint-text">Ketuk untuk lihat rincian kelancaran</span>
                     <span style="margin-left:auto; opacity:0.4;">${percentage}%</span>
                 </div>
                 <div id="${listId}" class="stat-names-list stat-color-a">
