@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=33">
+    <link rel="stylesheet" href="style.css?v=34">
 </head>
 
 <body>
@@ -252,9 +252,8 @@
                 <div class="slate-blackboard-luxury">
                     <!-- Mode Guru: Stepper & Dial -->
                     <div id="quranGuruInputArea">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Materi yang Disetorkan:</span>
-                            <span style="font-size:10px; color:#fef08a; font-weight:600;">Klik ayat / tombol cepat</span>
+                        <div style="margin-bottom:6px;">
+                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Ayat terakhir yang disetorkan:</span>
                         </div>
                         <div style="margin-bottom:12px; display:flex; align-items:baseline; gap:8px;">
                             <span id="dialSurahLabel" style="font-size:17px; font-weight:800; color:#ffffff; letter-spacing:-0.2px;">Surah Al-Baqarah</span>
@@ -270,7 +269,7 @@
                     </div>
 <!-- Mode Wali Santri: Papan Tulis Stempel Predikat -->
                     <div id="quranWaliSlateArea" style="display:none;">
-                        <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8; display:block; margin-bottom:4px;">Materi yang Disetorkan:</span>
+                        <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8; display:block; margin-bottom:4px;">Ayat terakhir yang disetorkan:</span>
                         <div style="font-size:17px; font-weight:800; color:#ffffff; line-height:1.35;" id="txtWaliQuranSetor">
                             Surah Al-Baqarah Ayat 61
                         </div>
@@ -334,16 +333,15 @@
                 <div class="slate-blackboard-luxury">
                     <!-- Mode Guru: Textarea Mewah -->
                     <div id="haditsGuruInputArea">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Materi yang Disetorkan:</span>
-                            <span style="font-size:10px; color:#fef08a; font-weight:600;">Ketik/edit judul materi</span>
+                        <div style="margin-bottom:6px;">
+                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Hadits terakhir yang disetorkan:</span>
                         </div>
                         <textarea id="editHaditsRealisasi" class="slate-textarea-luxury" rows="2" oninput="window.syncHaditsManual(this.value)" placeholder="Tuliskan judul hadits yang disetorkan ananda hari ini..."></textarea>
                     </div>
 
                     <!-- Mode Wali: Tampilan Papan Tulis & Stempel Predikat -->
                     <div id="haditsWaliSlateArea" style="display:none;">
-                        <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8; display:block; margin-bottom:4px;">Materi yang Disetorkan:</span>
+                        <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8; display:block; margin-bottom:4px;">Hadits terakhir yang disetorkan:</span>
                         <div style="font-size:17px; font-weight:800; color:#ffffff; line-height:1.35;" id="txtWaliHaditsSetor">
                             27. Perumpamaan Orang Mukmin & 28. Lemah Lembut
                         </div>
@@ -406,16 +404,15 @@
                 <div class="slate-blackboard-luxury">
                     <!-- Mode Guru: Textarea Mewah -->
                     <div id="doaGuruInputArea">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Materi yang Disetorkan:</span>
-                            <span style="font-size:10px; color:#fef08a; font-weight:600;">Ketik/edit doa materi</span>
+                        <div style="margin-bottom:6px;">
+                            <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Doa terakhir yang disetorkan:</span>
                         </div>
                         <textarea id="editDoaRealisasi" class="slate-textarea-luxury" rows="2" oninput="window.syncDoaManual(this.value)" placeholder="Tuliskan judul doa yang disetorkan ananda hari ini..."></textarea>
                     </div>
 
                     <!-- Mode Wali: Tampilan Papan Tulis & Stempel Predikat -->
                     <div id="doaWaliSlateArea" style="display:none;">
-                        <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8; display:block; margin-bottom:4px;">Materi yang Disetorkan:</span>
+                        <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8; display:block; margin-bottom:4px;">Doa terakhir yang disetorkan:</span>
                         <div style="font-size:17px; font-weight:800; color:#ffffff; line-height:1.35;" id="txtWaliDoaSetor">
                             43. Doa Ketika Mendapat Musibah
                         </div>
@@ -899,7 +896,7 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=33"></script>
+    <script type="module" src="app.js?v=34"></script>
 </body>
 
 </html>
