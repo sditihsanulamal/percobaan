@@ -2050,41 +2050,40 @@ header p {
 /* Centered Classification Tiers */
 .tier-row-container {
     border-radius: 16px;
-    transition: background 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     border: 1px solid transparent;
     padding: 2px;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    contain: content;
-    transform: translateZ(0);
+    contain: layout style;
 }
 .tier-row-container:last-child {
     border-bottom: 1px solid transparent;
 }
 .tier-row-container.active-A {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.22) 0%, rgba(30, 58, 138, 0.08) 100%);
+    background: rgba(59, 130, 246, 0.14);
     border-color: rgba(59, 130, 246, 0.55);
-    box-shadow: 0 4px 18px rgba(59, 130, 246, 0.22), inset 0 0 14px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.22);
 }
 .tier-row-container.active-B {
-    background: linear-gradient(90deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 78, 59, 0.06) 100%);
+    background: rgba(16, 185, 129, 0.1);
     border-color: rgba(110, 231, 183, 0.4);
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15), inset 0 0 12px rgba(16, 185, 129, 0.08);
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
 }
 .tier-row-container.active-C {
-    background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(120, 53, 15, 0.06) 100%);
+    background: rgba(245, 158, 11, 0.1);
     border-color: rgba(252, 211, 77, 0.4);
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.15), inset 0 0 12px rgba(245, 158, 11, 0.08);
+    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
 }
 .tier-row-container.active-D {
-    background: linear-gradient(90deg, rgba(244, 63, 94, 0.12) 0%, rgba(136, 19, 55, 0.06) 100%);
+    background: rgba(244, 63, 94, 0.1);
     border-color: rgba(252, 165, 165, 0.4);
-    box-shadow: 0 4px 16px rgba(244, 63, 94, 0.15), inset 0 0 12px rgba(244, 63, 94, 0.08);
+    box-shadow: 0 2px 10px rgba(244, 63, 94, 0.15);
 }
 .tier-row-container.active-X {
-    background: linear-gradient(90deg, rgba(239, 68, 68, 0.14) 0%, rgba(127, 29, 29, 0.08) 100%);
+    background: rgba(239, 68, 68, 0.1);
     border-color: rgba(255, 107, 107, 0.45);
-    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.18), inset 0 0 12px rgba(239, 68, 68, 0.1);
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.15);
 }
 
 .tier-click-target {
@@ -2095,12 +2094,19 @@ header p {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.15s ease;
+    transition: background 0.12s ease, transform 0.1s ease;
     text-align: center;
     user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
-.tier-row-container:hover .tier-click-target {
+.tier-click-target:hover {
     background: rgba(255, 255, 255, 0.04);
+}
+.tier-click-target:active {
+    transform: scale(0.985);
+    background: rgba(255, 255, 255, 0.06);
 }
 .tier-title-line {
     display: flex;
@@ -2148,43 +2154,47 @@ header p {
 
 .tier-arrow-indicator {
     display: inline-block;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     font-size: 10px;
-    margin-left: 2px;
+    margin-left: 3px;
+    transform: rotate(0deg) translateZ(0);
+    will-change: transform;
 }
 .tier-arrow-indicator.is-open {
-    transform: rotate(180deg) scale(1.18);
+    transform: rotate(180deg) translateZ(0);
 }
 
 .tier-icon-sparkle {
     display: inline-flex;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .tier-row-container.active-A .tier-icon-sparkle,
 .tier-row-container.active-B .tier-icon-sparkle,
 .tier-row-container.active-C .tier-icon-sparkle,
 .tier-row-container.active-D .tier-icon-sparkle,
 .tier-row-container.active-X .tier-icon-sparkle {
-    transform: scale(1.22);
+    transform: scale(1.15);
 }
 
+/* Modern Zero-Deadzone Grid Drawer (60 FPS on Mobile) */
 .tier-drawer-wrapper {
-    max-height: 0;
+    display: grid;
+    grid-template-rows: 0fr;
     opacity: 0;
-    overflow: hidden;
-    transform: translateY(-4px) translateZ(0);
-    transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: grid-template-rows 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease;
     pointer-events: none;
     padding: 0 8px;
-    will-change: max-height, opacity;
-    backface-visibility: hidden;
+    will-change: grid-template-rows, opacity;
 }
 .tier-drawer-wrapper.is-open {
-    max-height: 360px;
+    grid-template-rows: 1fr;
     opacity: 1;
-    transform: translateY(0) translateZ(0);
     pointer-events: auto;
     padding-bottom: 6px;
+}
+.tier-drawer-wrapper > * {
+    min-height: 0;
+    overflow: hidden;
 }
 
 .tier-chips-deck {
@@ -2201,19 +2211,31 @@ header p {
 .border-top-D { border-top-color: rgba(244, 63, 94, 0.25); }
 .border-top-X { border-top-color: rgba(239, 68, 68, 0.25); }
 
+/* Pure CSS Staggered Fade-in (0ms JS Overhead) */
 @keyframes chipCascade {
     0% {
         opacity: 0;
-        transform: translateY(6px) scale(0.94);
+        transform: translateY(4px);
     }
     100% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 }
-.stat-chip-animated {
-    animation: chipCascade 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+.tier-drawer-wrapper.is-open .stat-chip-btn {
+    animation: chipCascade 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(1) { animation-delay: 15ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(2) { animation-delay: 30ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(3) { animation-delay: 45ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(4) { animation-delay: 60ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(5) { animation-delay: 75ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(6) { animation-delay: 90ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(7) { animation-delay: 105ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(8) { animation-delay: 120ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(9) { animation-delay: 135ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(10) { animation-delay: 150ms; }
+.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(n+11) { animation-delay: 165ms; }
 
 .stat-chip-btn {
     display: inline-flex;
@@ -2223,17 +2245,14 @@ header p {
     border-radius: 8px;
     font-size: 10.5px;
     font-weight: 500;
-    transition: transform 0.15s ease, background 0.15s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: transform 0.12s ease;
     border: 1px solid transparent;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-}
-.stat-chip-btn:hover {
-    transform: scale(1.04) translateZ(0);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
 }
 .stat-chip-btn:active {
-    transform: scale(0.96) translateZ(0);
+    transform: scale(0.96);
 }
 .stat-chip-avatar {
     width: 16px;
@@ -2247,7 +2266,7 @@ header p {
     flex-shrink: 0;
 }
 
-/* Chip Colors */
+/* Chip Color Themes */
 .chip-theme-a {
     background: rgba(59, 130, 246, 0.15);
     color: #dbeafe;
@@ -2291,34 +2310,6 @@ header p {
 }
 .chip-theme-x .stat-chip-avatar {
     background: rgba(239, 68, 68, 0.35);
-    color: #fca5a5;
-}
-
-.chip-theme-izin {
-    background: rgba(59, 130, 246, 0.12);
-    color: #bfdbfe;
-    border-color: rgba(59, 130, 246, 0.3);
-}
-.chip-theme-izin .stat-chip-avatar {
-    background: rgba(59, 130, 246, 0.3);
-    color: #93c5fd;
-}
-.chip-theme-berhalangan {
-    background: rgba(245, 158, 11, 0.12);
-    color: #fde68a;
-    border-color: rgba(245, 158, 11, 0.3);
-}
-.chip-theme-berhalangan .stat-chip-avatar {
-    background: rgba(245, 158, 11, 0.3);
-    color: #fcd34d;
-}
-.chip-theme-belum {
-    background: rgba(244, 63, 94, 0.12);
-    color: #fca5a5;
-    border-color: rgba(244, 63, 94, 0.3);
-}
-.chip-theme-belum .stat-chip-avatar {
-    background: rgba(244, 63, 94, 0.3);
     color: #fca5a5;
 }
 

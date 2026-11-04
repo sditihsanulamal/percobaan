@@ -2628,22 +2628,28 @@ window.simpanDataMurid = async () => {
 
 const StatAudioEngine = {
     ctx: null,
+    inited: false,
     init() {
-        if (!this.ctx) {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) this.ctx = new AudioContext();
-            } catch (_) {}
-        }
-    },
-    play(type) {
-        // Run audio creation asynchronously to prevent blocking touch gestures & GPU frames
-        setTimeout(() => {
-            try {
-                this.init();
-                if (!this.ctx) return;
+        if (this.inited) return;
+        this.inited = true;
+        try {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                this.ctx = new AudioContext();
                 if (this.ctx.state === 'suspended') {
                     this.ctx.resume().catch(() => {});
+                }
+            }
+        } catch (_) {}
+    },
+    play(type) {
+        if (!this.ctx) return;
+        // Run audio creation in detached microtask so it NEVER blocks touch/frames
+        queueMicrotask(() => {
+            try {
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume().catch(() => {});
+                    return;
                 }
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator();
@@ -2653,22 +2659,22 @@ const StatAudioEngine = {
                 if (type === 'tick') {
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(800, now);
-                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
                     osc.start(now);
-                    osc.stop(now + 0.04);
+                    osc.stop(now + 0.03);
                 } else if (type === 'step') {
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(520, now);
-                    osc.frequency.exponentialRampToValueAtTime(780, now + 0.06);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                    osc.frequency.exponentialRampToValueAtTime(760, now + 0.05);
+                    gain.gain.setValueAtTime(0.09, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
                     osc.start(now);
-                    osc.stop(now + 0.06);
+                    osc.stop(now + 0.05);
                 }
             } catch (_) {}
-        }, 0);
+        });
     }
 };
 
@@ -2687,6 +2693,7 @@ window._lastStatsSignature = null;
 window.openStatsModal = () => {
     const modal = document.getElementById('statsModal');
     if (!modal) return;
+    StatAudioEngine.init();
     
     // Prevent background scrolling while modal is open on mobile
     document.body.style.overflow = 'hidden';
@@ -2741,26 +2748,15 @@ window.toggleTierDrawer = (tier) => {
     const isOpen = drawer.classList.contains('is-open');
 
     if (!isOpen) {
-        StatAudioEngine.play('step');
         drawer.classList.add('is-open');
-        arrow.classList.add('is-open');
-        row.classList.add(`active-${tier}`);
-
-        // Smooth staggered cascade without layout thrashing (no forced offsetWidth)
-        const chips = drawer.querySelectorAll('.stat-chip-btn');
-        if (chips.length > 0) {
-            chips.forEach((c, idx) => {
-                c.style.animationDelay = `${Math.min(idx * 22, 220)}ms`;
-                c.classList.add('stat-chip-animated');
-            });
-        }
+        if (arrow) arrow.classList.add('is-open');
+        if (row) row.classList.add(`active-${tier}`);
+        StatAudioEngine.play('step');
     } else {
-        StatAudioEngine.play('tick');
         drawer.classList.remove('is-open');
-        arrow.classList.remove('is-open');
-        row.classList.remove(`active-${tier}`);
-        const chips = drawer.querySelectorAll('.stat-chip-btn');
-        chips.forEach(c => c.classList.remove('stat-chip-animated'));
+        if (arrow) arrow.classList.remove('is-open');
+        if (row) row.classList.remove(`active-${tier}`);
+        StatAudioEngine.play('tick');
     }
 };
 
