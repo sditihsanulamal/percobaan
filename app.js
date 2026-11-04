@@ -1255,12 +1255,15 @@ window.syncDoaManual = (val) => {
 
 window.openModalDoa = () => {
     const m = document.getElementById('modalDoa');
-    if (m) m.classList.remove('hidden');
+    if (!m) return;
+    requestAnimationFrame(() => {
+        m.classList.add('open');
+    });
 };
 
 window.closeModalDoa = () => {
     const m = document.getElementById('modalDoa');
-    if (m) m.classList.add('hidden');
+    if (m) m.classList.remove('open');
 };
 
 window.kirimDoaOrangTua = () => {
@@ -2629,52 +2632,55 @@ window.simpanDataMurid = async () => {
 const StatAudioEngine = {
     ctx: null,
     inited: false,
+    isTouch: (typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)),
     init() {
         if (this.inited) return;
         this.inited = true;
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext) {
-                this.ctx = new AudioContext();
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume().catch(() => {});
-                }
-            }
-        } catch (_) {}
+        // Only spin up AudioContext on non-touch devices to eliminate mobile DSP amp stutter
+        if (!this.isTouch) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) this.ctx = new AudioContext();
+            } catch (_) {}
+        }
     },
     play(type) {
+        // On touch screens, deliver instant micro-haptic feedback with 0 audio lag
+        if (this.isTouch) {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                try { navigator.vibrate(type === 'step' ? 10 : 6); } catch (_) {}
+            }
+            return;
+        }
         if (!this.ctx) return;
-        // Run audio creation in detached microtask so it NEVER blocks touch/frames
-        queueMicrotask(() => {
-            try {
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume().catch(() => {});
-                    return;
-                }
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                if (type === 'tick') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(800, now);
-                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
-                    gain.gain.setValueAtTime(0.08, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-                    osc.start(now);
-                    osc.stop(now + 0.03);
-                } else if (type === 'step') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(520, now);
-                    osc.frequency.exponentialRampToValueAtTime(760, now + 0.05);
-                    gain.gain.setValueAtTime(0.09, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-                    osc.start(now);
-                    osc.stop(now + 0.05);
-                }
-            } catch (_) {}
-        });
+        try {
+            if (this.ctx.state === 'suspended') {
+                this.ctx.resume().catch(() => {});
+                return;
+            }
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            if (type === 'tick') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+                osc.start(now);
+                osc.stop(now + 0.03);
+            } else if (type === 'step') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(520, now);
+                osc.frequency.exponentialRampToValueAtTime(760, now + 0.05);
+                gain.gain.setValueAtTime(0.09, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            }
+        } catch (_) {}
     }
 };
 

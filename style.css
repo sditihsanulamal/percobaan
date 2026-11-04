@@ -2050,12 +2050,11 @@ header p {
 /* Centered Classification Tiers */
 .tier-row-container {
     border-radius: 16px;
-    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     border: 1px solid transparent;
     padding: 2px;
     margin-bottom: 3px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    contain: layout style;
 }
 .tier-row-container:last-child {
     border-bottom: 1px solid transparent;
@@ -2154,19 +2153,18 @@ header p {
 
 .tier-arrow-indicator {
     display: inline-block;
-    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     font-size: 10px;
     margin-left: 3px;
-    transform: rotate(0deg) translateZ(0);
-    will-change: transform;
+    transform: rotate(0deg);
 }
 .tier-arrow-indicator.is-open {
-    transform: rotate(180deg) translateZ(0);
+    transform: rotate(180deg);
 }
 
 .tier-icon-sparkle {
     display: inline-flex;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.15s ease;
 }
 .tier-row-container.active-A .tier-icon-sparkle,
 .tier-row-container.active-B .tier-icon-sparkle,
@@ -2176,25 +2174,20 @@ header p {
     transform: scale(1.15);
 }
 
-/* Modern Zero-Deadzone Grid Drawer (60 FPS on Mobile) */
+/* Snappy Zero-Jank Drawer: expands smoothly in 0.16s with zero layout thrashing */
 .tier-drawer-wrapper {
-    display: grid;
-    grid-template-rows: 0fr;
+    max-height: 0;
     opacity: 0;
-    transition: grid-template-rows 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease;
+    overflow: hidden;
+    transition: max-height 0.16s cubic-bezier(0, 0, 0.2, 1), opacity 0.14s ease;
     pointer-events: none;
     padding: 0 8px;
-    will-change: grid-template-rows, opacity;
 }
 .tier-drawer-wrapper.is-open {
-    grid-template-rows: 1fr;
+    max-height: 240px;
     opacity: 1;
     pointer-events: auto;
     padding-bottom: 6px;
-}
-.tier-drawer-wrapper > * {
-    min-height: 0;
-    overflow: hidden;
 }
 
 .tier-chips-deck {
@@ -2211,31 +2204,20 @@ header p {
 .border-top-D { border-top-color: rgba(244, 63, 94, 0.25); }
 .border-top-X { border-top-color: rgba(239, 68, 68, 0.25); }
 
-/* Pure CSS Staggered Fade-in (0ms JS Overhead) */
-@keyframes chipCascade {
+/* Unified Deck Slide-Down (Single GPU Draw, 0ms Multi-Timer Lag) */
+.tier-drawer-wrapper.is-open .tier-chips-deck {
+    animation: deckSlideDown 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes deckSlideDown {
     0% {
         opacity: 0;
-        transform: translateY(4px);
+        transform: translateY(-4px);
     }
     100% {
         opacity: 1;
         transform: translateY(0);
     }
 }
-.tier-drawer-wrapper.is-open .stat-chip-btn {
-    animation: chipCascade 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(1) { animation-delay: 15ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(2) { animation-delay: 30ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(3) { animation-delay: 45ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(4) { animation-delay: 60ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(5) { animation-delay: 75ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(6) { animation-delay: 90ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(7) { animation-delay: 105ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(8) { animation-delay: 120ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(9) { animation-delay: 135ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(10) { animation-delay: 150ms; }
-.tier-drawer-wrapper.is-open .stat-chip-btn:nth-child(n+11) { animation-delay: 165ms; }
 
 .stat-chip-btn {
     display: inline-flex;
@@ -2245,7 +2227,7 @@ header p {
     border-radius: 8px;
     font-size: 10.5px;
     font-weight: 500;
-    transition: transform 0.12s ease;
+    transition: transform 0.1s ease;
     border: 1px solid transparent;
     user-select: none;
     -webkit-user-select: none;
@@ -4043,22 +4025,27 @@ header p {
     color: #01120a;
 }
 
-/* Modal Doa Orang Tua */
+/* Modal Doa Orang Tua (Optimized 60 FPS Desktop & Mobile) */
 .modal-doa-backdrop {
     position: fixed;
     inset: 0;
     z-index: 2100;
-    background: rgba(0, 0, 0, 0.82);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.88);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 16px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    transform: translateZ(0);
 }
 
-.modal-doa-backdrop.hidden {
-    display: none !important;
+.modal-doa-backdrop.open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 }
 
 .modal-doa-card {
@@ -4073,19 +4060,14 @@ header p {
     display: flex;
     flex-direction: column;
     max-height: 88vh;
-    animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: scale(0.96) translateY(8px) translateZ(0);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+.modal-doa-backdrop.open .modal-doa-card {
+    transform: scale(1) translateY(0) translateZ(0);
 }
 
 .modal-doa-header {
@@ -4121,12 +4103,17 @@ header p {
     color: #cbd5e1;
     cursor: pointer;
     font-size: 12px;
-    transition: all 0.2s;
+    transition: transform 0.12s ease, background 0.12s ease;
+    touch-action: manipulation;
 }
 
 .modal-doa-close:hover {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-doa-close:active {
+    transform: scale(0.92);
 }
 
 .modal-doa-list {
@@ -4137,6 +4124,8 @@ header p {
     padding-right: 6px;
     flex: 1;
     margin-bottom: 12px;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
 }
 
 .doa-option-card {
@@ -4146,12 +4135,17 @@ header p {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: border-color 0.15s ease, background 0.15s ease;
     text-align: left;
+    touch-action: manipulation;
 }
 
 .doa-option-card:hover {
     border-color: rgba(212, 175, 55, 0.4);
+}
+
+.doa-option-card:active {
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .doa-option-card:has(input:checked) {
@@ -4230,10 +4224,6 @@ header p {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(212, 175, 55, 0.65);
-}
-
-.hidden {
-    display: none !important;
 }
 
 /* ==========================================================================
