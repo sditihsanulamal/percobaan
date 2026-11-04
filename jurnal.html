@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=36">
+    <link rel="stylesheet" href="style.css?v=38">
 </head>
 
 <body>
@@ -772,24 +772,16 @@
         </div>
     </div>
 
-    <!-- MODAL STATISTIK -->
+    <!-- MODAL STATISTIK (BORDERLESS MAJESTIC REDESIGN) -->
     <div id="statsModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
-        <div class="modal-content" style="max-width: 500px; max-height: 90vh; display: flex; flex-direction: column;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                <h3
-                    style="color:var(--gold); font-family: 'Playfair Display', serif; font-size: 20px; font-weight:700;">
-                    Statistik Hari Ini</h3>
-                <button type="button" class="stats-close-btn"
-                    onclick="document.getElementById('statsModal').classList.remove('open')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-
-            <div id="statsChartContainer" style="overflow-y: auto; flex: 1; padding-right: 5px;">
-                <!-- Bar Charts will be injected here by app.js -->
+        <div class="modal-content stats-modal-content card-forest-luxury velvet-noise" id="statsModalCard">
+            <!-- Close Button -->
+            <button type="button" class="stats-close-circle" onclick="document.getElementById('statsModal').classList.remove('open')">✕</button>
+            <!-- Ambient Golden Radial Beam -->
+            <div class="stats-ambient-beam"></div>
+            <!-- Dynamic Content Container -->
+            <div id="statsChartContainer" class="stats-chart-scrollable">
+                <!-- Injected dynamically by renderStatsChart() in app.js -->
             </div>
         </div>
     </div>
@@ -896,7 +888,7 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=36"></script>
+    <script type="module" src="app.js?v=38"></script>
 </body>
 
 </html>

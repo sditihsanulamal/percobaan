@@ -975,6 +975,9 @@ function handleMuridSnapshot(snapshot) {
         snapshot.forEach((docSnap) => { dataMuridDinamis.push({ id: docSnap.id, ...docSnap.data() }); });
         dataMuridDinamis.sort((a, b) => a.nama.localeCompare(b.nama));
         window.renderMurid();
+        if (urlParams.has('openStats') || urlParams.get('stats') === '1') {
+            window.openStatsModal();
+        }
     } else {
         document.getElementById('muridList').innerHTML = '<div style="text-align:center; color:var(--gold-muted); margin-top:40px; font-weight:500; grid-column:1/-1;">Belum ada data murid untuk kelas ' + window.kelasTarget + '.<br>Silakan tambahkan data via halaman Setup Murid.</div>';
     }
@@ -2619,85 +2622,195 @@ window.simpanDataMurid = async () => {
 };
 
 /* =========================================
-   STATISTICS DASHBOARD LOGIC
+   STATISTICS DASHBOARD LOGIC (BORDERLESS MAJESTIC)
 ========================================= */
 
-window.openStatsModal = () => {
-    document.getElementById('statsModal').classList.add('open');
-    renderStatsChart();
-};
-
-// switchStatsTab dipertahankan agar tidak error jika masih ada referensi lama
-window.switchStatsTab = () => renderStatsChart();
-
-window.toggleStatList = (id) => {
-    const list = document.getElementById(id);
-    const hint = document.getElementById('hint-' + id);
-    if (!list) return;
-    const isOpen = list.classList.toggle('open');
-    if (hint) {
-        hint.classList.toggle('expanded', isOpen);
-        const arrow = hint.querySelector('.stat-bar-hint-arrow');
-        if (arrow) arrow.textContent = isOpen ? '▲' : '▼';
-        hint.querySelector('.hint-text').textContent = isOpen ? 'Sembunyikan daftar nama' : 'Ketuk untuk lihat daftar nama';
+const StatAudioEngine = {
+    ctx: null,
+    init() {
+        if (!this.ctx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) this.ctx = new AudioContext();
+        }
+    },
+    play(type) {
+        try {
+            this.init();
+            if (!this.ctx) return;
+            if (this.ctx.state === 'suspended') this.ctx.resume();
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            if (type === 'tick') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                osc.start(now);
+                osc.stop(now + 0.04);
+            } else if (type === 'step') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(520, now);
+                osc.frequency.exponentialRampToValueAtTime(780, now + 0.06);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                osc.start(now);
+                osc.stop(now + 0.06);
+            }
+        } catch (_) {}
     }
 };
 
-// Toggle baris nilai A/B/C/D di dalam sub-breakdown
-window.toggleSubGrade = (id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const row = el.previousElementSibling;
-    const isOpen = el.classList.toggle('open');
-    if (row) row.classList.toggle('active', isOpen);
+function getStudentInitials(name) {
+    if (!name) return '??';
+    const words = name.trim().split(/\s+/);
+    if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+    return (words[0][0] + words[1][0]).toUpperCase();
+}
+
+window.activeStatSubject = 'quran';
+window._subjectBreakdownData = null;
+window._statsDataCache = null;
+
+window.openStatsModal = () => {
+    const modal = document.getElementById('statsModal');
+    if (modal) modal.classList.add('open');
+    renderStatsChart();
 };
 
-// Ganti tampilan sub-breakdown saat pill mata pelajaran diklik
-window.switchSubBreakdown = (subj, btn) => {
-    btn.closest('.sub-pills').querySelectorAll('.sub-pill').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+window.switchStatSubject = (subj) => {
+    window.closeAllTierDrawers();
+    StatAudioEngine.play('tick');
+    window.activeStatSubject = subj;
 
+    ['quran', 'hadits', 'doa'].forEach(s => {
+        const btn = document.getElementById(`btnStatSubj-${s}`);
+        if (btn) {
+            btn.classList.toggle('active', s === subj);
+        }
+    });
+
+    window.renderStatistikSubject();
+};
+
+window.closeAllTierDrawers = () => {
+    ['A', 'B', 'C', 'D', 'X'].forEach(tier => {
+        const drawer = document.getElementById(`tierDrawer${tier}`);
+        const arrow = document.getElementById(`tierArrow${tier}`);
+        const row = document.getElementById(`tierRowContainer${tier}`);
+        if (drawer) drawer.classList.remove('is-open');
+        if (arrow) arrow.classList.remove('is-open');
+        if (row) row.classList.remove(`active-${tier}`);
+    });
+};
+
+window.toggleTierDrawer = (tier) => {
+    const drawer = document.getElementById(`tierDrawer${tier}`);
+    const arrow = document.getElementById(`tierArrow${tier}`);
+    const row = document.getElementById(`tierRowContainer${tier}`);
+    if (!drawer || !arrow || !row) return;
+
+    const isOpen = drawer.classList.contains('is-open');
+
+    if (!isOpen) {
+        StatAudioEngine.play('step');
+        drawer.classList.add('is-open');
+        arrow.classList.add('is-open');
+        row.classList.add(`active-${tier}`);
+
+        const chips = drawer.querySelectorAll('.stat-chip-btn');
+        chips.forEach((c, idx) => {
+            c.classList.remove('stat-chip-animated');
+            void c.offsetWidth;
+            c.style.animationDelay = `${idx * 28}ms`;
+            c.classList.add('stat-chip-animated');
+        });
+    } else {
+        StatAudioEngine.play('tick');
+        drawer.classList.remove('is-open');
+        arrow.classList.remove('is-open');
+        row.classList.remove(`active-${tier}`);
+    }
+};
+
+window.renderStatistikSubject = () => {
     const data = window._subjectBreakdownData;
-    if (!data) return;
+    const stats = window._statsDataCache;
+    if (!data || !stats) return;
 
-    const gradeConfig = [
-        { g: 'A', icon: '🌟', label: 'Mumtaz (Sangat Lancar)', color: '#93c5fd', glow: 'rgba(59, 130, 246, 0.7)', cls: 'a' },
-        { g: 'B', icon: '✨', label: 'Jayyid Jiddan (Lancar)', color: '#6ee7b7', glow: 'rgba(16, 185, 129, 0.7)', cls: 'b' },
-        { g: 'C', icon: '📖', label: 'Jayyid (Cukup Lancar)', color: '#fcd34d', glow: 'rgba(245, 158, 11, 0.7)', cls: 'c' },
-        { g: 'D', icon: '🔄', label: "Muraja'ah (Perlu Bimbingan)", color: '#fca5a5', glow: 'rgba(239, 68, 68, 0.6)', cls: 'd' },
-        { g: 'tidakSetor', icon: '🚫', label: 'Tidak Setor Sama Sekali', color: '#ff6b6b', glow: 'rgba(239, 68, 68, 0.8)', cls: 'x' },
-    ];
+    const subj = window.activeStatSubject || 'quran';
+    const subjData = data[subj] || { A: [], B: [], C: [], D: [], X: [] };
+    const sudahCount = stats.sudahSetor.names.length;
 
-    const html = gradeConfig.map(gc => {
-        const names = (data[subj] && data[subj][gc.g]) ? data[subj][gc.g] : [];
-        const chipsHtml = names.length > 0
-            ? names.map(n => `<span class="stat-name-chip stat-chip-${gc.cls}">${n}</span>`).join('')
-            : `<span style="opacity:0.35; font-size:10px;">Tidak ada murid di kategori ini.</span>`;
-        const listId = `subgrade-${subj}-${gc.g}`;
-        return `
-            <div class="sub-grade-row" onclick="window.toggleSubGrade('${listId}')">
-                <span class="sub-grade-label" style="color:${gc.color}; text-shadow: 0 0 10px ${gc.glow}; font-weight:800;">${gc.icon} ${gc.label}</span>
-                <span class="sub-grade-count" style="color:${gc.color}; text-shadow: 0 0 8px ${gc.glow}; font-weight:800;">${names.length} anak</span>
-                <span class="sub-grade-arrow">▼</span>
-            </div>
-            <div class="sub-grade-names stat-color-${gc.cls}" id="${listId}">${chipsHtml}</div>
-        `;
-    }).join('');
+    const subLabels = { quran: "Al-Qur'an", hadits: "Hadits", doa: "Doa" };
+    const labelEl = document.getElementById('spectrumActiveLabel');
+    if (labelEl) {
+        labelEl.textContent = `${subLabels[subj] || subj} (${sudahCount} Anak)`;
+    }
 
-    document.getElementById('subBreakdownContent').innerHTML = html;
+    const cA = subjData.A.length;
+    const cB = subjData.B.length;
+    const cC = subjData.C.length;
+    const cD = subjData.D.length;
+    const cX = subjData.X.length;
+
+    const pA = sudahCount > 0 ? (cA / sudahCount) * 100 : 0;
+    const pB = sudahCount > 0 ? (cB / sudahCount) * 100 : 0;
+    const pC = sudahCount > 0 ? (cC / sudahCount) * 100 : 0;
+    const pD = sudahCount > 0 ? (cD / sudahCount) * 100 : 0;
+    const pX = sudahCount > 0 ? (cX / sudahCount) * 100 : 0;
+
+    const sA = document.getElementById('specBarA');
+    const sB = document.getElementById('specBarB');
+    const sC = document.getElementById('specBarC');
+    const sD = document.getElementById('specBarD');
+    const sX = document.getElementById('specBarX');
+
+    if (sA) sA.style.width = `${pA}%`;
+    if (sB) sB.style.width = `${pB}%`;
+    if (sC) sC.style.width = `${pC}%`;
+    if (sD) sD.style.width = `${pD}%`;
+    if (sX) sX.style.width = `${pX}%`;
+
+    const renderChips = (names, themeCls) => {
+        if (!names || names.length === 0) {
+            return '<span style="font-size:10px; color:rgba(255,255,255,0.3); font-style:italic; padding:4px 0; text-align:center; width:100%; display:block;">✨ Tidak ada ananda di kategori ini.</span>';
+        }
+        return names.map(n => `
+            <span class="stat-chip-btn ${themeCls}">
+                <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
+                <span>${n}</span>
+            </span>
+        `).join('');
+    };
+
+    const lA = document.getElementById('tierListA');
+    const lB = document.getElementById('tierListB');
+    const lC = document.getElementById('tierListC');
+    const lD = document.getElementById('tierListD');
+    const lX = document.getElementById('tierListX');
+
+    if (lA) lA.innerHTML = renderChips(subjData.A, 'chip-theme-a');
+    if (lB) lB.innerHTML = renderChips(subjData.B, 'chip-theme-b');
+    if (lC) lC.innerHTML = renderChips(subjData.C, 'chip-theme-c');
+    if (lD) lD.innerHTML = renderChips(subjData.D, 'chip-theme-d');
+    if (lX) lX.innerHTML = renderChips(subjData.X, 'chip-theme-x');
 };
 
 function renderStatsChart() {
     const container = document.getElementById('statsChartContainer');
+    if (!container) return;
     const hariIni = window.getTanggalHariIni();
 
     const totalMurid = dataMuridDinamis.length;
     if (totalMurid === 0) {
-        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:30px 20px;">Belum ada data murid untuk kelas ini.</div>';
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 20px;font-size:13px;">Belum ada data murid untuk kelas ini.</div>';
         return;
     }
 
-    // Struktur data kategori
     const stats = {
         sudahSetor:   { names: [], muridList: [] },
         izin:         { names: [] },
@@ -2711,7 +2824,7 @@ function renderStatsChart() {
 
         if (sudahDinilaiHariIni && setoranHarian === 'sudah') {
             stats.sudahSetor.names.push(murid.nama);
-            stats.sudahSetor.muridList.push(murid); // simpan objek lengkap untuk sub-breakdown
+            stats.sudahSetor.muridList.push(murid);
         } else if (sudahDinilaiHariIni && setoranHarian === 'izin') {
             stats.izin.names.push(murid.nama);
         } else if (sudahDinilaiHariIni && setoranHarian === 'berhalangan') {
@@ -2721,18 +2834,17 @@ function renderStatsChart() {
         }
     });
 
-    // Bangun data per-mata-pelajaran untuk sub-breakdown (disimpan global agar switchSubBreakdown bisa akses)
     const buildSubjectData = (muridList) => {
         const subjectMap = {
-            quran:  { Q: 'quranStatus',  A: [], B: [], C: [], D: [], tidakSetor: [] },
-            hadits: { Q: 'haditsStatus', A: [], B: [], C: [], D: [], tidakSetor: [] },
-            doa:    { Q: 'doaStatus',    A: [], B: [], C: [], D: [], tidakSetor: [] },
+            quran:  { Q: 'quranStatus',  A: [], B: [], C: [], D: [], X: [] },
+            hadits: { Q: 'haditsStatus', A: [], B: [], C: [], D: [], X: [] },
+            doa:    { Q: 'doaStatus',    A: [], B: [], C: [], D: [], X: [] },
         };
         muridList.forEach(murid => {
             ['quran', 'hadits', 'doa'].forEach(subj => {
                 const statusRaw = murid[subjectMap[subj].Q] || '';
                 if (statusRaw === 'tidakSetor') {
-                    subjectMap[subj].tidakSetor.push(murid.nama);
+                    subjectMap[subj].X.push(murid.nama);
                 } else {
                     const grade = ['A', 'B', 'C', 'D'].includes(statusRaw) ? statusRaw : 'D';
                     subjectMap[subj][grade].push(murid.nama);
@@ -2745,138 +2857,304 @@ function renderStatsChart() {
             doa:    subjectMap.doa,
         };
     };
+
     window._subjectBreakdownData = buildSubjectData(stats.sudahSetor.muridList);
+    window._statsDataCache = stats;
 
-    // Summary row
     const sudah = stats.sudahSetor.names.length;
+    const izin = stats.izin.names.length;
+    const berhalangan = stats.berhalangan.names.length;
+    const belum = stats.belumHariIni.names.length;
     const pct = Math.round((sudah / totalMurid) * 100);
-    const emoji = pct === 100 ? '🎉' : pct >= 70 ? '💪' : pct >= 40 ? '📈' : '🕐';
 
-    let html = `
-        <div style="text-align:center; padding: 12px 0 18px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 16px;">
-            <div style="font-size: 36px; line-height:1; margin-bottom:6px;">${emoji}</div>
-            <div style="font-size:22px; font-weight:800; color: var(--gold);">${sudah} / ${totalMurid}</div>
-            <div style="font-size:11px; color:var(--text-muted); margin-top:3px; letter-spacing:0.5px;">SUDAH SETOR HARI INI &nbsp;·&nbsp; ${pct}% Ketuntasan</div>
-        </div>
-    `;
+    const circumference = 314.16; // 2 * PI * 50
+    const offset = circumference - (pct / 100) * circumference;
 
-    // Helper: render satu bar kategori utama
-    const renderBar = (key, icon, title, clsColor, names, extraHtml = '') => {
-        const count = names.length;
-        const percentage = Math.round((count / totalMurid) * 100) || 0;
-        const listId = `stat-list-${key}`;
-        const hintId = `hint-${listId}`;
-        const chipsHtml = count > 0
-            ? names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
-            : `<span style="opacity:0.4; font-size:11px;">Tidak ada murid di kategori ini.</span>`;
+    const kelasTag = (window.kelasTarget ? `KELAS ${window.kelasTarget.toUpperCase()}` : 'SDIT IHSANUL AMAL') + ' · REKAP LIVE';
 
-        return `
-            <div class="stat-bar-container">
-                <div class="stat-bar-header">
-                    <span class="stat-color-${clsColor}" style="display:flex;align-items:center;gap:6px;">
-                        <span style="font-size:14px;">${icon}</span>
-                        ${title}
-                    </span>
-                    <span class="stat-bar-count-badge">${count} anak</span>
-                </div>
-                <div class="stat-bar-track" onclick="window.toggleStatList('${listId}')">
-                    <div class="stat-bar-fill stat-bg-${clsColor}" style="width:0%;" data-width="${percentage}%"></div>
-                </div>
-                <div id="${hintId}" class="stat-bar-hint" onclick="window.toggleStatList('${listId}')">
-                    <span class="stat-bar-hint-arrow">▼</span>
-                    <span class="hint-text">Ketuk untuk lihat daftar nama</span>
-                    <span style="margin-left:auto; opacity:0.4;">${percentage}%</span>
-                </div>
-                <div id="${listId}" class="stat-names-list stat-color-${clsColor}">
-                    ${extraHtml}
-                    ${count > 0 && !extraHtml ? chipsHtml : (extraHtml ? '' : chipsHtml)}
+    // Attendance summary bottom section
+    let bottomAttendanceHtml = '';
+    if (izin === 0 && berhalangan === 0 && belum === 0) {
+        bottomAttendanceHtml = `
+            <div class="stats-bottom-attendance">
+                <div class="stats-banner-perfect">
+                    <span>✨</span>
+                    <span>Seluruh ${totalMurid} ananda hadir & telah menyetorkan hafalan hari ini.</span>
                 </div>
             </div>
         `;
-    };
-
-    // Sub-breakdown per mata pelajaran untuk "Sudah Setor"
-    const buildSubBreakdownHtml = (subj) => {
-        const data = window._subjectBreakdownData[subj];
-        const gradeConfig = [
-            { g: 'A', icon: '🌟', label: 'Mumtaz (Sangat Lancar)', color: '#34d399', cls: 'a' },
-            { g: 'B', icon: '✨', label: 'Jayyid Jiddan (Lancar)', color: '#6ee7b7', cls: 'b' },
-            { g: 'C', icon: '📖', label: 'Jayyid (Cukup Lancar)', color: '#fcd34d', cls: 'c' },
-            { g: 'D', icon: '🔄', label: "Muraja'ah (Perlu Bimbingan)", color: '#f87171', cls: 'd' },
-        ];
-        return gradeConfig.map(gc => {
-            const names = data[gc.g];
-            const chipsHtml = names.length > 0
-                ? names.map(n => `<span class="stat-name-chip">${n}</span>`).join('')
-                : `<span style="opacity:0.35; font-size:10px;">Tidak ada murid di kategori ini.</span>`;
-            const listId = `subgrade-${subj}-${gc.g}`;
-            return `
-                <div class="sub-grade-row" onclick="window.toggleSubGrade('${listId}')">
-                    <span class="sub-grade-label" style="color:${gc.color};">${gc.icon} ${gc.label}</span>
-                    <span class="sub-grade-count" style="color:${gc.color};">${names.length} anak</span>
-                    <span class="sub-grade-arrow">▼</span>
+    } else {
+        bottomAttendanceHtml = '<div class="stats-bottom-attendance">';
+        if (izin > 0) {
+            bottomAttendanceHtml += `
+                <div class="stats-absent-row">
+                    <span style="color:#60a5fa; flex-shrink:0; margin-top:2px;">🏥</span>
+                    <div style="flex:1;">
+                        <span style="color:#cbd5e1; font-weight:700;">Izin / Sakit (${izin} anak):</span>
+                        <div class="stats-absent-chips">
+                            ${stats.izin.names.map(n => `
+                                <span class="stat-chip-btn chip-theme-izin">
+                                    <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
+                                    <span>${n}</span>
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
                 </div>
-                <div class="sub-grade-names stat-color-${gc.cls}" id="${listId}">${chipsHtml}</div>
             `;
-        }).join('');
-    };
+        }
+        if (berhalangan > 0) {
+            bottomAttendanceHtml += `
+                <div class="stats-absent-row">
+                    <span style="color:#fbbf24; flex-shrink:0; margin-top:2px;">🛑</span>
+                    <div style="flex:1;">
+                        <span style="color:#cbd5e1; font-weight:700;">Berhalangan (${berhalangan} anak):</span>
+                        <div class="stats-absent-chips">
+                            ${stats.berhalangan.names.map(n => `
+                                <span class="stat-chip-btn chip-theme-berhalangan">
+                                    <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
+                                    <span>${n}</span>
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        if (belum > 0) {
+            bottomAttendanceHtml += `
+                <div class="stats-absent-row">
+                    <span style="color:#f87171; flex-shrink:0; margin-top:2px;">⏳</span>
+                    <div style="flex:1;">
+                        <span style="color:#cbd5e1; font-weight:700;">Belum Setor (${belum} anak):</span>
+                        <div class="stats-absent-chips">
+                            ${stats.belumHariIni.names.map(n => `
+                                <span class="stat-chip-btn chip-theme-belum">
+                                    <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
+                                    <span>${n}</span>
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        bottomAttendanceHtml += '</div>';
+    }
 
-    const subBreakdown = sudah === 0 ? '' : `
-        <div class="sub-breakdown-container">
-            <div class="sub-pills">
-                <button class="sub-pill active" onclick="window.switchSubBreakdown('quran', this)">📖 Qur'an</button>
-                <button class="sub-pill" onclick="window.switchSubBreakdown('hadits', this)">📜 Hadits</button>
-                <button class="sub-pill" onclick="window.switchSubBreakdown('doa', this)">🤲 Doa</button>
+    container.innerHTML = `
+        <!-- HEADER MODAL STATISTIK -->
+        <div class="stats-header-wrap">
+            <div class="stats-live-tag">
+                <span class="stats-live-dot"></span>
+                <span>${kelasTag}</span>
             </div>
-            <div id="subBreakdownContent">
-                ${buildSubBreakdownHtml('quran')}
+            <h2 class="stats-header-title">
+                Statistik Hari Ini
+            </h2>
+            <p class="stats-header-sub">
+                Rekapitulasi Kualitas Mutaba'ah & Kelancaran Ananda
+            </p>
+        </div>
+
+        <!-- HERO SEAMLESS: RING GAUGE DENGAN NAFAS LEGA -->
+        <div class="stats-hero-row">
+            <!-- Circular Completion Ring -->
+            <div class="stats-ring-box">
+                <svg class="stats-ring-svg" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.06)" stroke-width="5" fill="transparent" />
+                    <circle id="heroRingCircle" cx="60" cy="60" r="50" stroke="url(#cleanRingGrad)" stroke-width="5" stroke-linecap="round" fill="transparent" stroke-dasharray="314.16" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);" />
+                    <defs>
+                        <linearGradient id="cleanRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#34d399" />
+                            <stop offset="60%" stop-color="#fef08a" />
+                            <stop offset="100%" stop-color="#d4af37" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="stats-ring-center">
+                    <span class="stats-ring-pct">${pct}%</span>
+                    <span class="stats-ring-sub">${pct === 100 ? 'TUNTAS' : 'SEBAGIAN'}</span>
+                </div>
+            </div>
+
+            <!-- Attendance Stats Grid -->
+            <div class="stats-counter-grid">
+                <div class="stats-counter-item">
+                    <div class="stats-counter-icon stats-icon-sudah">✅</div>
+                    <div class="stats-counter-info">
+                        <span class="stats-counter-title">Sudah Setor</span>
+                        <span class="stats-counter-num stats-num-highlight">${sudah} <span class="stats-counter-unit">anak</span></span>
+                    </div>
+                </div>
+                <div class="stats-counter-item">
+                    <div class="stats-counter-icon stats-icon-neutral">🏥</div>
+                    <div class="stats-counter-info">
+                        <span class="stats-counter-title">Izin / Sakit</span>
+                        <span class="stats-counter-num stats-num-dim">${izin} <span class="stats-counter-unit">anak</span></span>
+                    </div>
+                </div>
+                <div class="stats-counter-item">
+                    <div class="stats-counter-icon stats-icon-neutral">🛑</div>
+                    <div class="stats-counter-info">
+                        <span class="stats-counter-title">Berhalangan</span>
+                        <span class="stats-counter-num stats-num-dim">${berhalangan} <span class="stats-counter-unit">anak</span></span>
+                    </div>
+                </div>
+                <div class="stats-counter-item">
+                    <div class="stats-counter-icon stats-icon-neutral">⏳</div>
+                    <div class="stats-counter-info">
+                        <span class="stats-counter-title">Belum Setor</span>
+                        <span class="stats-counter-num stats-num-dim">${belum} <span class="stats-counter-unit">anak</span></span>
+                    </div>
+                </div>
             </div>
         </div>
-    `;
 
-    // Untuk bar "Sudah Setor": tidak tampilkan chip nama (sudah ada di sub-breakdown)
-    const renderBarSudah = () => {
-        const count = sudah;
-        const percentage = Math.round((count / totalMurid) * 100) || 0;
-        const listId = 'stat-list-sudah';
-        const hintId = 'hint-stat-list-sudah';
-        return `
-            <div class="stat-bar-container">
-                <div class="stat-bar-header">
-                    <span class="stat-color-a" style="display:flex;align-items:center;gap:6px;">
-                        <span style="font-size:14px;">✅</span>
-                        Sudah Setor
-                    </span>
-                    <span class="stat-bar-count-badge">${count} anak</span>
+        <!-- SUBJECT SWITCHER DECK -->
+        <div class="stats-subj-deck">
+            <button type="button" onclick="window.switchStatSubject('quran')" id="btnStatSubj-quran" class="stats-subj-btn ${window.activeStatSubject === 'quran' ? 'active' : ''}">
+                <span>📖</span> Al-Qur'an
+            </button>
+            <button type="button" onclick="window.switchStatSubject('hadits')" id="btnStatSubj-hadits" class="stats-subj-btn ${window.activeStatSubject === 'hadits' ? 'active' : ''}">
+                <span>📜</span> Hadits
+            </button>
+            <button type="button" onclick="window.switchStatSubject('doa')" id="btnStatSubj-doa" class="stats-subj-btn ${window.activeStatSubject === 'doa' ? 'active' : ''}">
+                <span>🤲</span> Doa
+            </button>
+        </div>
+
+        <!-- LUMINOUS SPECTRUM BAR -->
+        <div class="stats-spectrum-wrap">
+            <div class="stats-spectrum-header">
+                <span class="stats-spectrum-title">
+                    <span>📊</span> Sebaran Kelancaran
+                </span>
+                <span id="spectrumActiveLabel" class="stats-spectrum-tag">Memuat...</span>
+            </div>
+
+            <!-- Slim Spectrum Track -->
+            <div class="stats-spectrum-track">
+                <div id="specBarA" style="width: 0%;" class="stats-spectrum-seg stats-seg-a" title="Mumtaz"></div>
+                <div id="specBarB" style="width: 0%;" class="stats-spectrum-seg stats-seg-b" title="Jayyid Jiddan"></div>
+                <div id="specBarC" style="width: 0%;" class="stats-spectrum-seg stats-seg-c" title="Jayyid"></div>
+                <div id="specBarD" style="width: 0%;" class="stats-spectrum-seg stats-seg-d" title="Muraja'ah"></div>
+                <div id="specBarX" style="width: 0%;" class="stats-spectrum-seg stats-seg-x" title="Tidak Setor"></div>
+            </div>
+
+            <!-- Legend Minimalis -->
+            <div class="stats-spectrum-legend">
+                <span class="stats-legend-item stats-legend-mumtaz"><span class="stats-legend-dot"></span> Mumtaz</span>
+                <span class="stats-legend-item stats-legend-jiddan"><span class="stats-legend-dot"></span> J. Jiddan</span>
+                <span class="stats-legend-item stats-legend-jayyid"><span class="stats-legend-dot"></span> Jayyid</span>
+                <span class="stats-legend-item stats-legend-murajaah"><span class="stats-legend-dot"></span> Muraja'ah</span>
+                <span class="stats-legend-item stats-legend-tdk"><span class="stats-legend-dot"></span> Tdk Setor</span>
+            </div>
+        </div>
+
+        <!-- DAFTAR KLASIFIKASI KELANCARAN (CENTERED & DEFAULT TERTUTUP) -->
+        <div class="stats-tiers-container" id="tierCardsContainer">
+            <!-- ROW 1: MUMTAZ (SAPPHIRE BLUE) -->
+            <div id="tierRowContainerA" class="tier-row-container">
+                <div onclick="window.toggleTierDrawer('A')" class="tier-click-target">
+                    <div class="tier-title-line tier-title-A">
+                        <span class="tier-icon-sparkle">🌟</span>
+                        <span>Mumtaz</span>
+                        <span class="tier-qualifier">(Sangat Lancar)</span>
+                        <span id="tierArrowA" class="tier-arrow-indicator">▼</span>
+                    </div>
+                    <div class="tier-desc-line tier-desc-A">
+                        Fasih, Tajwid & Makhraj Sempurna
+                    </div>
                 </div>
-                <div class="stat-bar-track" onclick="window.toggleStatList('${listId}')">
-                    <div class="stat-bar-fill stat-bg-a" style="width:0%;" data-width="${percentage}%"></div>
-                </div>
-                <div id="${hintId}" class="stat-bar-hint" onclick="window.toggleStatList('${listId}')">
-                    <span class="stat-bar-hint-arrow">▼</span>
-                    <span class="hint-text">Ketuk untuk lihat rincian kelancaran</span>
-                    <span style="margin-left:auto; opacity:0.4;">${percentage}%</span>
-                </div>
-                <div id="${listId}" class="stat-names-list stat-color-a">
-                    ${subBreakdown}
+                <div id="tierDrawerA" class="tier-drawer-wrapper">
+                    <div id="tierListA" class="tier-chips-deck border-top-A"></div>
                 </div>
             </div>
-        `;
-    };
 
-    html += renderBarSudah();
-    html += renderBar('izin', '🏥', 'Izin / Sakit', 'izin', stats.izin.names);
-    html += renderBar('berhalangan', '🛑', 'Berhalangan / Uzur', 'berhalangan', stats.berhalangan.names);
-    html += renderBar('belum', '⏳', 'Belum Setor Hari Ini', 'd', stats.belumHariIni.names);
+            <!-- ROW 2: JAYYID JIDDAN (EMERALD GREEN) -->
+            <div id="tierRowContainerB" class="tier-row-container">
+                <div onclick="window.toggleTierDrawer('B')" class="tier-click-target">
+                    <div class="tier-title-line tier-title-B">
+                        <span class="tier-icon-sparkle">✨</span>
+                        <span>Jayyid Jiddan</span>
+                        <span class="tier-qualifier">(Lancar)</span>
+                        <span id="tierArrowB" class="tier-arrow-indicator">▼</span>
+                    </div>
+                    <div class="tier-desc-line tier-desc-B">
+                        Lancar & Terbimbing Mandiri
+                    </div>
+                </div>
+                <div id="tierDrawerB" class="tier-drawer-wrapper">
+                    <div id="tierListB" class="tier-chips-deck border-top-B"></div>
+                </div>
+            </div>
 
-    container.innerHTML = html;
+            <!-- ROW 3: JAYYID (AMBER GOLD) -->
+            <div id="tierRowContainerC" class="tier-row-container">
+                <div onclick="window.toggleTierDrawer('C')" class="tier-click-target">
+                    <div class="tier-title-line tier-title-C">
+                        <span class="tier-icon-sparkle">📖</span>
+                        <span>Jayyid</span>
+                        <span class="tier-qualifier">(Cukup Lancar)</span>
+                        <span id="tierArrowC" class="tier-arrow-indicator">▼</span>
+                    </div>
+                    <div class="tier-desc-line tier-desc-C">
+                        Cukup Lancar, Terus Dimantapkan
+                    </div>
+                </div>
+                <div id="tierDrawerC" class="tier-drawer-wrapper">
+                    <div id="tierListC" class="tier-chips-deck border-top-C"></div>
+                </div>
+            </div>
 
-    // Staggered bar animation
-    setTimeout(() => {
-        container.querySelectorAll('.stat-bar-fill').forEach(bar => {
-            bar.style.width = bar.getAttribute('data-width');
-        });
-    }, 80);
+            <!-- ROW 4: MURAJA'AH (CORAL ROSE) -->
+            <div id="tierRowContainerD" class="tier-row-container">
+                <div onclick="window.toggleTierDrawer('D')" class="tier-click-target">
+                    <div class="tier-title-line tier-title-D">
+                        <span class="tier-icon-sparkle">🔄</span>
+                        <span>Muraja'ah</span>
+                        <span class="tier-qualifier">(Perlu Bimbingan)</span>
+                        <span id="tierArrowD" class="tier-arrow-indicator">▼</span>
+                    </div>
+                    <div class="tier-desc-line tier-desc-D">
+                        Perlu Pengulangan Rutin Bersama Guru
+                    </div>
+                </div>
+                <div id="tierDrawerD" class="tier-drawer-wrapper">
+                    <div id="tierListD" class="tier-chips-deck border-top-D"></div>
+                </div>
+            </div>
+
+            <!-- ROW 5: TIDAK SETOR SAMA SEKALI (CRIMSON RED) -->
+            <div id="tierRowContainerX" class="tier-row-container">
+                <div onclick="window.toggleTierDrawer('X')" class="tier-click-target">
+                    <div class="tier-title-line tier-title-X">
+                        <span class="tier-icon-sparkle">🚫</span>
+                        <span>Tidak Setor Sama Sekali</span>
+                        <span id="tierArrowX" class="tier-arrow-indicator">▼</span>
+                    </div>
+                    <div class="tier-desc-line tier-desc-X">
+                        Hadir Hari Ini · Belum Menyetorkan Subjek Ini
+                    </div>
+                </div>
+                <div id="tierDrawerX" class="tier-drawer-wrapper">
+                    <div id="tierListX" class="tier-chips-deck border-top-X"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATUS KEHADIRAN & CATATAN AKHIR -->
+        ${bottomAttendanceHtml}
+    `;
+
+    // Populate the active subject and ensure all drawers start closed by default
+    window.renderStatistikSubject();
+    window.closeAllTierDrawers();
 }
 
-
+// Backward compatibility stubs
+window.switchStatsTab = () => renderStatsChart();
+window.toggleStatList = (id) => {};
+window.toggleSubGrade = (id) => {};
+window.switchSubBreakdown = (subj, btn) => window.switchStatSubject(subj);
