@@ -2630,58 +2630,8 @@ window.simpanDataMurid = async () => {
 ========================================= */
 
 const StatAudioEngine = {
-    ctx: null,
-    inited: false,
-    isTouch: (typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0)),
-    init() {
-        if (this.inited) return;
-        this.inited = true;
-        // Only spin up AudioContext on non-touch devices to eliminate mobile DSP amp stutter
-        if (!this.isTouch) {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (AudioContext) this.ctx = new AudioContext();
-            } catch (_) {}
-        }
-    },
-    play(type) {
-        // On touch screens, deliver instant micro-haptic feedback with 0 audio lag
-        if (this.isTouch) {
-            if (typeof navigator !== 'undefined' && navigator.vibrate) {
-                try { navigator.vibrate(type === 'step' ? 10 : 6); } catch (_) {}
-            }
-            return;
-        }
-        if (!this.ctx) return;
-        try {
-            if (this.ctx.state === 'suspended') {
-                this.ctx.resume().catch(() => {});
-                return;
-            }
-            const now = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            if (type === 'tick') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, now);
-                osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-                osc.start(now);
-                osc.stop(now + 0.03);
-            } else if (type === 'step') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(520, now);
-                osc.frequency.exponentialRampToValueAtTime(760, now + 0.05);
-                gain.gain.setValueAtTime(0.09, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-                osc.start(now);
-                osc.stop(now + 0.05);
-            }
-        } catch (_) {}
-    }
+    init() {},
+    play(_) {}
 };
 
 function getStudentInitials(name) {
@@ -2749,20 +2699,18 @@ window.toggleTierDrawer = (tier) => {
     const drawer = document.getElementById(`tierDrawer${tier}`);
     const arrow = document.getElementById(`tierArrow${tier}`);
     const row = document.getElementById(`tierRowContainer${tier}`);
-    if (!drawer || !arrow || !row) return;
+    if (!drawer || !row) return;
 
     const isOpen = drawer.classList.contains('is-open');
 
     if (!isOpen) {
         drawer.classList.add('is-open');
         if (arrow) arrow.classList.add('is-open');
-        if (row) row.classList.add(`active-${tier}`);
-        StatAudioEngine.play('step');
+        row.classList.add(`active-${tier}`);
     } else {
         drawer.classList.remove('is-open');
         if (arrow) arrow.classList.remove('is-open');
-        if (row) row.classList.remove(`active-${tier}`);
-        StatAudioEngine.play('tick');
+        row.classList.remove(`active-${tier}`);
     }
 };
 
@@ -2809,12 +2757,7 @@ window.renderStatistikSubject = () => {
         if (!names || names.length === 0) {
             return '<span style="font-size:10px; color:rgba(255,255,255,0.3); font-style:italic; padding:4px 0; text-align:center; width:100%; display:block;">✨ Tidak ada ananda di kategori ini.</span>';
         }
-        return names.map(n => `
-            <span class="stat-chip-btn ${themeCls}">
-                <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
-                <span>${n}</span>
-            </span>
-        `).join('');
+        return names.map(n => `<span class="stat-chip-btn ${themeCls}">${n}</span>`).join('');
     };
 
     const lA = document.getElementById('tierListA');
@@ -2932,10 +2875,7 @@ function renderStatsChart() {
                         <span style="color:#cbd5e1; font-weight:700;">Izin / Sakit (${izin} anak):</span>
                         <div class="stats-absent-chips">
                             ${stats.izin.names.map(n => `
-                                <span class="stat-chip-btn chip-theme-izin">
-                                    <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
-                                    <span>${n}</span>
-                                </span>
+                                <span class="stat-chip-btn chip-theme-izin">${n}</span>
                             `).join('')}
                         </div>
                     </div>
@@ -2950,10 +2890,7 @@ function renderStatsChart() {
                         <span style="color:#cbd5e1; font-weight:700;">Berhalangan (${berhalangan} anak):</span>
                         <div class="stats-absent-chips">
                             ${stats.berhalangan.names.map(n => `
-                                <span class="stat-chip-btn chip-theme-berhalangan">
-                                    <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
-                                    <span>${n}</span>
-                                </span>
+                                <span class="stat-chip-btn chip-theme-berhalangan">${n}</span>
                             `).join('')}
                         </div>
                     </div>
@@ -2968,10 +2905,7 @@ function renderStatsChart() {
                         <span style="color:#cbd5e1; font-weight:700;">Belum Setor (${belum} anak):</span>
                         <div class="stats-absent-chips">
                             ${stats.belumHariIni.names.map(n => `
-                                <span class="stat-chip-btn chip-theme-belum">
-                                    <span class="stat-chip-avatar">${getStudentInitials(n)}</span>
-                                    <span>${n}</span>
-                                </span>
+                                <span class="stat-chip-btn chip-theme-belum">${n}</span>
                             `).join('')}
                         </div>
                     </div>

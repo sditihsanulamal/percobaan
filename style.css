@@ -1666,10 +1666,7 @@ header p {
     background: linear-gradient(165deg, rgba(4, 40, 27, 0.98) 0%, rgba(1, 15, 9, 0.99) 100%);
     border-radius: 30px;
     border: 1px solid rgba(212, 175, 55, 0.35);
-    box-shadow: 
-        0 24px 50px rgba(0, 0, 0, 0.85),
-        0 0 25px rgba(3, 54, 36, 0.25),
-        inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.12);
     width: 100%;
     max-width: 420px;
     padding: 18px 16px 16px 16px;
@@ -1690,6 +1687,7 @@ header p {
 }
 
 .stats-ambient-beam {
+    display: none !important;
     position: absolute;
     top: -75px;
     left: 50%;
@@ -2050,39 +2048,36 @@ header p {
 /* Centered Classification Tiers */
 .tier-row-container {
     border-radius: 16px;
-    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-    border: 1px solid transparent;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     padding: 2px;
     margin-bottom: 3px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-.tier-row-container:last-child {
-    border-bottom: 1px solid transparent;
+    background: transparent;
+    transition: background 0.12s ease, border-color 0.12s ease;
 }
 .tier-row-container.active-A {
     background: rgba(59, 130, 246, 0.14);
     border-color: rgba(59, 130, 246, 0.55);
-    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.22);
+    box-shadow: 0 2px 10px rgba(59, 130, 246, 0.2);
 }
 .tier-row-container.active-B {
     background: rgba(16, 185, 129, 0.1);
     border-color: rgba(110, 231, 183, 0.4);
-    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
 }
 .tier-row-container.active-C {
     background: rgba(245, 158, 11, 0.1);
     border-color: rgba(252, 211, 77, 0.4);
-    box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
 }
 .tier-row-container.active-D {
     background: rgba(244, 63, 94, 0.1);
     border-color: rgba(252, 165, 165, 0.4);
-    box-shadow: 0 2px 10px rgba(244, 63, 94, 0.15);
+    box-shadow: 0 2px 8px rgba(244, 63, 94, 0.15);
 }
 .tier-row-container.active-X {
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(255, 107, 107, 0.45);
-    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.15);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
 }
 
 .tier-click-target {
@@ -2093,7 +2088,7 @@ header p {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background 0.12s ease, transform 0.1s ease;
+    transition: background 0.1s ease;
     text-align: center;
     user-select: none;
     -webkit-user-select: none;
@@ -2104,8 +2099,8 @@ header p {
     background: rgba(255, 255, 255, 0.04);
 }
 .tier-click-target:active {
-    transform: scale(0.985);
     background: rgba(255, 255, 255, 0.06);
+    transform: scale(0.985);
 }
 .tier-title-line {
     display: flex;
@@ -2153,7 +2148,7 @@ header p {
 
 .tier-arrow-indicator {
     display: inline-block;
-    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.12s ease;
     font-size: 10px;
     margin-left: 3px;
     transform: rotate(0deg);
@@ -2164,30 +2159,16 @@ header p {
 
 .tier-icon-sparkle {
     display: inline-flex;
-    transition: transform 0.15s ease;
-}
-.tier-row-container.active-A .tier-icon-sparkle,
-.tier-row-container.active-B .tier-icon-sparkle,
-.tier-row-container.active-C .tier-icon-sparkle,
-.tier-row-container.active-D .tier-icon-sparkle,
-.tier-row-container.active-X .tier-icon-sparkle {
-    transform: scale(1.15);
+    font-size: 13px;
 }
 
-/* Snappy Zero-Jank Drawer: expands smoothly in 0.16s with zero layout thrashing */
+/* INSTANT SNAPPY DRAWER: 0ms height drag, 0 layout reflows */
 .tier-drawer-wrapper {
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: max-height 0.16s cubic-bezier(0, 0, 0.2, 1), opacity 0.14s ease;
-    pointer-events: none;
-    padding: 0 8px;
+    display: none;
+    padding: 0 8px 6px;
 }
 .tier-drawer-wrapper.is-open {
-    max-height: 240px;
-    opacity: 1;
-    pointer-events: auto;
-    padding-bottom: 6px;
+    display: block;
 }
 
 .tier-chips-deck {
@@ -2197,102 +2178,79 @@ header p {
     gap: 6px;
     padding-top: 6px;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
+    animation: quickChipFade 0.08s ease-out;
 }
+@keyframes quickChipFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .border-top-A { border-top-color: rgba(59, 130, 246, 0.25); }
 .border-top-B { border-top-color: rgba(16, 185, 129, 0.25); }
 .border-top-C { border-top-color: rgba(245, 158, 11, 0.25); }
 .border-top-D { border-top-color: rgba(244, 63, 94, 0.25); }
 .border-top-X { border-top-color: rgba(239, 68, 68, 0.25); }
 
-/* Unified Deck Slide-Down (Single GPU Draw, 0ms Multi-Timer Lag) */
-.tier-drawer-wrapper.is-open .tier-chips-deck {
-    animation: deckSlideDown 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-@keyframes deckSlideDown {
-    0% {
-        opacity: 0;
-        transform: translateY(-4px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+/* CLEAN NAME PILLS (WITHOUT INITIALS) */
 .stat-chip-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 3px 8px;
-    border-radius: 8px;
-    font-size: 10.5px;
-    font-weight: 500;
-    transition: transform 0.1s ease;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
     border: 1px solid transparent;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
+    transition: transform 0.1s ease;
 }
 .stat-chip-btn:active {
     transform: scale(0.96);
 }
-.stat-chip-avatar {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    font-size: 8.5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    flex-shrink: 0;
-}
 
 /* Chip Color Themes */
 .chip-theme-a {
-    background: rgba(59, 130, 246, 0.15);
+    background: rgba(59, 130, 246, 0.18);
     color: #dbeafe;
-    border-color: rgba(59, 130, 246, 0.4);
-}
-.chip-theme-a .stat-chip-avatar {
-    background: rgba(59, 130, 246, 0.4);
-    color: #bfdbfe;
+    border-color: rgba(59, 130, 246, 0.45);
 }
 .chip-theme-b {
-    background: rgba(16, 185, 129, 0.12);
+    background: rgba(16, 185, 129, 0.15);
     color: #d1fae5;
-    border-color: rgba(16, 185, 129, 0.35);
-}
-.chip-theme-b .stat-chip-avatar {
-    background: rgba(16, 185, 129, 0.35);
-    color: #a7f3d0;
+    border-color: rgba(16, 185, 129, 0.4);
 }
 .chip-theme-c {
-    background: rgba(245, 158, 11, 0.12);
+    background: rgba(245, 158, 11, 0.15);
     color: #fef3c7;
-    border-color: rgba(245, 158, 11, 0.35);
-}
-.chip-theme-c .stat-chip-avatar {
-    background: rgba(245, 158, 11, 0.35);
-    color: #fde68a;
+    border-color: rgba(245, 158, 11, 0.4);
 }
 .chip-theme-d {
-    background: rgba(244, 63, 94, 0.12);
+    background: rgba(244, 63, 94, 0.15);
     color: #ffe4e6;
-    border-color: rgba(244, 63, 94, 0.35);
-}
-.chip-theme-d .stat-chip-avatar {
-    background: rgba(244, 63, 94, 0.35);
-    color: #fecdd3;
+    border-color: rgba(244, 63, 94, 0.4);
 }
 .chip-theme-x {
-    background: rgba(239, 68, 68, 0.12);
+    background: rgba(239, 68, 68, 0.15);
     color: #fee2e2;
-    border-color: rgba(239, 68, 68, 0.35);
+    border-color: rgba(239, 68, 68, 0.4);
 }
-.chip-theme-x .stat-chip-avatar {
-    background: rgba(239, 68, 68, 0.35);
+
+.chip-theme-izin {
+    background: rgba(59, 130, 246, 0.16);
+    color: #bfdbfe;
+    border-color: rgba(59, 130, 246, 0.35);
+}
+.chip-theme-berhalangan {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fde68a;
+    border-color: rgba(245, 158, 11, 0.35);
+}
+.chip-theme-belum {
+    background: rgba(244, 63, 94, 0.16);
     color: #fca5a5;
+    border-color: rgba(244, 63, 94, 0.35);
 }
 
 /* Bottom Attendance Section */
