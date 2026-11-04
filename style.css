@@ -258,6 +258,7 @@ header p {
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, background 0.3s ease;
     position: relative;
     z-index: 1;
+    overflow: hidden;
     /* Matikan backdrop-filter: penyebab noda cahaya bocor saat hover */
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
@@ -265,13 +266,62 @@ header p {
 
 .murid-card.sudah-setor {
     border: 1px solid rgba(212, 175, 55, 0.55);
-    box-shadow: 0 0 0 1.5px rgba(212, 175, 55, 0.22);
-    background: linear-gradient(145deg, var(--glass-bg) 0%, rgba(212, 175, 55, 0.05) 100%);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(212, 175, 55, 0.25);
+    background: 
+        radial-gradient(circle at 95% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 45%),
+        linear-gradient(145deg, var(--glass-bg) 0%, rgba(212, 175, 55, 0.05) 100%);
+}
+
+.murid-card.sudah-setor .murid-info {
+    padding-right: 28px;
 }
 
 .murid-card.sudah-setor:hover {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 0 1.5px rgba(212, 175, 55, 0.55);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), 0 0 0 1.5px rgba(212, 175, 55, 0.6);
     transform: translateY(-4px);
+}
+
+/* ============================================================== */
+/* DIAGONAL 45° SASH RIBBON (PITA EMAS MELINTANG "✓ SETOR")        */
+/* ============================================================== */
+.diagonal-sash-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 76px;
+    height: 76px;
+    overflow: hidden;
+    pointer-events: none;
+    border-top-right-radius: 24px;
+    z-index: 2;
+}
+
+.diagonal-sash-ribbon {
+    position: absolute;
+    top: 14px;
+    right: -24px;
+    width: 96px;
+    transform: rotate(45deg);
+    background: linear-gradient(135deg, #fff3b0 0%, #d4af37 35%, #8c5a14 75%, #fef08a 100%);
+    color: #1a0f02;
+    font-size: 8.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-align: center;
+    padding: 3px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    border-top: 1px solid rgba(255, 255, 255, 0.65);
+    border-bottom: 1px solid rgba(140, 90, 20, 0.7);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
+    user-select: none;
+}
+
+.badge-doa-glow {
+    font-size: 13px;
+    margin-left: 6px;
+    display: inline-block;
+    vertical-align: middle;
+    filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.6));
 }
 
 .badge-harian {

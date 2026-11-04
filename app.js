@@ -1034,10 +1034,17 @@ window.renderMurid = () => {
         let hariIniStr = window.getTanggalHariIni();
         let statusHarian = (murid.tanggalSetor === hariIniStr) ? (murid.setoranHarian || "belum") : "belum";
         let glowClass = (statusHarian === 'sudah') ? 'sudah-setor' : '';
+        let ribbonHtml = (statusHarian === 'sudah') 
+            ? '<div class="diagonal-sash-container"><div class="diagonal-sash-ribbon">✓ SETOR</div></div>' 
+            : '';
+        let didoakanHariIni = localStorage.getItem('doa_ananda_' + murid.id + '_' + hariIniStr) === '1';
+        let doaBadgeHtml = didoakanHariIni ? '<span class="badge-doa-glow" title="Telah Didoakan Orang Tua Hari Ini">🤲</span>' : '';
+
         cards.push('<div class="glass-panel murid-card ' + glowClass + '" onclick="window.openModal(' + index + ')">'
+            + ribbonHtml
             + '<div class="avatar">' + window.getInitials(murid.nama) + '</div>'
             + '<div class="murid-info">'
-            + '<div class="murid-nama">' + murid.nama + '</div>'
+            + '<div class="murid-nama"><span>' + murid.nama + '</span>' + doaBadgeHtml + '</div>'
             + '<div class="status-dots">'
             + '<span class="dot ' + cssQ + '" title="Qur\'an"></span>'
             + '<span class="dot ' + cssH + '" title="Hadits"></span>'
@@ -1301,6 +1308,8 @@ window.kirimDoaOrangTua = () => {
     }
     const tRow = document.getElementById('tandaDidoakanRow');
     if (tRow) tRow.style.display = 'block';
+
+    if (window.renderMurid) window.renderMurid();
 
     // Munculkan Bottom-Sheet Berkah menggantikan alert browser
     setTimeout(() => {
