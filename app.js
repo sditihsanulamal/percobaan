@@ -2623,44 +2623,52 @@ window.simpanDataMurid = async () => {
 
 /* =========================================
    STATISTICS DASHBOARD LOGIC (BORDERLESS MAJESTIC)
+   OPTIMIZED FOR 60FPS MOBILE PERFORMANCE
 ========================================= */
 
 const StatAudioEngine = {
     ctx: null,
     init() {
         if (!this.ctx) {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext) this.ctx = new AudioContext();
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) this.ctx = new AudioContext();
+            } catch (_) {}
         }
     },
     play(type) {
-        try {
-            this.init();
-            if (!this.ctx) return;
-            if (this.ctx.state === 'suspended') this.ctx.resume();
-            const now = this.ctx.currentTime;
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            if (type === 'tick') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, now);
-                osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-                osc.start(now);
-                osc.stop(now + 0.04);
-            } else if (type === 'step') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(520, now);
-                osc.frequency.exponentialRampToValueAtTime(780, now + 0.06);
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-                osc.start(now);
-                osc.stop(now + 0.06);
-            }
-        } catch (_) {}
+        // Run audio creation asynchronously to prevent blocking touch gestures & GPU frames
+        setTimeout(() => {
+            try {
+                this.init();
+                if (!this.ctx) return;
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume().catch(() => {});
+                }
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                if (type === 'tick') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.04);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+                    osc.start(now);
+                    osc.stop(now + 0.04);
+                } else if (type === 'step') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(780, now + 0.06);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                    osc.start(now);
+                    osc.stop(now + 0.06);
+                }
+            } catch (_) {}
+        }, 0);
     }
 };
 
@@ -2674,11 +2682,28 @@ function getStudentInitials(name) {
 window.activeStatSubject = 'quran';
 window._subjectBreakdownData = null;
 window._statsDataCache = null;
+window._lastStatsSignature = null;
 
 window.openStatsModal = () => {
     const modal = document.getElementById('statsModal');
-    if (modal) modal.classList.add('open');
+    if (!modal) return;
+    
+    // Prevent background scrolling while modal is open on mobile
+    document.body.style.overflow = 'hidden';
+    
+    // Construct or update DOM
     renderStatsChart();
+    
+    // Use requestAnimationFrame for a buttery 60fps GPU entrance
+    requestAnimationFrame(() => {
+        modal.classList.add('open');
+    });
+};
+
+window.closeStatsModal = () => {
+    const modal = document.getElementById('statsModal');
+    if (modal) modal.classList.remove('open');
+    document.body.style.overflow = '';
 };
 
 window.switchStatSubject = (subj) => {
@@ -2721,18 +2746,21 @@ window.toggleTierDrawer = (tier) => {
         arrow.classList.add('is-open');
         row.classList.add(`active-${tier}`);
 
+        // Smooth staggered cascade without layout thrashing (no forced offsetWidth)
         const chips = drawer.querySelectorAll('.stat-chip-btn');
-        chips.forEach((c, idx) => {
-            c.classList.remove('stat-chip-animated');
-            void c.offsetWidth;
-            c.style.animationDelay = `${idx * 28}ms`;
-            c.classList.add('stat-chip-animated');
-        });
+        if (chips.length > 0) {
+            chips.forEach((c, idx) => {
+                c.style.animationDelay = `${Math.min(idx * 22, 220)}ms`;
+                c.classList.add('stat-chip-animated');
+            });
+        }
     } else {
         StatAudioEngine.play('tick');
         drawer.classList.remove('is-open');
         arrow.classList.remove('is-open');
         row.classList.remove(`active-${tier}`);
+        const chips = drawer.querySelectorAll('.stat-chip-btn');
+        chips.forEach(c => c.classList.remove('stat-chip-animated'));
     }
 };
 
@@ -2810,6 +2838,15 @@ function renderStatsChart() {
         container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px 20px;font-size:13px;">Belum ada data murid untuk kelas ini.</div>';
         return;
     }
+
+    // Memoization check: if data has not changed and container is already rendered, skip re-parsing HTML
+    const dataSig = `${window.kelasTarget}_${hariIni}_` + dataMuridDinamis.map(m => `${m.id || ''}:${m.tanggalSetor || ''}:${m.setoranHarian || ''}:${m.quranStatus || ''}:${m.haditsStatus || ''}:${m.doaStatus || ''}`).join(';');
+    if (window._lastStatsSignature === dataSig && container.innerHTML.trim().length > 0) {
+        window.renderStatistikSubject();
+        window.closeAllTierDrawers();
+        return;
+    }
+    window._lastStatsSignature = dataSig;
 
     const stats = {
         sudahSetor:   { names: [], muridList: [] },
@@ -2963,7 +3000,7 @@ function renderStatsChart() {
             <div class="stats-ring-box">
                 <svg class="stats-ring-svg" viewBox="0 0 120 120">
                     <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.06)" stroke-width="5" fill="transparent" />
-                    <circle id="heroRingCircle" cx="60" cy="60" r="50" stroke="url(#cleanRingGrad)" stroke-width="5" stroke-linecap="round" fill="transparent" stroke-dasharray="314.16" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);" />
+                    <circle id="heroRingCircle" cx="60" cy="60" r="50" stroke="url(#cleanRingGrad)" stroke-width="5" stroke-linecap="round" fill="transparent" stroke-dasharray="314.16" stroke-dashoffset="${offset}" style="transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1);" />
                     <defs>
                         <linearGradient id="cleanRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" stop-color="#34d399" />
@@ -3148,7 +3185,7 @@ function renderStatsChart() {
         ${bottomAttendanceHtml}
     `;
 
-    // Populate the active subject and ensure all drawers start closed by default
+    // Populate active subject and ensure all drawers start closed by default
     window.renderStatistikSubject();
     window.closeAllTierDrawers();
 }

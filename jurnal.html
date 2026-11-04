@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=38">
+    <link rel="stylesheet" href="style.css?v=39">
 </head>
 
 <body>
@@ -773,10 +773,10 @@
     </div>
 
     <!-- MODAL STATISTIK (BORDERLESS MAJESTIC REDESIGN) -->
-    <div id="statsModal" class="modal" onclick="if(event.target===this) this.classList.remove('open')">
+    <div id="statsModal" class="modal" onclick="if(event.target===this) window.closeStatsModal()">
         <div class="modal-content stats-modal-content card-forest-luxury velvet-noise" id="statsModalCard">
             <!-- Close Button -->
-            <button type="button" class="stats-close-circle" onclick="document.getElementById('statsModal').classList.remove('open')">✕</button>
+            <button type="button" class="stats-close-circle" onclick="window.closeStatsModal()">✕</button>
             <!-- Ambient Golden Radial Beam -->
             <div class="stats-ambient-beam"></div>
             <!-- Dynamic Content Container -->
@@ -888,7 +888,7 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=38"></script>
+    <script type="module" src="app.js?v=39"></script>
 </body>
 
 </html>
