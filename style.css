@@ -999,21 +999,27 @@ header p {
     transform: scale(0.95);
 }
 
+/* Sembunyikan alat scroll visual agar tampilan bersih & seamless (Fungsi scroll tetap 100% aktif) */
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 0px !important;
+    height: 0px !important;
+    display: none !important;
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
+html, body, * {
+    scrollbar-width: none !important; /* Firefox */
+    -ms-overflow-style: none !important; /* IE/Edge */
 }
 
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+.modal-content::-webkit-scrollbar,
+#progressModal .modal-content::-webkit-scrollbar,
+#statsModal .stats-modal-content::-webkit-scrollbar,
+#madingModal .modal-content::-webkit-scrollbar,
+.custom-scrollbar::-webkit-scrollbar,
+.modal-doa-list::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 .sidebar-overlay {
