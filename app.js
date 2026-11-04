@@ -1266,16 +1266,46 @@ window.closeModalDoa = () => {
     if (m) m.classList.remove('open');
 };
 
+let _bottomSheetTimer = null;
+
+window.openBottomSheetDoa = (namaAnanda) => {
+    const sheet = document.getElementById('bottomSheetDoaFeedback');
+    if (!sheet) return;
+    const nameEl = document.getElementById('doaNamaAnanda');
+    if (nameEl) nameEl.textContent = namaAnanda || 'Ananda';
+
+    clearTimeout(_bottomSheetTimer);
+    requestAnimationFrame(() => {
+        sheet.classList.add('is-visible');
+    });
+
+    // Auto dismiss after 6.5s if not closed manually
+    _bottomSheetTimer = setTimeout(() => {
+        window.closeBottomSheetDoa();
+    }, 6500);
+};
+
+window.closeBottomSheetDoa = () => {
+    const sheet = document.getElementById('bottomSheetDoaFeedback');
+    if (sheet) sheet.classList.remove('is-visible');
+    clearTimeout(_bottomSheetTimer);
+};
+
 window.kirimDoaOrangTua = () => {
     window.closeModalDoa();
     const idMurid = document.getElementById('editId').value;
+    const namaMurid = document.getElementById('modalNama') ? document.getElementById('modalNama').innerText : 'Ananda';
     const hariIni = window.getTanggalHariIni();
     if (idMurid) {
         localStorage.setItem('doa_ananda_' + idMurid + '_' + hariIni, '1');
     }
     const tRow = document.getElementById('tandaDidoakanRow');
     if (tRow) tRow.style.display = 'block';
-    alert("Jazakumullah Khairan! ✨\nDoa Anda telah teriring untuk ananda hari ini. Semoga Allah subhanahu wa ta'ala senantiasa memberkahi, melancarkan lisan, dan mengokohkan hafalan Al-Qur'an ananda. Aamiin.");
+
+    // Munculkan Bottom-Sheet Berkah menggantikan alert browser
+    setTimeout(() => {
+        window.openBottomSheetDoa(namaMurid);
+    }, 120);
 };
 
 

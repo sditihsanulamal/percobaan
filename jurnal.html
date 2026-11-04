@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=43">
+    <link rel="stylesheet" href="style.css?v=44">
 </head>
 
 <body>
@@ -888,7 +888,36 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=43"></script>
+    <script type="module" src="app.js?v=44"></script>
+    <!-- ============================================== -->
+    <!-- FLOATING BOTTOM-SHEET: APRESIASI DOA ORANG TUA -->
+    <!-- ============================================== -->
+    <div id="bottomSheetDoaFeedback" class="doa-bottomsheet-wrap" onclick="if(event.target===this) window.closeBottomSheetDoa()">
+        <div class="doa-bottomsheet-card">
+            <div class="doa-bottomsheet-handle"></div>
+            <div class="doa-bottomsheet-body">
+                <div class="doa-bottomsheet-icon-wrap">
+                    <span class="doa-bottomsheet-icon">🤲</span>
+                    <div class="doa-bottomsheet-glow"></div>
+                </div>
+                <div class="doa-bottomsheet-content">
+                    <div class="doa-bottomsheet-header">
+                        <h3 class="doa-bottomsheet-title">Jazakumullahu Khairan Katsiran ✨</h3>
+                        <span class="doa-bottomsheet-close-x" onclick="window.closeBottomSheetDoa()">✕</span>
+                    </div>
+                    <p class="doa-bottomsheet-desc">
+                        Aamiin Ya Rabbal 'Alamin. Doa tulus Ayah/Bunda untuk ananda <strong id="doaNamaAnanda" class="doa-highlight-name">Afifa Nor Sa'adah</strong> telah teriring hari ini. Semoga Allah melancarkan lisannya dan mengokohkan hafalannya.
+                    </p>
+                    <div class="doa-bottomsheet-actions">
+                        <button type="button" class="btn-gold-luxury doa-bottomsheet-btn" onclick="window.closeBottomSheetDoa()">
+                            <span>✨</span> Aamiin Ya Mujibas Sa'ilin
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>
