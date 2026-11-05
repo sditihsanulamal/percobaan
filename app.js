@@ -40,6 +40,10 @@ const koleksiMading = "mading_" + window.kelasTarget;
 
 let dataMuridDinamis = [];
 let isAdmin = false;
+window.setAdminMode = (state) => {
+    isAdmin = !!state;
+    window.isAdmin = isAdmin;
+};
 let dataMadingDinamis = {};
 window.currentMadingId = null;
 
@@ -1002,7 +1006,7 @@ onAuthStateChanged(auth, (user) => {
     if (unsubMading) { unsubMading(); unsubMading = null; }
     if (unsubMurid) { unsubMurid(); unsubMurid = null; }
 
-    if (isAdmin) {
+    if (isAdmin || window.isAdmin) {
         // Guru (admin): real-time listener — selalu dapat update otomatis
         unsubMading = onSnapshot(collection(db, koleksiMading), handleMadingSnapshot);
         unsubMurid = onSnapshot(collection(db, koleksiMurid), handleMuridSnapshot);
@@ -1177,10 +1181,18 @@ function ekstrakSurahDanAyatModal(str) {
 }
 
 function updateQuranGaugeAndDisplay() {
+    const dispSurah = document.getElementById('displaySurahNama');
+    if (dispSurah) {
+        dispSurah.innerHTML = activeModalSurahName + ' <span class="edit-pencil">✏️</span>';
+    }
     const dialLabel = document.getElementById('dialSurahLabel');
-    if (dialLabel) dialLabel.innerText = 'Surah ' + activeModalSurahName;
+    if (dialLabel) {
+        dialLabel.innerHTML = 'Surah ' + activeModalSurahName;
+    }
     const dispAyat = document.getElementById('displayAyatNum');
-    if (dispAyat) dispAyat.innerText = activeModalCurrentAyat;
+    if (dispAyat) {
+        dispAyat.innerText = activeModalCurrentAyat;
+    }
 
     const realisasiStr = 'Surah ' + activeModalSurahName + ' ayat ' + activeModalCurrentAyat + (activeModalIsMurajaah ? " (Muraja'ah)" : "");
     const qRealisasiInput = document.getElementById('editQuranRealisasi');
@@ -1210,38 +1222,169 @@ function updateQuranGaugeAndDisplay() {
     }
 }
 
-window.editSurahManual = () => {
-    const cur = activeModalSurahName || "Al-Baqarah";
-    const input = prompt("Ketik nama Surah yang disetorkan ananda (contoh: Ali 'Imran, An-Naba', dll):", cur);
-    if (input !== null && input.trim() !== "") {
-        let clean = input.trim().replace(/^surah\s+/i, '');
-        // Standarisasi ejaan otomatis dari daftar 114 surah jika cocok
-        const cleanNormalized = clean.toLowerCase().replace(/[^a-z0-9]/g, '');
-        const found = (DATA_114_SURAH || []).find(s => 
-            s.nama.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanNormalized ||
-            String(s.no) === clean
-        );
-        if (found) {
-            activeModalSurahName = found.nama;
-            activeModalSurahIndex = found.no - 1;
-        } else {
-            // Jika nama kustom, tetap gunakan persis yang diketik guru
-            activeModalSurahName = clean;
-        }
-        updateQuranGaugeAndDisplay();
-    }
+/* ==========================================================================
+   POLESAN CSS DIALOG PROMPT KUSTOM (PENGGANTI PROMPT BAWAAN BROWSER)
+   ========================================================================== */
+let _activePromptType = 'surah'; // 'surah' | 'ayat'
+
+window.bukaPromptUbahSurah = () => {
+    _activePromptType = 'surah';
+    const overlay = document.getElementById('dialogPromptKustom');
+    const icon = document.getElementById('promptIcon');
+    const title = document.getElementById('promptTitle');
+    const msg = document.getElementById('promptMessage');
+    const inp = document.getElementById('promptInput');
+    const hint = document.getElementById('promptSuggestionHint');
+
+    if (!overlay || !inp) return;
+    if (icon) icon.innerText = '📖';
+    if (title) title.innerText = 'sditihsanulamal.github.io says';
+    if (msg) msg.innerText = "Ketik nama Surah yang disetorkan ananda (contoh: Ali 'Imran, An-Naba', dll):";
+    inp.type = 'text';
+    inp.placeholder = 'Nama Surah atau nomor (1-114)...';
+    inp.value = activeModalSurahName;
+    if (hint) hint.innerHTML = '';
+
+    overlay.classList.add('open');
+    setTimeout(() => {
+        inp.focus();
+        inp.select();
+        window.handlePromptInputChange(inp.value);
+    }, 50);
+};
+
+window.bukaPromptUbahAyat = () => {
+    _activePromptType = 'ayat';
+    const overlay = document.getElementById('dialogPromptKustom');
+    const icon = document.getElementById('promptIcon');
+    const title = document.getElementById('promptTitle');
+    const msg = document.getElementById('promptMessage');
+    const inp = document.getElementById('promptInput');
+    const hint = document.getElementById('promptSuggestionHint');
+
+    if (!overlay || !inp) return;
+    if (icon) icon.innerText = '🎯';
+    if (title) title.innerText = 'sditihsanulamal.github.io says';
+    const surahData = DATA_114_SURAH[activeModalSurahIndex];
+    const maxAyat = (surahData && surahData.ayat) ? surahData.ayat : 286;
+    if (msg) msg.innerText = 'Ketik nomor ayat yang disetorkan ananda (Surah ' + activeModalSurahName + ', 1 - ' + maxAyat + '):';
+    inp.type = 'number';
+    inp.placeholder = 'Nomor ayat...';
+    inp.value = activeModalCurrentAyat;
+    if (hint) hint.innerHTML = 'Maksimal ' + maxAyat + ' ayat untuk Surah ' + activeModalSurahName;
+
+    overlay.classList.add('open');
+    setTimeout(() => {
+        inp.focus();
+        inp.select();
+    }, 50);
 };
 
 window.editAyatManual = () => {
-    const cur = activeModalCurrentAyat || 1;
-    const input = prompt("Masukkan nomor ayat yang disetorkan ananda:", cur);
-    if (input !== null && input.trim() !== "") {
-        const num = parseInt(input.trim(), 10);
+    window.bukaPromptUbahAyat();
+};
+
+window.tutupPromptKustom = () => {
+    const overlay = document.getElementById('dialogPromptKustom');
+    if (overlay) overlay.classList.remove('open');
+};
+
+window.handlePromptInputChange = (val) => {
+    const hint = document.getElementById('promptSuggestionHint');
+    if (!hint) return;
+    if (_activePromptType === 'ayat') {
+        const num = parseInt(val, 10);
+        const surahData = DATA_114_SURAH[activeModalSurahIndex];
+        const maxAyat = (surahData && surahData.ayat) ? surahData.ayat : 286;
         if (!isNaN(num) && num > 0) {
-            activeModalCurrentAyat = num;
-            updateQuranGaugeAndDisplay();
+            hint.innerHTML = 'Ayat ' + num + ' dari ' + maxAyat;
+        }
+        return;
+    }
+
+    if (!val || !val.trim()) {
+        hint.innerHTML = '';
+        return;
+    }
+    const clean = val.trim().replace(/^surah\s+/i, '');
+    const normalize = str => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const normClean = normalize(clean);
+
+    // 1. Nomor surah (1-114)
+    const num = parseInt(clean, 10);
+    if (!isNaN(num) && String(num) === clean && num >= 1 && num <= 114) {
+        const found = DATA_114_SURAH.find(s => s.no === num);
+        if (found) {
+            hint.innerHTML = '✨ Cocok: <strong>' + found.no + '. ' + found.nama + '</strong> (' + found.ayat + ' ayat • Juz ' + found.juz + ') ' + (found.arab || '');
+            return;
         }
     }
+
+    // 2. Exact match nama
+    const exactMatch = (DATA_114_SURAH || []).find(s => normalize(s.nama) === normClean);
+    if (exactMatch) {
+        hint.innerHTML = '✨ Cocok: <strong>' + exactMatch.no + '. ' + exactMatch.nama + '</strong> (' + exactMatch.ayat + ' ayat • Juz ' + exactMatch.juz + ') ' + (exactMatch.arab || '');
+        return;
+    }
+
+    // 3. Substring match
+    const partialMatch = (DATA_114_SURAH || []).find(s => normalize(s.nama).includes(normClean));
+    if (partialMatch && normClean.length >= 2) {
+        hint.innerHTML = '🔍 Disarankan: <strong>' + partialMatch.no + '. ' + partialMatch.nama + '</strong> (' + partialMatch.ayat + ' ayat • Juz ' + partialMatch.juz + ')';
+        return;
+    }
+
+    hint.innerHTML = '✏️ Nama surah kustom: "<strong>' + clean + '</strong>"';
+};
+
+window.submitPromptKustom = () => {
+    const inp = document.getElementById('promptInput');
+    if (!inp) return;
+    const val = inp.value.trim();
+
+    if (_activePromptType === 'ayat') {
+        const num = parseInt(val, 10);
+        if (!isNaN(num) && num > 0) {
+            const surahData = DATA_114_SURAH[activeModalSurahIndex];
+            const maxAyat = (surahData && surahData.ayat) ? surahData.ayat : 286;
+            activeModalCurrentAyat = Math.min(num, maxAyat);
+            updateQuranGaugeAndDisplay();
+        }
+        window.tutupPromptKustom();
+        return;
+    }
+
+    // Mode Surah
+    if (val) {
+        const clean = val.replace(/^surah\s+/i, '');
+        const normalize = str => str.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const normClean = normalize(clean);
+
+        const num = parseInt(clean, 10);
+        let matched = null;
+        if (!isNaN(num) && String(num) === clean && num >= 1 && num <= 114) {
+            matched = DATA_114_SURAH.find(s => s.no === num);
+        } else {
+            matched = (DATA_114_SURAH || []).find(s => normalize(s.nama) === normClean);
+            if (!matched) {
+                matched = (DATA_114_SURAH || []).find(s => normalize(s.nama).includes(normClean));
+            }
+        }
+
+        if (matched) {
+            activeModalSurahName = matched.nama;
+            activeModalSurahIndex = matched.no - 1;
+            if (activeModalCurrentAyat > matched.ayat) {
+                activeModalCurrentAyat = 1;
+            }
+        } else {
+            activeModalSurahName = clean;
+        }
+
+        updateQuranGaugeAndDisplay();
+    }
+
+    window.tutupPromptKustom();
 };
 
 window.stepAyat = (delta) => {
@@ -1467,6 +1610,7 @@ window.openModal = (index) => {
 
     // Update Tampilan Stepper & Gauge
     updateQuranGaugeAndDisplay();
+    window.tutupPromptKustom();
 
     // Grade Al-Qur'an (Admin)
     let effQStatus = qStatus;
@@ -1597,7 +1741,7 @@ window.openModal = (index) => {
     const actionGuru = document.getElementById('actionAreaGuru');
     const actionWali = document.getElementById('actionAreaWali');
 
-    if (isAdmin) {
+    if (isAdmin || window.isAdmin) {
         adminRows.forEach(r => { if (r) r.style.display = 'flex'; });
         if (noteEl) noteEl.style.display = 'block';
         if (actionGuru) actionGuru.style.display = 'block';
@@ -1950,7 +2094,7 @@ window.openMading = (id) => {
         document.getElementById('form-jadwal-tilawah').innerHTML = h;
     }
 
-    if (isAdmin) {
+    if (isAdmin || window.isAdmin) {
         titleText.style.display = 'none';
         contentDiv.style.display = 'none';
         adminArea.style.display = 'block';
