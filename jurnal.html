@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- Panggil File CSS Eksternal (Cache Busting) -->
-    <link rel="stylesheet" href="style.css?v=46">
+    <link rel="stylesheet" href="style.css?v=48">
 </head>
 
 <body>
@@ -256,7 +256,7 @@
                             <span style="font-size:10px; text-transform:uppercase; font-weight:700; letter-spacing:1px; color:#94a3b8;">Ayat terakhir yang disetorkan:</span>
                         </div>
                         <div style="margin-bottom:12px; display:flex; align-items:baseline; gap:8px;">
-                            <span id="dialSurahLabel" style="font-size:17px; font-weight:800; color:#ffffff; letter-spacing:-0.2px;">Surah Al-Baqarah</span>
+                            <span id="dialSurahLabel" onclick="window.editSurahManual()" title="Klik untuk ketik/ubah nama surah" style="font-size:17px; font-weight:800; color:#ffffff; letter-spacing:-0.2px; cursor:pointer; text-decoration:underline dotted rgba(212,175,55,0.6);">Surah Al-Baqarah</span>
                             <span style="font-size:13.5px; font-weight:700; color:#d4af37;">Ayat</span>
                             <span id="displayAyatNum" onclick="window.editAyatManual()" title="Klik untuk ubah nomor ayat" style="font-size:22px; font-weight:900; color:#fef08a; letter-spacing:-0.5px; cursor:pointer; text-decoration:underline dotted rgba(212,175,55,0.6);">61</span>
                         </div>
@@ -871,7 +871,7 @@
         </div>
     </div>
 
-    <script type="module" src="app.js?v=46"></script>
+    <script type="module" src="app.js?v=48"></script>
     <!-- ============================================== -->
     <!-- FLOATING BOTTOM-SHEET: APRESIASI DOA ORANG TUA -->
     <!-- ============================================== -->

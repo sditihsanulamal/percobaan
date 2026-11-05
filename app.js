@@ -1210,6 +1210,27 @@ function updateQuranGaugeAndDisplay() {
     }
 }
 
+window.editSurahManual = () => {
+    const cur = activeModalSurahName || "Al-Baqarah";
+    const input = prompt("Ketik nama Surah yang disetorkan ananda (contoh: Ali 'Imran, An-Naba', dll):", cur);
+    if (input !== null && input.trim() !== "") {
+        let clean = input.trim().replace(/^surah\s+/i, '');
+        // Standarisasi ejaan otomatis dari daftar 114 surah jika cocok
+        const cleanNormalized = clean.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const found = (DATA_114_SURAH || []).find(s => 
+            s.nama.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanNormalized ||
+            String(s.no) === clean
+        );
+        if (found) {
+            activeModalSurahName = found.nama;
+            activeModalSurahIndex = found.no - 1;
+        } else {
+            // Jika nama kustom, tetap gunakan persis yang diketik guru
+            activeModalSurahName = clean;
+        }
+        updateQuranGaugeAndDisplay();
+    }
+};
 
 window.editAyatManual = () => {
     const cur = activeModalCurrentAyat || 1;
