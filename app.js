@@ -1145,6 +1145,7 @@ let activeModalSurahIndex = 0;
 let activeModalSurahName = "Al-Baqarah";
 let activeModalCurrentAyat = 1;
 let activeModalTargetAyat = 1;
+let activeModalTargetSurahIndex = -1;
 let activeModalIsMurajaah = false;
 
 function ekstrakSurahDanAyatModal(str) {
@@ -1202,7 +1203,15 @@ function updateQuranGaugeAndDisplay() {
 
     let pct = 0;
     let selisih = 0;
-    if (activeModalTargetAyat > 0) {
+    if (activeModalTargetSurahIndex !== -1 && activeModalSurahIndex !== activeModalTargetSurahIndex) {
+        if (activeModalSurahIndex > activeModalTargetSurahIndex) {
+            pct = 100;
+            selisih = -1;
+        } else {
+            pct = Math.min(99, Math.round((activeModalCurrentAyat / (DATA_114_SURAH[activeModalSurahIndex]?.ayat || 100)) * 50));
+            selisih = 1;
+        }
+    } else if (activeModalTargetAyat > 0) {
         pct = Math.min(100, Math.round((activeModalCurrentAyat / activeModalTargetAyat) * 100));
         selisih = activeModalTargetAyat - activeModalCurrentAyat;
     }
@@ -1212,7 +1221,9 @@ function updateQuranGaugeAndDisplay() {
     if (lblPct) lblPct.innerHTML = pct + '% <span>Tercapai</span>';
     const lblStatus = document.getElementById('lblProgressStatus');
     if (lblStatus) {
-        if (selisih > 0) {
+        if (activeModalTargetSurahIndex !== -1 && activeModalSurahIndex > activeModalTargetSurahIndex) {
+            lblStatus.innerHTML = '<strong style="color:#34d399;">Melampaui Target (Surah Selanjutnya) 🌟</strong>';
+        } else if (selisih > 0) {
             lblStatus.innerHTML = 'Selisih <strong style="color:#ffffff;">' + selisih + ' Ayat</strong> Menuju Target';
         } else if (selisih === 0) {
             lblStatus.innerHTML = '<strong style="color:#fef08a;">Tepat Sesuai Target Kelas! 🎯</strong>';
@@ -1271,7 +1282,7 @@ window.bukaPromptUbahAyat = () => {
     inp.type = 'number';
     inp.placeholder = 'Nomor ayat...';
     inp.value = activeModalCurrentAyat;
-    if (hint) hint.innerHTML = 'Maksimal ' + maxAyat + ' ayat untuk Surah ' + activeModalSurahName;
+    if (hint) hint.innerHTML = 'Surah ' + activeModalSurahName + ' memiliki ' + maxAyat + ' ayat. Melebihi batas ini otomatis lanjut ke surah berikutnya.';
 
     overlay.classList.add('open');
     setTimeout(() => {
@@ -1295,9 +1306,22 @@ window.handlePromptInputChange = (val) => {
     if (_activePromptType === 'ayat') {
         const num = parseInt(val, 10);
         const surahData = DATA_114_SURAH[activeModalSurahIndex];
-        const maxAyat = (surahData && surahData.ayat) ? surahData.ayat : 286;
-        if (!isNaN(num) && num > 0) {
-            hint.innerHTML = 'Ayat ' + num + ' dari ' + maxAyat;
+        if (surahData && !isNaN(num) && num > 0) {
+            if (num > surahData.ayat) {
+                let tempIdx = activeModalSurahIndex;
+                let tempNum = num;
+                let nextSurah = surahData;
+                while (tempNum > nextSurah.ayat && tempIdx + 1 < DATA_114_SURAH.length) {
+                    tempNum -= nextSurah.ayat;
+                    tempIdx++;
+                    nextSurah = DATA_114_SURAH[tempIdx];
+                }
+                hint.innerHTML = '⚡ <strong>Melebihi ' + surahData.nama + ' (' + surahData.ayat + ' ayat)</strong>: Otomatis lanjut ke <strong>Surah ' + nextSurah.nama + ' ayat ' + tempNum + '</strong>';
+            } else {
+                hint.innerHTML = 'Ayat ' + num + ' dari ' + surahData.ayat + ' (' + surahData.nama + ')';
+            }
+        } else {
+            hint.innerHTML = '';
         }
         return;
     }
@@ -1343,11 +1367,20 @@ window.submitPromptKustom = () => {
     const val = inp.value.trim();
 
     if (_activePromptType === 'ayat') {
-        const num = parseInt(val, 10);
+        let num = parseInt(val, 10);
         if (!isNaN(num) && num > 0) {
-            const surahData = DATA_114_SURAH[activeModalSurahIndex];
-            const maxAyat = (surahData && surahData.ayat) ? surahData.ayat : 286;
-            activeModalCurrentAyat = Math.min(num, maxAyat);
+            let curSurah = DATA_114_SURAH[activeModalSurahIndex];
+            if (curSurah) {
+                while (num > curSurah.ayat && activeModalSurahIndex + 1 < DATA_114_SURAH.length) {
+                    num -= curSurah.ayat;
+                    activeModalSurahIndex++;
+                    curSurah = DATA_114_SURAH[activeModalSurahIndex];
+                    activeModalSurahName = curSurah.nama;
+                }
+                activeModalCurrentAyat = Math.min(num, curSurah.ayat);
+            } else {
+                activeModalCurrentAyat = num;
+            }
             updateQuranGaugeAndDisplay();
         }
         window.tutupPromptKustom();
@@ -1388,7 +1421,38 @@ window.submitPromptKustom = () => {
 };
 
 window.stepAyat = (delta) => {
-    activeModalCurrentAyat = Math.max(1, activeModalCurrentAyat + delta);
+    let curSurah = DATA_114_SURAH[activeModalSurahIndex];
+    if (!curSurah) {
+        activeModalCurrentAyat = Math.max(1, activeModalCurrentAyat + delta);
+        updateQuranGaugeAndDisplay();
+        return;
+    }
+
+    let ayatBaru = activeModalCurrentAyat + delta;
+
+    // Jika melebihi batas ayat surah saat ini: otomatis berpindah ke surah selanjutnya!
+    while (ayatBaru > curSurah.ayat) {
+        if (activeModalSurahIndex + 1 < DATA_114_SURAH.length) {
+            ayatBaru -= curSurah.ayat;
+            activeModalSurahIndex++;
+            curSurah = DATA_114_SURAH[activeModalSurahIndex];
+            activeModalSurahName = curSurah.nama;
+        } else {
+            // Sudah surah terakhir (An-Nas)
+            ayatBaru = curSurah.ayat;
+            break;
+        }
+    }
+
+    // Jika kurang dari 1: mundur ke surah sebelumnya (jika delta negatif)
+    while (ayatBaru < 1 && activeModalSurahIndex > 0) {
+        activeModalSurahIndex--;
+        curSurah = DATA_114_SURAH[activeModalSurahIndex];
+        activeModalSurahName = curSurah.nama;
+        ayatBaru += curSurah.ayat;
+    }
+
+    activeModalCurrentAyat = Math.max(1, ayatBaru);
     updateQuranGaugeAndDisplay();
 };
 
@@ -1581,9 +1645,11 @@ window.openModal = (index) => {
     const parsedTarget = ekstrakSurahDanAyatModal(targetQuranVal);
     const dispQuranTarget = document.getElementById('displayQuranTarget');
     if (parsedTarget) {
+        activeModalTargetSurahIndex = parsedTarget.indexSurah;
         activeModalTargetAyat = parsedTarget.ayat;
         dispQuranTarget.innerHTML = 'Surah ' + parsedTarget.namaSurah + ' <span class="target-ayat-accent">: Ayat ' + parsedTarget.ayat + '</span>';
     } else {
+        activeModalTargetSurahIndex = -1;
         activeModalTargetAyat = 1;
         dispQuranTarget.innerHTML = targetQuranVal || "-";
     }

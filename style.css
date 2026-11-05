@@ -3599,7 +3599,7 @@ html, body, * {
     border-radius: 16px;
     padding: 4px;
     gap: 4px;
-    margin-bottom: 14px;
+    margin-bottom: 22px;
 }
 
 .subject-tab-btn {
@@ -3882,6 +3882,7 @@ html, body, * {
     line-height: 1.45;
     font-family: 'Plus Jakarta Sans', sans-serif;
     box-sizing: border-box;
+    text-align: center;
 }
 
 .slate-textarea-luxury:focus {
@@ -3894,6 +3895,7 @@ html, body, * {
     color: rgba(148, 163, 184, 0.6);
     font-weight: 600;
     font-size: 14px;
+    text-align: center;
 }
 
 .admin-grade-row {
@@ -4243,17 +4245,71 @@ html, body, * {
 /* ==========================================================================
    POLESAN CSS DIALOG PROMPT KUSTOM (PENGGANTI PROMPT BAWAAN BROWSER)
    ========================================================================== */
+.blackboard-header-label {
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.blackboard-sub-caption {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    display: inline-block;
+}
+
+.blackboard-wali-caption {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    display: block;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+#txtWaliQuranSetor,
+#txtWaliHaditsSetor,
+#txtWaliDoaSetor {
+    text-align: center;
+}
+
+.setoran-realisasi-row {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.setoran-label-surah {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+}
+
+.setoran-label-ayat {
+    font-size: 12px;
+    font-weight: 700;
+    color: #d4af37;
+    margin-left: 2px;
+}
+
 .surah-clickable-tag {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     background: rgba(212, 175, 55, 0.12);
     border: 1px dashed rgba(212, 175, 55, 0.55);
-    border-radius: 9px;
-    padding: 3px 10px;
+    border-radius: 8px;
+    padding: 2.5px 8px;
     color: #ffffff;
-    font-size: 16px;
-    font-weight: 800;
+    font-size: 13.5px;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
@@ -4263,12 +4319,12 @@ html, body, * {
     background: rgba(212, 175, 55, 0.22);
     border-color: var(--gold);
     color: #fef08a;
-    box-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
     transform: translateY(-1px);
 }
 
 .surah-clickable-tag .edit-pencil {
-    font-size: 11px;
+    font-size: 10px;
     opacity: 0.75;
     transition: opacity 0.2s;
 }
@@ -4278,13 +4334,13 @@ html, body, * {
 }
 
 .ayat-clickable-tag {
-    font-size: 22px;
-    font-weight: 900;
+    font-size: 15.5px;
+    font-weight: 800;
     color: #fef08a;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
     cursor: pointer;
     padding: 1px 7px;
-    border-radius: 8px;
+    border-radius: 6px;
     background: rgba(0, 0, 0, 0.3);
     border: 1px dashed rgba(212, 175, 55, 0.5);
     transition: all 0.2s ease;
@@ -4293,6 +4349,11 @@ html, body, * {
 
 .ayat-clickable-tag:hover {
     color: #ffffff;
+    background: rgba(212, 175, 55, 0.22);
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+    transform: translateY(-1px);
+}
     background: rgba(212, 175, 55, 0.22);
     border-color: var(--gold);
     box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
@@ -4547,7 +4608,7 @@ html, body, * {
     /* Tab Subjek Deck */
     #progressModal .subject-tabs-deck {
         padding: 3px !important;
-        margin-bottom: 8px !important;
+        margin-bottom: 18px !important;
         border-radius: 12px !important;
         gap: 3px !important;
     }
@@ -4559,16 +4620,16 @@ html, body, * {
         gap: 4px !important;
     }
 
-    /* Target Hafalan: Compact & Bernapas Lega */
+    /* Target Hafalan: Berjarak Lega & Proporsional */
     #progressModal .target-masthead {
-        padding: 0 2px 4px 2px !important;
-    margin-bottom: 14px;
-        margin-bottom: 12px !important;
+        padding: 4px 2px 4px 2px !important;
+        margin-top: 2px !important;
+        margin-bottom: 14px !important;
     }
 
     #progressModal .target-micro-label {
         gap: 5px !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 5px !important;
     }
 
     #progressModal .target-dot-pulse {
@@ -4611,12 +4672,35 @@ html, body, * {
         margin-bottom: 8px !important;
     }
 
-    #progressModal #dialSurahLabel {
-        font-size: 15px !important;
+    #progressModal .setoran-realisasi-row {
+        justify-content: center !important;
+        margin-bottom: 10px !important;
+        gap: 6px !important;
     }
 
+    #progressModal .setoran-label-surah {
+        font-size: 12.5px !important;
+    }
+
+    #progressModal .surah-clickable-tag {
+        font-size: 12px !important;
+        padding: 2px 7px !important;
+        border-radius: 7px !important;
+    }
+
+    #progressModal .surah-clickable-tag .edit-pencil {
+        font-size: 9.5px !important;
+    }
+
+    #progressModal .setoran-label-ayat {
+        font-size: 11px !important;
+    }
+
+    #progressModal .ayat-clickable-tag,
     #progressModal #displayAyatNum {
-        font-size: 19px !important;
+        font-size: 14.5px !important;
+        padding: 1px 6px !important;
+        border-radius: 6px !important;
     }
 
     #progressModal .quick-chips-grid {
@@ -4634,6 +4718,11 @@ html, body, * {
     #progressModal .slate-textarea-luxury {
         font-size: 13px !important;
         padding: 2px 0 6px 0 !important;
+        text-align: center !important;
+    }
+
+    #progressModal .slate-textarea-luxury::placeholder {
+        text-align: center !important;
     }
 
     /* Baris Nilai */
