@@ -1,5 +1,17 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { initializeFirestore, persistentLocalCache, collection, onSnapshot, getDocs, doc, setDoc, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+    initializeFirestore, 
+    persistentLocalCache, 
+    persistentMultipleTabManager,
+    getFirestore,
+    collection, 
+    onSnapshot, 
+    getDocs, 
+    doc, 
+    setDoc, 
+    updateDoc, 
+    writeBatch 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -12,8 +24,18 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// Strategi 1: Aktifkan offline persistence — data di-cache di browser, hemat read saat refresh
-const db = initializeFirestore(app, { localCache: persistentLocalCache() });
+// Strategi: Offline persistence multi-tab — aman saat buka banyak tab sekaligus & tahan crash
+let db;
+try {
+    db = initializeFirestore(app, { 
+        localCache: persistentLocalCache({
+            tabManager: persistentMultipleTabManager()
+        }) 
+    });
+} catch (e) {
+    console.warn("Firestore initializeFirestore fallback to getFirestore:", e);
+    db = getFirestore(app);
+}
 const auth = getAuth(app);
 
 // MULTI-KELAS DINAMIS
@@ -1256,6 +1278,7 @@ window.bukaPromptUbahSurah = () => {
     inp.value = activeModalSurahName;
     if (hint) hint.innerHTML = '';
 
+    overlay.style.display = 'flex';
     overlay.classList.add('open');
     setTimeout(() => {
         inp.focus();
@@ -1284,6 +1307,7 @@ window.bukaPromptUbahAyat = () => {
     inp.value = activeModalCurrentAyat;
     if (hint) hint.innerHTML = 'Surah ' + activeModalSurahName + ' memiliki ' + maxAyat + ' ayat. Melebihi batas ini otomatis lanjut ke surah berikutnya.';
 
+    overlay.style.display = 'flex';
     overlay.classList.add('open');
     setTimeout(() => {
         inp.focus();
@@ -1297,7 +1321,10 @@ window.editAyatManual = () => {
 
 window.tutupPromptKustom = () => {
     const overlay = document.getElementById('dialogPromptKustom');
-    if (overlay) overlay.classList.remove('open');
+    if (overlay) {
+        overlay.classList.remove('open');
+        overlay.style.display = 'none';
+    }
 };
 
 window.handlePromptInputChange = (val) => {
